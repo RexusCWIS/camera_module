@@ -7,6 +7,7 @@
 #define DEF_CAMERA_H
 
 #include "ueye_event_thread.h"
+#include "ueye_exception.h"
 
 #include <uEye.h>
 

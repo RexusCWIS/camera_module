@@ -43,34 +43,38 @@ void* i2c_manager::listener(void* arg) {
 
     i2c_manager* manager = reinterpret_cast<i2c_manager*>(arg);
 
-	char rx_buf[32];
-	char current_order = 'S';
+    char rx_buf[32];
+    char current_order = 'S';
 
-	std::stringstream ss;
+    std::stringstream ss;
     	
-	/* Open the output file for writing */
-    	FILE *of = fopen(manager->m_log_file, "wb");
+    /* Open the output file for writing */
+    FILE *of = fopen(manager->m_log_file, "wb");
+    if(of == NULL) {
+        printf("Could not open I2C log file");    
+    }
 
     while(!manager->m_stop) {
         
         /* Read the camera order */
-        pthread_mutex_lock(&m_i2c_mutex);
+        pthread_mutex_lock(&(manager->m_i2c_mutex));
 	    iss_i2c_read((unsigned char*) rx_buf, 0x1u, 0x23u, 0x0u);
-	    pthread_mutex_unlock(&m_i2c_mutex);
+	    pthread_mutex_unlock(&(manager->m_i2c_mutex));
 
 		/* If a new order has been given, transmit it to the callback function */
         if(rx_buf[0] != current_order) {
-			manager->m_order_callback(rx_buf[0]); 
+	    manager->m_order_callback(rx_buf[0]);
+	    current_order = rx_buf[0]; 
         }
 
         /* Read the sensor data */
-        pthread_mutex_lock(&m_i2c_mutex);
+        pthread_mutex_lock(&(manager->m_i2c_mutex));
 	    iss_i2c_read((unsigned char*) rx_buf, 0xCu, 0x23u, 0x1u); 
-	    pthread_mutex_unlock(&m_i2c_mutex);
+	    pthread_mutex_unlock(&(manager->m_i2c_mutex));
 	
-	    unsigned int time = (((unsigned int) rx_buf[3]) << 24) + 
-				(((unsigned int) rx_buf[2]) << 16) + 
-				(((unsigned int) rx_buf[1]) << 8) + 
+	    unsigned int time = ((unsigned int) ((unsigned char) rx_buf[3]) << 24) + 
+				((unsigned int) ((unsigned char) rx_buf[2]) << 16) + 
+				((unsigned int) ((unsigned char) rx_buf[1]) << 8) + 
 				(unsigned int) rx_buf[0];
 
 
@@ -81,7 +85,7 @@ void* i2c_manager::listener(void* arg) {
         
         for(unsigned int incr = 4; incr < 12; incr += 2) {
             
-            unsigned int data = (((unsigned int) rx_buf[incr+1]) << 8) + rx_buf[incr]; 
+            unsigned int data = ((unsigned int) ((unsigned char) rx_buf[incr+1]) << 8) + (unsigned int) rx_buf[incr]; 
             ss << data << "\t"; 
         }
 

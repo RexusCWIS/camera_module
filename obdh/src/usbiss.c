@@ -167,13 +167,6 @@ int iss_i2c_read(unsigned char rx_buf[],
     iss_buf[2] = dev_reg;
     iss_buf[3] = rx_bytes;
 
-    for(unsigned int index = 0; index < 4; index++) {
-
-	printf("%x ", iss_buf[index]); 
-    }
-
-    printf("\n"); 
-
     iss_transmission(iss_buf, 4u, rx_buf, rx_bytes); 
 }
 
@@ -190,12 +183,6 @@ int iss_i2c_write(unsigned char tx_buf[],
     memcpy(&(iss_buf[4]), tx_buf, tx_bytes);
 
     iss_buf[tx_bytes + 4] = '\0';
-    for(unsigned int index = 0; index < (4); index++) {
-
-	printf("%x ", iss_buf[index]); 
-    }
-
-    printf("\n%s\n", &iss_buf[4]); 
 
     iss_transmission(iss_buf, (tx_bytes + 4u), iss_buf, 1u);
 

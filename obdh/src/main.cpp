@@ -39,6 +39,11 @@ static ueye_camera*  camera;
 static i2c_manager*  i2c;
 static program_options program_opts;
 static module_status status = {{0, 0}, 0, 0};
+static unsigned int start_time   = 0;
+static unsigned int end_time     = 0;
+static bool start_of_experiment = false;
+static bool end_of_experiment   = false;
+
 
 /* Long options definition */
 static const struct option long_opts[] = {
@@ -93,37 +98,49 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
     
-	images = new image_buffer(CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT, 
+    std::cout << "Creating image buffer..." << std::endl;
+    images = new image_buffer(CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT, 
 	                          CONFIG_BUFFER_SIZE);
 
+    std::cout << "Setting camera parameters..." << std::endl;
+    set_camera_parameters();
 
+    std::cout << "Starting I2C communication..." << std::endl;
     i2c = new i2c_manager("/dev/ttyACM0", "i2c.log", &order_processing);
 
-	while(!camera->is_over()) {
-		usleep(300000);
-		unsigned int nb_of_images = camera->get_nb_of_images();
-		status.nb_of_images[0] = (char) ((nb_of_images & 0xFF00u) >> 8u);
-		status.nb_of_images[1] = (char) (nb_of_images & 0xFFu);
-		
-		std::cout << "[" << i2c_manager->get_time() << "] " << nb_of_images << 
-		          << " images" << std::endl;
-		
-		//i2c_manager->write((char *) &status, 4u, 0u);
-	}
+    while(!start_of_experiment)
+        ;
 
-	std::cout << "Stopped the camera." << std::endl;
-
-	images->save_to_pgm(program_opts.output_dir.c_str());
+    while(!end_of_experiment) {
+        usleep(300000);
+	unsigned int nb_of_images = camera->get_nb_of_images_acquired();
+	status.nb_of_images[0] = (char) ((nb_of_images & 0xFF00u) >> 8u);
+	status.nb_of_images[1] = (char) (nb_of_images & 0xFFu);
 	
-	set_camera_parameters();
+	std::cout << "[" << i2c->get_time() << "] " << nb_of_images 
+		  << " images" << std::endl;
+		
+	//i2c->write((char *) &status, 4u, 0u);
+    }
 
-	std::cout << "Wrote images to " << program_opts.output_dir << std::endl;
-	
-	delete i2c;	
-	delete images;
-	delete camera;          
+    end_time = i2c->get_time();
 
-	std::cout << "Ready to exit..." << std::endl;
+    std::cout << "Acquired " << camera->get_nb_of_images_acquired() << " images in "
+              << (end_time - start_time) << " seconds.";
+
+    std::cout << "[" << i2c->get_time() << "] " << "Writing images to " << program_opts.output_dir << std::endl;
+    images->save_to_pgm(program_opts.output_dir.c_str());
+
+    std::cout << "Stopping I2C communication..." << std::endl;	
+    delete i2c;	
+    
+    std::cout << "Freeing allocated memory..." << std::endl;
+    delete images;
+
+    std::cout << "Putting the camera in standby mode..." << std::endl;
+    delete camera;          
+
+    std::cout << "Ready to exit..." << std::endl;
 
     exit(EXIT_SUCCESS); 
 }
@@ -132,7 +149,9 @@ static void order_processing(char order) {
 
 	switch(order) {
         case 'G':
-	    std::cout << "The experiment has STARTED." << std::endl;
+	    start_time = i2c->get_time();
+	    start_of_experiment = true;
+	    std::cout << "[" << start_time << "] The experiment has STARTED." << std::endl;
             
             try {    
                 camera->start_acquisition(images->buffer, images->size, 
@@ -147,9 +166,8 @@ static void order_processing(char order) {
             break; 
         case 'S':
             camera->stop_acquisition();
-            std::cout << "The experiment is OVER." << std::endl;
-            std::cout << "Acquired " << camera->get_nb_of_images_acquired() << 
-                         "images" << std::endl;
+            std::cout << "[" << i2c->get_time() << "] The experiment is OVER." << std::endl;
+	    end_of_experiment = true;
             break;
         
         default:
@@ -170,7 +188,7 @@ static void set_camera_parameters(void) {
 	camera->set_auto_exposure();
 	camera->set_auto_gain();
 	
-	double framerate = camera_set_framerate(CONFIG_FRAMERATE);
+	double framerate = camera->set_framerate(CONFIG_FRAMERATE);
 	std::cout << "Framerate: " << framerate << " fps" << std::endl;
 	
 	status.framerate = (char) framerate;
