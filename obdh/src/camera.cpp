@@ -172,11 +172,11 @@ void ueye_camera::acquisition_handler(ueye_camera* const camera) {
     	
     camera->m_nb_of_images_acquired++;
 	
-    std::cout << "[" << system_time << "] " << camera->m_nb_of_images 
+    std::cout << "[" << system_time << "] " << camera->m_nb_of_images_acquired 
 		  << " images" << std::endl;
 
     /** @todo Handle buffer overflow */
-    if(camera->m_nb_of_images_acquired == (camera->m_buffer->size)) {
+    if(camera->m_nb_of_images_acquired == (camera->m_buffer->size) - 1) {
         is_StopLiveVideo(camera->m_camera_id, IS_WAIT);
         camera->m_finished = true;
         std::cout << "Stopped the acquisition to avoid buffer overflow" << std::endl;

@@ -150,7 +150,7 @@ int main(int argc, char *argv[]) {
     images->save_to_png(program_opts.output_dir.c_str());
     images->save_log(program_opts.image_log.c_str());
 
-	std::cout << "[" << system_time << "]" << "Saved images in " 
+	std::cout << "[" << system_time << "]" << " Saved images in " 
 	          << (system_time - end_time) / 1000.0 << " seconds" << std::endl;
 
     std::cout << "Stopping I2C communication..." << std::endl;	

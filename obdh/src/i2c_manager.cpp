@@ -87,7 +87,7 @@ void* i2c_manager::listener(void* arg) {
             ss << data << "\t"; 
         }
 
-        ss << rx_buf[12] << "\t" << rx_buf[13]; 
+        ss << rx_buf[12] << "\t" << rx_buf[13] << "\n";
 
         /* Write data to the output file */
         fwrite(ss.str().c_str(), sizeof(char), ss.str().size(), of); 
