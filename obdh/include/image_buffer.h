@@ -6,6 +6,9 @@
 #include <iostream>
 #include <sys/mman.h>
 
+#ifndef DEF_IMAGE_BUFFER_H
+#define DEF_IMAGE_BUFFER_H
+
 struct image_buffer_item {
     char *buffer;
     unsigned int time;
@@ -25,3 +28,6 @@ struct image_buffer {
 	unsigned int height;
 	unsigned int size;
 };
+
+#endif  /* DEF_IMAGE_BUFFER_H */
+

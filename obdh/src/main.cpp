@@ -156,8 +156,7 @@ static void order_processing(char order) {
 	    std::cout << "[" << start_time << "] The experiment has STARTED." << std::endl;
             
             try {    
-                camera->start_acquisition(images->buffer, images->size, 
-                                  		  images->width, images->height);
+                camera->start_acquisition(images);
             }
 
             catch(UEye_Exception const &e) {
