@@ -15,6 +15,8 @@ class ueye_event_thread;
 class ueye_camera {
 public:
 	ueye_camera(HIDS cameraID);
+	
+	~ueye_camera();
 
 	void set_aoi(int x, int y, int width, int height);
 

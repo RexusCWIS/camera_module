@@ -48,6 +48,12 @@ ueye_camera::ueye_camera(HIDS camera_id) {
     set_pixel_clock(16u);
 }
 
+ueye_camera::~ueye_camera() {
+
+    INT status = is_ExitCamera(m_camera_id);
+    (void) status;
+}
+
 void ueye_camera::set_aoi(int x, int y, int width, int height) {
 
     IS_RECT aoi;

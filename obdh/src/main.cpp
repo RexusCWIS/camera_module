@@ -26,6 +26,7 @@ typedef struct {
 }ProgramOptions_s;
 
 static image_buffer* images;
+static ueye_camera*  camera;
 static ProgramOptions_s programOpts;
 
 /* Long options definition */
@@ -80,7 +81,7 @@ int main(int argc, char *argv[]) {
 	images = new image_buffer(CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT, 
 	                          CONFIG_BUFFER_SIZE);
 
-	ueye_camera *camera = new ueye_camera(CONFIG_CAMERA_ID);
+	camera = new ueye_camera(CONFIG_CAMERA_ID);
 	
 	camera->set_aoi(CONFIG_AOI_H_OFFSET, CONFIG_AOI_V_OFFSET,
 					CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT);	
@@ -103,8 +104,8 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Stopped the camera." << std::endl;
 	
-	//delete camera;             
-	//delete images;
+	delete images;
+	delete camera;             
 
 	std::cout << "Ready to exit..." << std::endl;
 
