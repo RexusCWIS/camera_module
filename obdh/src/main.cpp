@@ -23,17 +23,24 @@ using namespace std;
 unsigned int system_time = 0;
 
 static void order_processing(char order);
-static inline void set_defaults(void); 
+static inline void set_defaults(void);
+static inline void update_status(void); 
 static void set_camera_parameters(void);
 
 typedef struct {
     std::string output_dir; 
 } program_options;
 
+#define STATUS_ON	    (1 << 0)
+#define STATUS_CAMERA_ON    (1 << 1)
+#define STATUS_ACQUIRING    (1 << 2)
+#define STATUS_COPYING	    (1 << 3)
+
+
 typedef struct {
 	char nb_of_images[2];
 	char framerate;
-	char status;
+	char flags;
 } module_status;
 
 static image_buffer* images;
@@ -94,6 +101,12 @@ int main(int argc, char *argv[]) {
                 break; 
         }
     }
+    
+    std::cout << "Starting I2C communication..." << std::endl;
+    i2c = new i2c_manager("/dev/ttyACM0", "i2c.log", &order_processing);
+
+    status.flags |= STATUS_ON;
+    update_status();
 
     /* Create output directory */
     if(!createDirectory(program_opts.output_dir)) {
@@ -107,25 +120,30 @@ int main(int argc, char *argv[]) {
     std::cout << "Setting camera parameters..." << std::endl;
     set_camera_parameters();
 
-    std::cout << "Starting I2C communication..." << std::endl;
-    i2c = new i2c_manager("/dev/ttyACM0", "i2c.log", &order_processing);
+    status.flags |= STATUS_CAMERA_ON;
+    update_status();
 
     while(!start_of_experiment)
         ;
 
+    status.flags |= STATUS_ACQUIRING;
+
     while(!end_of_experiment) {
-        usleep(300000);
+        usleep(150000);
 	unsigned int nb_of_images = camera->get_nb_of_images_acquired();
 	status.nb_of_images[0] = (char) ((nb_of_images & 0xFF00u) >> 8u);
 	status.nb_of_images[1] = (char) (nb_of_images & 0xFFu);
 	
 	std::cout << "[" << system_time << "] " << nb_of_images 
 		  << " images" << std::endl;
-		
-	//i2c->write((char *) &status, 4u, 0u);
+	
+	update_status();
     }
 
     end_time = system_time;
+    status.flags &= ~STATUS_ACQUIRING;
+    status.flags |= STATUS_COPYING;
+    update_status();
 
     std::cout << "Acquired " << camera->get_nb_of_images_acquired() << " images in "
               << (end_time - start_time) / 1000.0 << " seconds." << std::endl;
@@ -181,6 +199,10 @@ static void order_processing(char order) {
 
 static inline void set_defaults(void) {
     program_opts.output_dir = "images";
+}
+
+static inline void update_status(void) {
+    i2c->write((char *) &status, 4u, 0u);
 }
 
 static void set_camera_parameters(void) {

@@ -103,7 +103,7 @@ void* i2c_manager::listener(void* arg) {
 void i2c_manager::write(char* data, unsigned int size, unsigned char device_register) {
 
 	pthread_mutex_lock(&m_i2c_mutex);
-	iss_i2c_write((unsigned char*) data, size, 0x23u, device_register);
+	iss_i2c_write((unsigned char*) data, size, 0x22u, device_register);
 	pthread_mutex_unlock(&m_i2c_mutex);
 
 }

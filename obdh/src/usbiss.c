@@ -287,7 +287,7 @@ static inline void iss_transmission(const unsigned char tx_buf[], unsigned int t
 		perror("tcdrain"); 
 	}
 
-	usleep(100000);
+	usleep(50000);
  
 	if(read(dev_fd, rx_buf, rx_bytes) < 0) {
 		perror("read"); 
