@@ -13,14 +13,14 @@ struct image_buffer {
 					width(image_width), height(image_height), 
 					size(buffer_size) {
 		
-		buffer = new unsigned char*[size]();
+		buffer = new char*[size]();
 		
 		unsigned int image_size = width * height;
 		
 		for(unsigned int index = 0; index < size; index++) {
 		
 			try {	
-			    buffer[index] = new unsigned char[image_size]();
+			    buffer[index] = new char[image_size]();
 			}
 
 			catch(std::bad_alloc& e) {
@@ -43,7 +43,7 @@ struct image_buffer {
 		delete [] buffer;
 	}
 	
-	unsigned char **buffer;
+	char **buffer;
 	unsigned int width;
 	unsigned int height;
 	unsigned int size;

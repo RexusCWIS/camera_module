@@ -109,8 +109,9 @@ void ueye_camera::start_acquisition(char* ring_buffer[],
     }
     
     m_finished = false;
-
-	m_nb_of_images_acquired = 0;
+    m_nb_of_images_acquired = 0;
+    m_buffer = ring_buffer;
+    m_buffer_size = ring_buffer_size;
 
     /* Set the camera in live acquisition mode */
     INT status  = IS_SUCCESS;
@@ -158,8 +159,9 @@ void ueye_camera::acquisition_handler(ueye_camera* const camera) {
 	
 	/** @todo Handle buffer overflow */
 	if(camera->m_nb_of_images_acquired > camera->m_buffer_size) {
-		is_StopLiveVideo(m_camera_id, IS_WAIT);
+		is_StopLiveVideo(camera->m_camera_id, IS_WAIT);
 		camera->m_finished = true;
+		std::cout << "Stopped the acquisition to avoid buffer overflow" << std::endl;
 	}
 }
  

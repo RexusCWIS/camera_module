@@ -13,6 +13,7 @@
 
 #include "utils/utilities.hpp"
 
+#include "camera.h"
 #include "image_buffer.h"
 #include "camera_settings.h"
 
@@ -29,7 +30,8 @@ static ProgramOptions_s programOpts;
 
 /* Long options definition */
 static const struct option longOpts[] = {
-    {"output-dir", required_argument, NULL, 'd'}
+    {"output-dir", required_argument, NULL, 'd'},
+    {0, 0, 0, 0}
 }; 
 
 int main(int argc, char *argv[]) {
@@ -84,18 +86,27 @@ int main(int argc, char *argv[]) {
 					CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT);	
 	camera->set_auto_exposure();
 	camera->set_auto_gain();
-	camera->set_framerate(CONFIG_FRAMERATE);
+	std::cout << "Framerate: " << camera->set_framerate(CONFIG_FRAMERATE) << std::endl;
 	
-	camera->start_acquisition();
-	
-	while(!camera->is_finished()) {
+	camera->start_acquisition(images->buffer, images->size, 
+                                  images->width, images->height);
+
+	std::cout << "Started acquisition" << std::endl;	
+
+	while(!camera->is_over()) {
 		usleep(1500);
 	}
 	
+	std::cout << "Acquired images" << std::endl;
+
 	camera->stop_acquisition();
+
+	std::cout << "Stopped the camera." << std::endl;
 	
-	delete camera;             
-	delete images;
+	//delete camera;             
+	//delete images;
+
+	std::cout << "Ready to exit..." << std::endl;
 
     exit(EXIT_SUCCESS); 
 }
