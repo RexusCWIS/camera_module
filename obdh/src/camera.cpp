@@ -105,9 +105,7 @@ double ueye_camera::set_framerate(double framerate) {
     return new_framerate; 
 }
 
-void ueye_camera::start_acquisition(char* ring_buffer[], 
-					   				unsigned int ring_buffer_size, unsigned int width,
-					   				unsigned int height) {
+void ueye_camera::start_acquisition(image_buffer* ring_buffer) {
 					   
     /* If the camera was already running, top it */
     if(m_running || m_finished) {
@@ -117,26 +115,25 @@ void ueye_camera::start_acquisition(char* ring_buffer[],
     m_finished = false;
     m_nb_of_images_acquired = 0;
     m_buffer = ring_buffer;
-    m_buffer_size = ring_buffer_size;
 
     /* Set the camera in live acquisition mode */
     INT status  = IS_SUCCESS;
 
     /* Set camera memory buffers */
-    m_memory_ids = new int[ring_buffer_size];  
+    m_memory_ids = new int[ring_buffer->size];  
 
-    for(unsigned int incr = 0; incr < ring_buffer_size; incr++) {
-        status = is_SetAllocatedImageMem(m_camera_id, width, height, 8,
-                                            ring_buffer[incr], &m_memory_ids[incr]);
+    for(unsigned int incr = 0; incr < ring_buffer->size; incr++) {
+        status = is_SetAllocatedImageMem(m_camera_id, ring_buffer->width, ring_buffer->height, 8,
+                                            ring_buffer->images[incr].buffer, &m_memory_ids[incr]);
         
         if(status == IS_SUCCESS) {
             
-            status = is_AddToSequence(m_camera_id, ring_buffer[incr], m_memory_ids[incr]);  
+            status = is_AddToSequence(m_camera_id, ring_buffer->images[incr].buffer, m_memory_ids[incr]);
         }
 
         if(status != IS_SUCCESS) {
             std::string msg = "Could not set up the buffer for stream acquisition.";
-            throw UEye_Exception(m_camera_id, status, msg); 
+            throw UEye_Exception(m_camera_id, status, msg);
         }
     }
     
@@ -164,7 +161,7 @@ void ueye_camera::acquisition_handler(ueye_camera* const camera) {
     camera->m_nb_of_images_acquired++;
 
     /** @todo Handle buffer overflow */
-    if(camera->m_nb_of_images_acquired == (camera->m_buffer_size - 1)) {
+    if(camera->m_nb_of_images_acquired == (camera->m_buffer->size - 1)) {
         is_StopLiveVideo(camera->m_camera_id, IS_WAIT);
         camera->m_finished = true;
         std::cout << "Stopped the acquisition to avoid buffer overflow" << std::endl;
@@ -184,8 +181,8 @@ void ueye_camera::stop_acquisition(void) {
     /* Clear image sequence from the camera memory */
     is_ClearSequence(m_camera_id);
 
-    for(unsigned int incr = 0; incr < m_buffer_size; incr++) {
-        is_FreeImageMem(m_camera_id, m_buffer[incr], m_memory_ids[incr]); 
+    for(unsigned int incr = 0; incr < m_buffer->size; incr++) {
+        is_FreeImageMem(m_camera_id, m_buffer->images[incr].buffer, m_memory_ids[incr]); 
     }
     
     /* Stop the event handler threads */

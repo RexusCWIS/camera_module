@@ -9,6 +9,8 @@
 #include "ueye_event_thread.h"
 #include "ueye_exception.h"
 
+#include "image_buffer.h"
+
 #include <uEye.h>
 
 class ueye_event_thread;
@@ -29,9 +31,7 @@ public:
 
 	double set_framerate(double framerate);
 
-	void start_acquisition(char* ring_buffer[], 
-						   unsigned int ring_buffer_size, unsigned int width,
-						   unsigned int height);
+	void start_acquisition(image_buffer *ring_buffer);
 						   
 	static void acquisition_handler(ueye_camera* const camera);
 
@@ -49,8 +49,7 @@ private:
 	int* m_memory_ids;
 	unsigned int m_nb_of_images_acquired;
 	
-	char** m_buffer;
-	unsigned int m_buffer_size;
+	image_buffer* m_buffer;
 	
 	ueye_event_thread* m_acquisition_event_thread;
 	
