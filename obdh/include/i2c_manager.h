@@ -11,7 +11,7 @@
 class i2c_manager {
 
 public:
-	i2c_manager(const char* device, const char* log_file, void (*order_callback)(void));
+	i2c_manager(const char* device, const char* log_file, void (*order_callback)(char));
 	
 	~i2c_manager();
 	

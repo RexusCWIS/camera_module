@@ -39,7 +39,7 @@ $(APP): $(OBJ)
 	@$(CXX) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -I../libs/ -o $@ $<
 
 %.o: %.c
-	@$(CC) $(ARCH) $(WARNINGS) -c -I$(INCDIR) $I../libs/ -o $@ $<
+	@$(CC) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -I../libs/ -o $@ $<
 
 clean: 
 	rm -rf $(OBJ)
