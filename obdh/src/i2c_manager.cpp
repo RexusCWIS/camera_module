@@ -10,14 +10,14 @@
 #include <sstream>
 #include <stdio.h>
 
+extern unsigned int system_time;
+
 i2c_manager::i2c_manager(const char* device, const char* log_file,
 						 void (*order_callback)(char)):
 				m_device(device), m_log_file(log_file) {
 
 	m_stop    = false;
 	m_running = false;
-	
-	m_time = 0;
 	
 	m_order_callback = order_callback;
 	
@@ -69,17 +69,15 @@ void* i2c_manager::listener(void* arg) {
 
         /* Read the sensor data */
         pthread_mutex_lock(&(manager->m_i2c_mutex));
-	    iss_i2c_read((unsigned char*) rx_buf, 0xCu, 0x23u, 0x1u); 
-	    pthread_mutex_unlock(&(manager->m_i2c_mutex));
+	iss_i2c_read((unsigned char*) rx_buf, 0xCu, 0x23u, 0x1u); 
+	pthread_mutex_unlock(&(manager->m_i2c_mutex));
 	
-	    unsigned int time = ((unsigned int) ((unsigned char) rx_buf[3]) << 24) + 
-				((unsigned int) ((unsigned char) rx_buf[2]) << 16) + 
-				((unsigned int) ((unsigned char) rx_buf[1]) << 8) + 
-				(unsigned int) rx_buf[0];
+	unsigned int time = ((unsigned int) ((unsigned char) rx_buf[3]) << 24) + 
+	                    ((unsigned int) ((unsigned char) rx_buf[2]) << 16) + 
+			    ((unsigned int) ((unsigned char) rx_buf[1]) << 8) + 
+			    (unsigned int) rx_buf[0];
 
-
-		manager->m_time = time;
-
+	system_time = time;
 		
         ss << time << "\t"; 
         
@@ -108,11 +106,6 @@ void i2c_manager::write(char* data, unsigned int size, unsigned char device_regi
 	iss_i2c_write((unsigned char*) data, size, 0x23u, device_register);
 	pthread_mutex_unlock(&m_i2c_mutex);
 
-}
-
-unsigned int i2c_manager::get_time(void) const {
-	
-	return m_time;
 }
 
 void i2c_manager::wait_for_thread_end(void) {

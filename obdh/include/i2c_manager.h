@@ -18,8 +18,6 @@ public:
 	static void* listener(void* arg);
 	
 	void write(char* data, unsigned int size, unsigned char device_register);
-	
-	unsigned int get_time(void) const;
 
 private:
 	void wait_for_thread_end(void);
@@ -27,8 +25,6 @@ private:
 	const char* m_device;
 	const char* m_log_file;
 	void (*m_order_callback)(char);
-	
-	unsigned int m_time;
 	
 	pthread_t m_listener_thread;
 	pthread_mutex_t m_i2c_mutex;

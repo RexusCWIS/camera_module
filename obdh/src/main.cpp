@@ -20,6 +20,8 @@
 
 using namespace std; 
 
+unsigned int system_time = 0;
+
 static void order_processing(char order);
 static inline void set_defaults(void); 
 static void set_camera_parameters(void);
@@ -117,18 +119,18 @@ int main(int argc, char *argv[]) {
 	status.nb_of_images[0] = (char) ((nb_of_images & 0xFF00u) >> 8u);
 	status.nb_of_images[1] = (char) (nb_of_images & 0xFFu);
 	
-	std::cout << "[" << i2c->get_time() << "] " << nb_of_images 
+	std::cout << "[" << system_time << "] " << nb_of_images 
 		  << " images" << std::endl;
 		
 	i2c->write((char *) &status, 4u, 0u);
     }
 
-    end_time = i2c->get_time();
+    end_time = system_time;
 
     std::cout << "Acquired " << camera->get_nb_of_images_acquired() << " images in "
               << (end_time - start_time) / 1000.0 << " seconds." << std::endl;
 
-    std::cout << "[" << i2c->get_time() << "] " << "Writing images to " << program_opts.output_dir << std::endl;
+    std::cout << "[" << system_time << "] " << "Writing images to " << program_opts.output_dir << std::endl;
     images->save_to_pgm(program_opts.output_dir.c_str());
 
     std::cout << "Stopping I2C communication..." << std::endl;	
@@ -149,7 +151,7 @@ static void order_processing(char order) {
 
 	switch(order) {
         case 'G':
-	    start_time = i2c->get_time();
+	    start_time = system_time;
 	    start_of_experiment = true;
 	    std::cout << "[" << start_time << "] The experiment has STARTED." << std::endl;
             
@@ -166,7 +168,7 @@ static void order_processing(char order) {
             break; 
         case 'S':
             camera->stop_acquisition();
-            std::cout << "[" << i2c->get_time() << "] The experiment is OVER." << std::endl;
+            std::cout << "[" << system_time << "] The experiment is OVER." << std::endl;
 	    end_of_experiment = true;
             break;
         
