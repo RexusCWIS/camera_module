@@ -6,9 +6,11 @@
 #ifndef DEF_CAMERA_H
 #define DEF_CAMERA_H
 
-#include "ueye_event_thread.hpp"
+#include "ueye_event_thread.h"
 
 #include <uEye.h>
+
+class ueye_event_thread;
 
 class ueye_camera {
 public:
@@ -24,11 +26,11 @@ public:
 
 	double set_framerate(double framerate);
 
-	void start_acquisition(unsigned char* ring_buffer[], 
+	void start_acquisition(char* ring_buffer[], 
 						   unsigned int ring_buffer_size, unsigned int width,
 						   unsigned int height);
 						   
-	static void* acquisition_handler(ueye_camera* camera);
+	static void acquisition_handler(ueye_camera* const camera);
 
 	void stop_acquisition(void);
 	
@@ -37,14 +39,14 @@ public:
 private:
 	HIDS m_camera_id;
 	int* m_memory_ids;
-	int  m_nb_of_images_acquired;
+	unsigned int m_nb_of_images_acquired;
 	
-	unsigned char** m_buffer;
+	char** m_buffer;
 	unsigned int m_buffer_size;
 	
 	ueye_event_thread* m_acquisition_event_thread;
 	
 	bool m_running;
-}
+};
 
 #endif  /* DEF_CAMERA_H */

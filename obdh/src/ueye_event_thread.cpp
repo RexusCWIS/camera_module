@@ -3,11 +3,11 @@
  * @brief uEye camera event management thread class implementation.
  */
 
-#include "ueye_event_thread.hpp"
+#include "ueye_event_thread.h"
 
 #define EVENT_TIMEOUT 1
 
-ueye_event_thread::ueye_event_thread(const ueye_camera* camera, int event, void (*callback)(const ueye_camera*)) :
+ueye_event_thread::ueye_event_thread(ueye_camera* const camera, int event, void (*callback)(ueye_camera* const)) :
 	m_camera(camera), m_event(event), m_event_callback(callback) {
 
     this->m_stop = false; 
@@ -60,7 +60,7 @@ void* ueye_event_thread::handler(void* arg) {
     while(!thread->m_stop) {
         
         if(is_WaitEvent(thread->m_camera->get_camera_id(), thread->m_event, EVENT_TIMEOUT) == IS_SUCCESS) {
-            thread->m_event_callback(thread->m_camera);  
+            thread->m_event_callback(thread->m_camera);
         }
     }
 
