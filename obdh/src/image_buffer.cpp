@@ -13,20 +13,22 @@ image_buffer::image_buffer(unsigned int image_width, unsigned int image_height,
 					width(image_width), height(image_height), 
 					size(buffer_size) {
 		
-	buffer = new char*[size]();
+	images = new image_buffer_item[size]();
 		
 	unsigned int image_size = width * height;
 		
 	for(unsigned int index = 0; index < size; index++) {
 		
 		try {	
-		    buffer[index] = new char[image_size]();
+		    images[index].buffer = new char[image_size]();
 		}
 
 		catch(std::bad_alloc& e) {
 		    std::cerr << "Allocation failure (" << index << " of " << size << ")" << std::endl;
 		}
-		mlock(buffer[index], image_size);
+		mlock(images[index].buffer, image_size);
+		
+		images[index].time = 0;
 	}
 }
 
@@ -35,11 +37,11 @@ image_buffer::~image_buffer() {
 	unsigned int image_size = width * height;
 	
 	for(unsigned int index = 0; index < size; index++) {
-		munlock(buffer[index], image_size);
-		delete [] buffer[index];
+		munlock(images[index].buffer, image_size);
+		delete [] images[index].buffer;
 	}
 
-	delete [] buffer;
+	delete [] images;
 }
 
 void image_buffer::save_to_pgm(const char* directory) {
@@ -65,7 +67,7 @@ void image_buffer::save_to_pgm(const char* directory) {
     	fwrite(header.c_str(), sizeof(char), header.size(), fp); 
 
     	/* Write the actual image data */
-    	fwrite(buffer[index], sizeof(char), width * height, fp); 
+    	fwrite(images[index].buffer, sizeof(char), width * height, fp); 
 
     	fclose(fp);
     
