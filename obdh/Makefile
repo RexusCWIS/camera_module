@@ -9,12 +9,12 @@ INCDIR  = $(TOPDIR)/include
 DOCDIR  = $(TOPDIR)/documentation
 TESTDIR = $(TOPDIR)/tests/unit
 
-CC  = g++
+CC  = g++ -O2
 CXX = g++
 LIBS	 = -L../libs -lcwis-utils -lueye_api -lpng -lpthread
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
-APP = cwis_camera_test.out
+APP = cwis-camera.out
 
 CSRC = $(SRCDIR)/usbiss.c
 

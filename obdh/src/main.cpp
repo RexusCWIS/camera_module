@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
     }
     
     std::cout << "Starting I2C communication..." << std::endl;
-    i2c = new i2c_manager("/dev/ttyACM0", "i2c.log", &order_processing);
+    i2c = new i2c_manager("/dev/ttyACM0", "/home/cwis/i2c.log", &order_processing);
 
     status.flags |= STATUS_ON;
     update_status();
