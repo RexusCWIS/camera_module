@@ -5,6 +5,7 @@
 
 #include "image_buffer.h"
 
+#include <stdio.h>
 #include <sstream>
 
 image_buffer::image_buffer(unsigned int image_width, unsigned int image_height, 
@@ -64,7 +65,7 @@ void image_buffer::save_to_pgm(const char* directory) {
     	fwrite(header.c_str(), sizeof(char), header.size(), fp); 
 
     	/* Write the actual image data */
-    	fwrite(buffer[incr], sizeof(char), width * height, fp); 
+    	fwrite(buffer[index], sizeof(char), width * height, fp); 
 
     	fclose(fp);
     

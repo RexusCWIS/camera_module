@@ -113,6 +113,6 @@ int main(int argc, char *argv[]) {
 }
 
 static inline void set_defaults(void) {
-    programOpts.outputDir = "images";
+    program_opts.output_dir = "images";
 }
 
