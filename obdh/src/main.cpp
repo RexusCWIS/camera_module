@@ -19,18 +19,18 @@
 
 using namespace std; 
 
-static inline void setDefaults(void); 
+static inline void set_defaults(void); 
 
 typedef struct {
-    std::string outputDir; 
-}ProgramOptions_s;
+    std::string output_dir; 
+} program_options;
 
 static image_buffer* images;
 static ueye_camera*  camera;
-static ProgramOptions_s programOpts;
+static program_options program_opts;
 
 /* Long options definition */
-static const struct option longOpts[] = {
+static const struct option long_opts[] = {
     {"output-dir", required_argument, NULL, 'd'},
     {0, 0, 0, 0}
 }; 
@@ -38,16 +38,16 @@ static const struct option longOpts[] = {
 int main(int argc, char *argv[]) {
 
     int opt = 0;
-    int longIndex = 0; 
+    int long_index = 0; 
 
-    setDefaults();
+    set_defaults();
     
     /* Command-line arguments parsing */
-    while( (opt = getopt_long(argc, argv, "d:il", longOpts, &longIndex)) != -1) {
+    while( (opt = getopt_long(argc, argv, "d:il", long_opts, &long_index)) != -1) {
 
         switch (opt) {
             case 'd':
-                programOpts.outputDir = optarg;
+                program_opts.output_dir = optarg;
                 break; 
 
             /* List all connected cameras and exit */
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
     exit(EXIT_SUCCESS); 
 }
 
-static inline void setDefaults(void) {
+static inline void set_defaults(void) {
     programOpts.outputDir = "images";
 }
 
