@@ -120,13 +120,13 @@ int main(int argc, char *argv[]) {
 	std::cout << "[" << i2c->get_time() << "] " << nb_of_images 
 		  << " images" << std::endl;
 		
-	//i2c->write((char *) &status, 4u, 0u);
+	i2c->write((char *) &status, 4u, 0u);
     }
 
     end_time = i2c->get_time();
 
     std::cout << "Acquired " << camera->get_nb_of_images_acquired() << " images in "
-              << (end_time - start_time) << " seconds.";
+              << (end_time - start_time) / 1000.0 << " seconds." << std::endl;
 
     std::cout << "[" << i2c->get_time() << "] " << "Writing images to " << program_opts.output_dir << std::endl;
     images->save_to_pgm(program_opts.output_dir.c_str());
