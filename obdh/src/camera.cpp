@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 
+extern unsigned int system_time;
+
 ueye_camera::ueye_camera(HIDS camera_id) {
 
     m_camera_id = camera_id;
@@ -158,15 +160,15 @@ void ueye_camera::start_acquisition(char* ring_buffer[],
 }
 
 void ueye_camera::acquisition_handler(ueye_camera* const camera) {
-	
-	camera->m_nb_of_images_acquired++;
-	
-	/** @todo Handle buffer overflow */
-	if(camera->m_nb_of_images_acquired > camera->m_buffer_size) {
-		is_StopLiveVideo(camera->m_camera_id, IS_WAIT);
-		camera->m_finished = true;
-		std::cout << "Stopped the acquisition to avoid buffer overflow" << std::endl;
-	}
+    	
+    camera->m_nb_of_images_acquired++;
+
+    /** @todo Handle buffer overflow */
+    if(camera->m_nb_of_images_acquired == (camera->m_buffer_size - 1)) {
+        is_StopLiveVideo(camera->m_camera_id, IS_WAIT);
+        camera->m_finished = true;
+        std::cout << "Stopped the acquisition to avoid buffer overflow" << std::endl;
+    }
 }
  
 void ueye_camera::stop_acquisition(void) {
