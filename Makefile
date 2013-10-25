@@ -8,7 +8,9 @@ SRCDIR = $(TOPDIR)/src
 INCDIR = $(TOPDIR)/include
 
 CXX = g++
-CXXFLAGS = -m32 -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
+ARCH     = -m64 
+# LIBS	 = -L/usr/lib32/ -lstdc++
+WARNINGS = -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 APP = cwis_camera.out
 
@@ -19,10 +21,10 @@ OBJ = $(SRC:.cpp=.o)
 all: $(APP)
 
 $(APP): $(OBJ)
-	@g++ -o $@ $(OBJ)
+	@g++ $(ARCH) -o $@ $(OBJ)
 
 %.o: %.cpp
-	@$(CXX) $(CXXFLAGS) -c -I$(INCDIR) -o $@ $<
+	@$(CXX) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -o $@ $<
 
 clean: 
 	rm -rf $(OBJ)
