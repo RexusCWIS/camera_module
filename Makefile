@@ -8,7 +8,7 @@ SRCDIR = $(TOPDIR)/src
 INCDIR = $(TOPDIR)/include
 
 CXX = g++
-CXXFLAGS = -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
+CXXFLAGS = -m32 -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 APP = cwis_camera.out
 
