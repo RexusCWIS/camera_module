@@ -9,7 +9,7 @@ INCDIR = $(TOPDIR)/include
 
 CXX = g++
 ARCH     = -m64 
-LIBS	 = -lueye_api
+LIBS	 = -lueye_api 
 WARNINGS = -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 APP = cwis_camera.out
@@ -22,7 +22,7 @@ OBJ = $(SRC:.cpp=.o)
 all: $(APP)
 
 $(APP): $(OBJ)
-	@g++ $(ARCH) $(LIBS) -o $@ $(OBJ)
+	g++ $(ARCH) -o $@ $(OBJ) $(LIBS)
 
 %.o: %.cpp
 	@$(CXX) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -o $@ $<
