@@ -9,10 +9,10 @@
 
 static inline void printCamInfo(UEYE_CAMERA_INFO *uci) {
     
-    cout << "Camera ID:\t" << uci->dwCameraID << "\n" <<
-            "Device ID:\t" << uci->dwDeviceID << "\n\n" <<
-            "Camera model:\t" << uci->Model << "\n" << 
-            "Serial number:\t" << uci->SerNo << "\n";
+    std::cout << "Camera ID:\t" << uci->dwCameraID << "\n" <<
+                 "Device ID:\t" << uci->dwDeviceID << "\n\n" <<
+                 "Camera model:\t" << uci->Model << "\n" << 
+                 "Serial number:\t" << uci->SerNo << "\n";
 }
 
 Int32_t Camera::getNumberOfCameras(void) {
@@ -41,7 +41,7 @@ UInt32_t Camera::init(void) {
         return ERROR_CANT_RETRIEVE_INFO; 
     }
 
-    printCamInfo(&(this->camInfo.uci));
+    printCamInfo(this->camInfo->uci);
 
     this->camID = camInfo->uci[0].dwCameraID;
     status = is_InitCamera(&this->camID, NULL);
