@@ -16,8 +16,21 @@
 
 class UEye_Camera: public Camera {
     
-    public: 
-        UEye_Camera(HIDS cameraID); 
+    public:
+
+        /** 
+         * @brief Initializes the camera with the given @p ID.
+         * @details Each uEye camera has its own (configurable) camera ID. 
+         *          This function tries to set up the given camera and retrieves
+         *          basic parameters. 
+         */
+        UEye_Camera(HIDS cameraID);
+
+        /**
+         * @brief Class destructor. 
+         * @details Cleans dynamically allocated memory objects and puts the camera
+         *          back in standby mode. 
+         */
         virtual ~UEye_Camera();
  
         /**
@@ -25,12 +38,6 @@ class UEye_Camera: public Camera {
          * @returns Number of connected cameras. Returns -1 if it was not possible to retrieve this information. 
          */
         static Int32_t getNumberOfCameras(void); 
-
-        /**
-         * @brief Initializes the camera. 
-         * @details This function tries to initialize the camera. 
-         */
-        UInt32_t init(void);
 
         /**
          * @brief Starts image acquisition. 
