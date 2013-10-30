@@ -7,15 +7,15 @@
 #include <uEye.h>
 #include <iostream>
 
-static inline void printCamInfo(UEYE_CAMERA_INFO *uci, SENSOR_INFO &sinfo) {
+static inline void printCamInfo(UEYE_CAMERA_INFO *uci, SENSORINFO *sinfo) {
     
     std::cout << "Camera ID:\t" << uci->dwCameraID << "\n" <<
                  "Device ID:\t" << uci->dwDeviceID << "\n\n" <<
                  "Camera model:\t" << uci->Model << "\n" << 
-                 "Serial number:\t" << uci->SerNo << "\n";
+                 "Serial number:\t" << uci->SerNo << "\n" <<
                  "Sensor model:\t" << sinfo->strSensorName << 
-                 "Max image size:\t" << sinfo->nMaxWith << "x" << 
-                                        sinfo->nMaxHeight << "\n\n"; 
+                 "Max image size:\t" << sinfo->nMaxWidth << "x" << 
+                                        sinfo->nMaxHeight << "\n" << std::endl; 
 }
 
 Int32_t Camera::getNumberOfCameras(void) {
@@ -46,11 +46,6 @@ UInt32_t Camera::init(void) {
         return ERROR_CANT_RETRIEVE_INFO; 
     }
 
-<<<<<<< HEAD
-=======
-    printCamInfo(this->camInfo->uci);
->>>>>>> 96fd6ea8a1eb51f3b89f43e80eff62d9da391604
-
     /* Camera sensor informations */
     this->camID = camInfo->uci[0].dwCameraID;
     status = is_GetSensorInfo(this->camID, &this->sensorInfo); 
@@ -60,7 +55,8 @@ UInt32_t Camera::init(void) {
     }
 
     /* Display informations on the standard output */
-    printCamInfo(&(this->camInfo.uci));
+    printCamInfo(this->camInfo->uci, &this->sensorInfo);
+    
 
 
     /* Initialize the camera */

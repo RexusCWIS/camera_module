@@ -39,7 +39,7 @@ class Camera {
     private: 
         HIDS camID; 
         UEYE_CAMERA_LIST *camInfo;
-        SENSOR_INFO sensorInfo; 
+        SENSORINFO sensorInfo; 
 
 };
 
