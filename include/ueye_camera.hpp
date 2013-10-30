@@ -26,6 +26,12 @@ class UEye_Camera: public Camera {
          */
         UEye_Camera(HIDS cameraID);
 
+        virtual void capture(int *image); 
+
+        virtual void setFrameRate(double frameRate);
+
+        virtual void setImageSize(int x, int y, int width, int height); 
+
         /**
          * @brief Class destructor. 
          * @details Cleans dynamically allocated memory objects and puts the camera

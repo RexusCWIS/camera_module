@@ -31,6 +31,26 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
 
 }
 
+void UEye_Camera::capture(int *image) {
+
+}
+
+void UEye_Camera::setFrameRate(double frameRate) {
+
+}
+
+void UEye_Camera::setImageSize(int x, int y, int width, int height) {
+
+    IS_RECT aoi;
+
+    aoi.s32X = x;
+    aoi.s32Y = y; 
+    aoi.s32Width  = width;
+    aoi.s32Height = height; 
+
+    is_AOI(this->camID, IS_AOI_IMAGE_SET_AOI, (void*) &aoi, sizeof(aoi)); 
+}
+
 Int32_t UEye_Camera::getNumberOfCameras(void) {
 
     INT nbOfCams = 0;

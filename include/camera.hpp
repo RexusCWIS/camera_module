@@ -15,8 +15,14 @@
 class Camera {
 
     public: 
-        virtual void acquire(void) = 0; 
-        virtual ~Camera() {}; 
+        virtual void acquire(void) = 0;
+        virtual void capture(int *image) = 0; 
+        virtual void setFrameRate(double frameRate) = 0;
+        virtual void setImageSize(int width, int height, int x, int y) = 0; 
+        virtual ~Camera() {};
+
+    private: 
+        double m_frameRate;
 };
 
 
