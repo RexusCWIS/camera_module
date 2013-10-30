@@ -9,6 +9,7 @@
 #include "types.hpp"
 #include <uEye.h>
 
+#define INIT_SUCCESS                (0)
 #define ERROR_CANT_RETRIEVE_INFO    (-1)
 #define ERROR_CANT_INIT_CAMERA      (-2)
 
@@ -28,11 +29,17 @@ class Camera {
          * @brief Initializes the camera. 
          * @details This function tries to initialize the camera. 
          */
-        UInt32_t init(void); 
+        UInt32_t init(void);
+
+        /**
+         * @brief Starts image acquisition. 
+         */
+        void acquire(void); 
 
     private: 
         HIDS camID; 
-        UEYE_CAMERA_LIST *camInfo; 
+        UEYE_CAMERA_LIST *camInfo;
+        SENSOR_INFO sensorInfo; 
 
 };
 
