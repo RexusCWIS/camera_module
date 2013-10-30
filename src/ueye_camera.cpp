@@ -1,9 +1,9 @@
 /**
- * @file camera.cpp
- * @brief uEye Camera controller class implementation. 
+ * @file ueye_camera.cpp
+ * @brief uEye camera controller class implementation. 
  */
 
-#include "camera.hpp"
+#include "ueye_camera.hpp"
 #include <uEye.h>
 #include <iostream>
 
@@ -18,7 +18,11 @@ static inline void printCamInfo(UEYE_CAMERA_INFO *uci, SENSORINFO *sinfo) {
                                         sinfo->nMaxHeight << "\n" << std::endl; 
 }
 
-Int32_t Camera::getNumberOfCameras(void) {
+UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
+
+}
+
+Int32_t UEye_Camera::getNumberOfCameras(void) {
 
     INT nbOfCams = 0;
     INT status = is_GetNumberOfCameras(&nbOfCams);
@@ -30,7 +34,7 @@ Int32_t Camera::getNumberOfCameras(void) {
     return (Int32_t) nbOfCams; 
 }
 
-UInt32_t Camera::init(void) {
+UInt32_t UEye_Camera::init(void) {
 
     INT status = 0;
 
@@ -69,7 +73,11 @@ UInt32_t Camera::init(void) {
     return INIT_SUCCESS; 
 }
 
-Camera::~Camera() {
+void UEye_Camera::acquire(void) {
+
+}
+
+UEye_Camera::~UEye_Camera() {
 
     INT status = is_ExitCamera(this->camID);
     (void) status;

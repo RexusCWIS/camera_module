@@ -1,47 +1,24 @@
-/**
+/** 
  * @file camera.hpp
- * @brief uEye camera controller class definition. 
+ * @brief Camera abstract class. 
  */
 
 #ifndef DEF_CAMERA_HPP
 #define DEF_CAMERA_HPP
 
-#include "types.hpp"
-#include <uEye.h>
-
-#define INIT_SUCCESS                (0)
-#define ERROR_CANT_RETRIEVE_INFO    (-1)
-#define ERROR_CANT_INIT_CAMERA      (-2)
-
+/**
+ * @brief Abstract camera class. 
+ * @details The @p Camera class represents the camera interface for the CWIS experiment. 
+ *          Its only purpose is to propose a simple way to extend the camera acquisition
+ *          software to different camera models. 
+ */
 class Camera {
-    
+
     public: 
-        Camera(); 
-        ~Camera();
- 
-        /**
-         * @brief Detects the number of uEye cameras connected to the system.
-         * @returns Number of connected cameras. Returns -1 if it was not possible to retrieve this information. 
-         */
-        static Int32_t getNumberOfCameras(void); 
-
-        /**
-         * @brief Initializes the camera. 
-         * @details This function tries to initialize the camera. 
-         */
-        UInt32_t init(void);
-
-        /**
-         * @brief Starts image acquisition. 
-         */
-        void acquire(void); 
-
-    private: 
-        HIDS camID; 
-        UEYE_CAMERA_LIST *camInfo;
-        SENSORINFO sensorInfo; 
-
+        virtual void acquire(void) = 0; 
+        virtual ~Camera() {}; 
 };
+
 
 #endif  /* DEF_CAMERA_HPP */
 
