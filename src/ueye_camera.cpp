@@ -4,16 +4,30 @@
  */
 
 #include "ueye_camera.hpp"
+#include "ueye_exception.hpp"
+
 #include <uEye.h>
+#include <string>
 #include <iostream>
+#include <stdio.h>
 
 UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
 
     INT status = 0;
-   
+
     /** @todo Throw an exception if the initialization went wrong. */
     /* Initialize the camera */
     status = is_InitCamera(&this->camID, NULL);
+
+    if(status != IS_SUCCESS) {
+        
+        string msg = "Could not initialize camera ";
+        char camString[21];
+        sprintf(camString, "%d", this->camID);
+        msg += camString; 
+
+        throw UEye_Exception(status, msg); 
+    }
 
 }
 

@@ -6,17 +6,19 @@
 #ifndef DEF_UEYE_EXCEPTION_HPP
 #define DEF_UEYE_EXCEPTION_HPP
 
-#include <exception>
-#include <uEye.h>
 
 #include "types.hpp"
+#include <uEye.h>
+
+#include <string>
+#include <exception>
 using namespace std;
 
 class UEye_Exception: public exception {
     
     public: 
-        UEye_Exception(INT id = IS_FAILURE, string const& message = "") throw() : 
-            e_id(id), e_message(message) {}
+        UEye_Exception(INT error = IS_NO_SUCCESS, string const& message = "") throw() : 
+            e_id(error), e_message(message) {}
 
         INT id() const throw() {    
             return e_id; 
