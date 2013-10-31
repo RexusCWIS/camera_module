@@ -9,7 +9,7 @@ INCDIR = $(TOPDIR)/include
 
 CXX = g++
 ARCH     = -m64 
-LIBS	 = -lueye_api 
+LIBS	 = -lueye_api -lpng 
 WARNINGS = -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 APP = cwis_camera.out
