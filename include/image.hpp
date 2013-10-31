@@ -13,7 +13,9 @@ class Image {
 
     public: 
         Image(unsigned int width, unsigned int height);
-        pixel_t *getImageBuffer(void) const; 
+        pixel_t *getImageBuffer(void) const;
+        unsigned int getWidth(void) const; 
+        unsigned int getHeight(void) const; 
         ~Image(); 
 
     private:

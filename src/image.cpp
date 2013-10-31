@@ -20,6 +20,16 @@ pixel_t * Image::getImageBuffer(void) const {
     return this->i_buffer; 
 }
 
+unsigned int Image::getWidth(void) const {
+    
+    return this->i_width; 
+}
+
+unsigned int Image::getHeight(void) const {
+
+    return this->i_height; 
+}
+
 Image::~Image() {
 
     munlock(this->i_buffer, this->i_width * this->i_height); 
