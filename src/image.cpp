@@ -5,6 +5,7 @@
 
 #include "image.hpp"
 #include <sys/mman.h>
+#include <png.h>
 
 Image::Image(unsigned int width, unsigned int height) : 
             i_width(width), i_height(height) {
