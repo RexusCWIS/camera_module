@@ -16,7 +16,8 @@ APP = cwis_camera.out
 
 SRC = $(SRCDIR)/main.cpp			\
 	  $(SRCDIR)/ueye_camera.cpp 	\
-	  $(SRCDIR)/utilities.cpp
+	  $(SRCDIR)/image.cpp			\
+	  $(SRCDIR)/utilities.cpp		
 OBJ = $(SRC:.cpp=.o)
 
 # Build rules
