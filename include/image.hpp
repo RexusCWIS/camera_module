@@ -15,7 +15,9 @@ class Image {
         Image(unsigned int width, unsigned int height);
         pixel_t *getImageBuffer(void) const;
         unsigned int getWidth(void) const; 
-        unsigned int getHeight(void) const; 
+        unsigned int getHeight(void) const;
+
+        void writeToPNG(char *filename, char *title); 
         ~Image(); 
 
     private:

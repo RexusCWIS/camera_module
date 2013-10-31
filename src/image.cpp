@@ -30,6 +30,11 @@ unsigned int Image::getHeight(void) const {
     return this->i_height; 
 }
 
+void Image::writeToPNG(char *filename, char *title) {
+
+}
+
+
 Image::~Image() {
 
     munlock(this->i_buffer, this->i_width * this->i_height); 
