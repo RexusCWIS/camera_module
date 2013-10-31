@@ -21,8 +21,13 @@ class Camera {
         virtual void setImageSize(int width, int height, int x, int y) = 0; 
         virtual ~Camera() {};
 
-    private: 
+    private:
+        /** @brief Current camera framerate (in frames per second). */
         double m_frameRate;
+        /** @brief Max image width, defined by the camera sensor. */
+        int maxWidth; 
+        /** @brief Max image height, defined by the camera sensor. */
+        int maxHeight; 
 };
 
 
