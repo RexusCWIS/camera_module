@@ -9,11 +9,15 @@
 Image::Image(unsigned int width, unsigned int height) : 
             i_width(width), i_height(height) {
  
-    this->i_buffer = new pixel_t[width * height];
+    unsigned int imageSize = width * height; 
+
+    this->i_buffer = new pixel_t[imageSize];
+    mlock(this->i_buffer, imageSize); 
 }
 
 Image::~Image() {
 
+    munlock(this->i_buffer, this->i_width * this->i_height); 
     delete [] this->i_buffer; 
 }
 
