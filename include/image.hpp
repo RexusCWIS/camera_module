@@ -9,6 +9,14 @@
 /** @brief Modular type for the pixel size. */
 typedef char pixel_t; 
 
+/**
+ * @brief Image class.
+ * @details This class defines the behaviour of an image object. 
+ *          It allocates memory for an image of the given size 
+ *          and provides methods to save the image in different
+ *          file formats. 
+ * @todo Use template to define the pixel bit size. 
+ */ 
 class Image {
 
     public: 
