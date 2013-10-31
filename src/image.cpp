@@ -15,6 +15,11 @@ Image::Image(unsigned int width, unsigned int height) :
     mlock(this->i_buffer, imageSize); 
 }
 
+pixel_t * Image::getImageBuffer(void) {
+
+    return this->i_buffer; 
+}
+
 Image::~Image() {
 
     munlock(this->i_buffer, this->i_width * this->i_height); 

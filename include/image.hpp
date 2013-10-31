@@ -13,6 +13,7 @@ class Image {
 
     public: 
         Image(unsigned int width, unsigned int height);
+        pixel_t *getImageBuffer(void); 
         ~Image(); 
 
     private:
