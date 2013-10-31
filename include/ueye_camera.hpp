@@ -52,7 +52,6 @@ class UEye_Camera: public Camera {
 
     private: 
         HIDS camID; 
-        UEYE_CAMERA_LIST *camInfo;
         SENSORINFO sensorInfo; 
 
 };

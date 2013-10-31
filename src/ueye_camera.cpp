@@ -17,9 +17,8 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
 
     INT status = 0;
 
-    /** @todo Throw an exception if the initialization went wrong. */
     /* Initialize the camera */
-    status = is_InitCamera(&this->camID, NULL);
+    status = is_InitCamera(&(this->camID), NULL);
 
     if(status != IS_SUCCESS) {
         
@@ -29,6 +28,18 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
         throw UEye_Exception(status, msg); 
     }
 
+    /* Access sensor informations */
+    status = is_GetSensorInfo(this->camID, &(this->sensorInfo));
+
+    if(status != IS_SUCCESS) {
+        
+        string msg = "Could not retrieve sensor info.";
+
+        throw UEye_Exception(status, msg); 
+    }
+
+    this->maxWidth  = this->sensorInfo.nMaxWidth; 
+    this->maxHeight = this->sensorInfo.nMaxHeight; 
 }
 
 void UEye_Camera::capture(int *image) {
@@ -71,7 +82,5 @@ UEye_Camera::~UEye_Camera() {
 
     INT status = is_ExitCamera(this->camID);
     (void) status;
-
-    delete [] camInfo; 
 }
 
