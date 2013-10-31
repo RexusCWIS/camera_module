@@ -38,7 +38,15 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
     }
 
     this->maxWidth  = this->sensorInfo.nMaxWidth; 
-    this->maxHeight = this->sensorInfo.nMaxHeight; 
+    this->maxHeight = this->sensorInfo.nMaxHeight;
+
+    /* Set color mode to 8-bit monochromatic */
+    status = is_SetColorMode(this->camID, IS_CM_MONO8); 
+
+    if(status != IS_SUCCESS) {
+        string msg = "Could not set the color mode.";
+        throw UEye_Exception(this->camID, status, msg); 
+    }
 }
 
 void UEye_Camera::capture(Image *i) {
