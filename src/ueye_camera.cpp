@@ -51,7 +51,37 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
 
 void UEye_Camera::capture(Image *i) {
 
-    
+    int memID = 0; 
+    INT status = is_SetAllocatedImageMem(this->camID, i->getWidth(), i->getHeight(), 8,
+                                         (char *)i->getImageBuffer(), &memID);
+
+    if(status == IS_SUCCESS) {
+        status = is_SetImageMem(this->camID, (char *)i->getImageBuffer(), memID); 
+    }
+
+    if(status != IS_SUCCESS) {
+        string msg = "Could not set up the image for single capture mode.";
+        throw UEye_Exception(this->camID, status, msg); 
+    }
+
+    /* Set the camera in RAM acquisition mode. The image will be directly transferred to RAM. */
+    status = is_SetDisplayMode(this->camID, IS_SET_DM_DIB); 
+
+    if(status != IS_SUCCESS) {
+        string msg = "Could not set the display mode.";
+        throw UEye_Exception(this->camID, status, msg); 
+    }
+
+    /* Put the camera in software trigger mode. */
+    status = is_SetExternalTrigger(this->camID, IS_SET_TRIGGER_SOFTWARE);
+
+    /* One-shot acquisition, we wait for the image to be stored in RAM */
+    status = is_FreezeVideo(this->camID, IS_WAIT);
+
+    /* Free the image from the uEye SDK */
+    status = is_FreeImageMem(this->camID, i->getImageBuffer(), memID);
+
+    return; 
 }
 
 void UEye_Camera::setFrameRate(double frameRate) {
