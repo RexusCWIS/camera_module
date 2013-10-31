@@ -22,8 +22,8 @@ class Image {
         unsigned int i_height;
         /** @brief Number of bytes required to store a single pixel. */
         
-        /** @brief 2D memory buffer holding the actual image. */
-        pixel_t **i_buffer; 
+        /** @brief Memory buffer holding the actual image. */
+        pixel_t *i_buffer; 
 };
 
 
