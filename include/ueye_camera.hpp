@@ -26,11 +26,11 @@ class UEye_Camera: public Camera {
          */
         UEye_Camera(HIDS cameraID);
 
-        virtual void capture(int *image); 
+        virtual void capture(Image *i); 
 
         virtual void setFrameRate(double frameRate);
 
-        virtual void setImageSize(int x, int y, int width, int height); 
+        virtual void setAreaOfInterest(int x, int y, int width, int height); 
 
         /**
          * @brief Class destructor. 

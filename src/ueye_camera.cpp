@@ -42,7 +42,7 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
     this->maxHeight = this->sensorInfo.nMaxHeight; 
 }
 
-void UEye_Camera::capture(int *image) {
+void UEye_Camera::capture(Image *i) {
 
 }
 
@@ -50,7 +50,7 @@ void UEye_Camera::setFrameRate(double frameRate) {
 
 }
 
-void UEye_Camera::setImageSize(int x, int y, int width, int height) {
+void UEye_Camera::setAreaOfInterest(int x, int y, int width, int height) {
 
     IS_RECT aoi;
 
