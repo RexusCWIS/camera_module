@@ -11,7 +11,7 @@
 /**
  * @brief Abstract camera class. 
  * @details The @p Camera class represents the camera interface for the CWIS experiment. 
- *          Its only purpose is to propose a simple way to extend the camera acquisition
+ *          Its only purpose is to provide a simple way to extend the camera acquisition
  *          software to different camera models. 
  */
 class Camera {
