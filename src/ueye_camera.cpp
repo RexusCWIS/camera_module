@@ -22,10 +22,9 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
 
     if(status != IS_SUCCESS) {
         
-        string msg = "Could not initialize camera ";
-        string_appendInt(msg, this->camID); 
+        string msg = "Could not initialize camera.";
 
-        throw UEye_Exception(status, msg); 
+        throw UEye_Exception(this->camID, status, msg); 
     }
 
     /* Access sensor informations */
@@ -35,7 +34,7 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
         
         string msg = "Could not retrieve sensor info.";
 
-        throw UEye_Exception(status, msg); 
+        throw UEye_Exception(this->camID, status, msg); 
     }
 
     this->maxWidth  = this->sensorInfo.nMaxWidth; 
@@ -44,6 +43,7 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
 
 void UEye_Camera::capture(Image *i) {
 
+    
 }
 
 void UEye_Camera::setFrameRate(double frameRate) {

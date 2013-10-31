@@ -17,8 +17,12 @@ using namespace std;
 class UEye_Exception: public exception {
     
     public: 
-        UEye_Exception(INT error = IS_NO_SUCCESS, string const& message = "") throw() : 
-            e_id(error), e_message(message) {}
+        UEye_Exception(HIDS camID, INT error = IS_NO_SUCCESS, string const& message = "") throw() : 
+            e_camID(camID), e_id(error), e_message(message) {}
+
+        HIDS camera() const throw() {
+            return e_camID; 
+        }
 
         INT id() const throw() {    
             return e_id; 
@@ -32,6 +36,7 @@ class UEye_Exception: public exception {
         }
 
     private: 
+        HIDS e_camID; 
         INT e_id;
         string e_message; 
 
