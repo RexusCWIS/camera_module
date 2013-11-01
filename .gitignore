@@ -16,4 +16,6 @@
 # Other
 *.swp
 *.png
+*.pgm
 *.ppm
+*.bmp
