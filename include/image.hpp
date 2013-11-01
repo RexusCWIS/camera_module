@@ -25,7 +25,8 @@ class Image {
         unsigned int getWidth(void) const; 
         unsigned int getHeight(void) const;
 
-        void writeToPNG(char *filename, char *title); 
+        void writeToPNG(char *filename, char *title);
+        void writeToPPM(char *filename); 
         ~Image(); 
 
     private:

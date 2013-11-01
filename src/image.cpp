@@ -98,6 +98,9 @@ void Image::writeToPNG(char *filename, char *title) {
     delete [] row; 
 }
 
+void Image::writeToPPM(char *filename) {
+
+}
 
 Image::~Image() {
 
