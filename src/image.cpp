@@ -109,7 +109,7 @@ size_t Image::writeToPGM(char *filename) {
     /* PGM file header.
      * The P5 indicator on the first line specifies the PGM format.
      */
-    bytes += fprintf(fp, "P5\n COMMENT\n%d %d\n%d\n", 
+    bytes += fprintf(fp, "P5\n# COMMENT\n%d %d\n%d\n", 
                      this->i_width, this->i_height, 0xFF); 
 
     /* Write the actual image data */
