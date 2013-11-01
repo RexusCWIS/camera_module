@@ -11,11 +11,14 @@
 #include <uEye.h>
 
 #include "types.hpp"
-#include "camera.hpp"
+#include "ueye_camera.hpp"
+#include "ueye_exception.hpp"
+#include "image.hpp"
 
 using namespace std; 
 
-static int listConnectedCameras(void); 
+static int listConnectedCameras(void);
+static void singleAcquisition(char *filename); 
 
 int main(int argc, char *argv[]) {
 
@@ -47,7 +50,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    /* Camera detection */
+    /* Acquisition */
+    singleAcquisition(outputFile); 
 
     exit(EXIT_SUCCESS); 
 }
@@ -95,5 +99,29 @@ static int listConnectedCameras(void) {
     }
     
     return EXIT_SUCCESS;  
+}
+
+static void singleAcquisition(char *filename) {
+
+    Image *i = new Image(800u, 600u);
+    UEye_Camera *c = new UEye_Camera(1);
+
+    c->setAreaOfInterest(0, 0, 800, 600);
+    try {
+        c->capture(i); 
+        i->writeToPNG(filename, NULL);
+    }
+
+    catch(UEye_Exception const &e) {
+        
+        cerr << "Camera " << e.camera() << ": " << e.what() <<
+                "\nException ID: " << e.id() << endl;
+    }
+
+
+    delete i; 
+    delete c; 
+
+    return; 
 }
 
