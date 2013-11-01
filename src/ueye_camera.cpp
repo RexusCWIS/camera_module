@@ -64,20 +64,36 @@ void UEye_Camera::capture(Image *i) {
         throw UEye_Exception(this->camID, status, msg); 
     }
 
-    /* Set the camera in RAM acquisition mode. The image will be directly transferred to RAM. */
-    status = is_SetDisplayMode(this->camID, IS_SET_DM_DIB); 
+   
+    status = is_SetDisplayMode(this->camID, IS_GET_DISPLAY_MODE); 
 
-    if(status != IS_SUCCESS) {
-        string msg = "Could not set the display mode.";
-        throw UEye_Exception(this->camID, status, msg); 
+    if(status != IS_SET_DM_DIB) {
+        cout << "Setting DIB mode." << endl;
+        /* Set the camera in RAM acquisition mode. The image will be directly transferred to RAM. */
+        status = is_SetDisplayMode(this->camID, IS_SET_DM_DIB); 
+        
+        if(status != IS_SUCCESS) {
+            string msg = "Could not set the display mode.";
+            throw UEye_Exception(this->camID, status, msg); 
+        }
     }
 
     /* Put the camera in software trigger mode. */
     status = is_SetExternalTrigger(this->camID, IS_SET_TRIGGER_SOFTWARE);
 
+    if(status != IS_SUCCESS) {
+        string msg = "Could not set trigger mode.";
+        throw UEye_Exception(this->camID, status, msg); 
+    }
+
     /* One-shot acquisition, we wait for the image to be stored in RAM */
     status = is_FreezeVideo(this->camID, IS_WAIT);
 
+    if(status != IS_SUCCESS) {
+        string msg = "Could not acquire the image.";
+        throw UEye_Exception(this->camID, status, msg); 
+    }
+    
     /* Free the image from the uEye SDK */
     status = is_FreeImageMem(this->camID, i->getImageBuffer(), memID);
 
