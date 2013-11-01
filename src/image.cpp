@@ -98,8 +98,26 @@ void Image::writeToPNG(char *filename, char *title) {
     delete [] row; 
 }
 
-void Image::writeToPPM(char *filename) {
+size_t Image::writeToPGM(char *filename) {
 
+    size_t bytes = 0; 
+    FILE *fp = fopen(filename, "wb"); 
+    if (fp == NULL) {
+        /** @todo Throw file exception */
+    }
+
+    /* PGM file header.
+     * The P5 indicator on the first line specifies the PGM format.
+     */
+    bytes += fprintf(fp, "P5\n COMMENT\n%d %d\n%d\n", 
+                     this->i_width, this->i_height, 0xFF); 
+
+    /* Write the actual image data */
+    bytes += fwrite(this->i_buffer, sizeof(pixel_t), this->i_width * this->i_height, fp); 
+
+    fclose(fp);
+
+    return bytes; 
 }
 
 Image::~Image() {

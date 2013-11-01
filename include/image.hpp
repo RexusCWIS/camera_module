@@ -6,6 +6,8 @@
 #ifndef DEF_IMAGE_HPP
 #define DEF_IMAGE_HPP
 
+#include <stdlib.h>
+
 /** @brief Modular type for the pixel size. */
 typedef char pixel_t; 
 
@@ -25,8 +27,8 @@ class Image {
         unsigned int getWidth(void) const; 
         unsigned int getHeight(void) const;
 
-        void writeToPNG(char *filename, char *title);
-        void writeToPPM(char *filename); 
+        void writeToPNG(char *filename, char *title = NULL);
+        size_t writeToPGM(char *filename); 
         ~Image(); 
 
     private:
