@@ -1,47 +1,37 @@
-/**
+/** 
  * @file camera.hpp
- * @brief uEye camera controller class definition. 
+ * @brief Camera abstract class. 
  */
 
 #ifndef DEF_CAMERA_HPP
 #define DEF_CAMERA_HPP
 
-#include "types.hpp"
-#include <uEye.h>
+#include "image.hpp"
 
-#define INIT_SUCCESS                (0)
-#define ERROR_CANT_RETRIEVE_INFO    (-1)
-#define ERROR_CANT_INIT_CAMERA      (-2)
-
+/**
+ * @brief Abstract camera class. 
+ * @details The @p Camera class represents the camera interface for the CWIS experiment. 
+ *          Its only purpose is to provide a simple way to extend the camera acquisition
+ *          software to different camera models. 
+ */
 class Camera {
-    
+
     public: 
-        Camera(); 
-        ~Camera();
- 
-        /**
-         * @brief Detects the number of uEye cameras connected to the system.
-         * @returns Number of connected cameras. Returns -1 if it was not possible to retrieve this information. 
-         */
-        static Int32_t getNumberOfCameras(void); 
+        virtual void acquire(void) = 0;
+        virtual void capture(Image *i) = 0; 
+        virtual void setFrameRate(double frameRate) = 0;
+        virtual void setAreaOfInterest(int width, int height, int x, int y) = 0; 
+        virtual ~Camera() {};
 
-        /**
-         * @brief Initializes the camera. 
-         * @details This function tries to initialize the camera. 
-         */
-        UInt32_t init(void);
-
-        /**
-         * @brief Starts image acquisition. 
-         */
-        void acquire(void); 
-
-    private: 
-        HIDS camID; 
-        UEYE_CAMERA_LIST *camInfo;
-        SENSORINFO sensorInfo; 
-
+    protected:
+        /** @brief Current camera framerate (in frames per second). */
+        double m_frameRate;
+        /** @brief Max image width, defined by the camera sensor. */
+        int maxWidth; 
+        /** @brief Max image height, defined by the camera sensor. */
+        int maxHeight; 
 };
+
 
 #endif  /* DEF_CAMERA_HPP */
 

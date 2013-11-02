@@ -9,13 +9,15 @@ INCDIR = $(TOPDIR)/include
 
 CXX = g++
 ARCH     = -m64 
-LIBS	 = -lueye_api 
-WARNINGS = -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
+LIBS	 = -lueye_api -lpng 
+WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 APP = cwis_camera.out
 
-SRC = $(SRCDIR)/main.cpp	\
-	  $(SRCDIR)/camera.cpp
+SRC = $(SRCDIR)/main.cpp			\
+	  $(SRCDIR)/ueye_camera.cpp 	\
+	  $(SRCDIR)/image.cpp			\
+	  $(SRCDIR)/utilities.cpp		
 OBJ = $(SRC:.cpp=.o)
 
 # Build rules

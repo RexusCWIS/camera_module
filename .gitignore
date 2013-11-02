@@ -12,3 +12,10 @@
 *.lai
 *.la
 *.a
+
+# Other
+*.swp
+*.png
+*.pgm
+*.ppm
+*.bmp
