@@ -11,33 +11,45 @@
 #include <uEye.h>
 
 #include "types.hpp"
+#include "utilities.hpp"
 #include "ueye_camera.hpp"
-#include "exceptions/ueye_exception.hpp"
 #include "image.hpp"
+#include "exceptions/ueye_exception.hpp"
 
 using namespace std; 
 
 static int listConnectedCameras(void);
-static void singleAcquisition(char *filename); 
+static void singleAcquisition(const char *filename); 
+
+static bool detectExtension = true, saveAsPNG = false, saveAsBMP = false, saveAsPGM = false;
+static std::string fileExtension = ""; 
 
 int main(int argc, char *argv[]) {
 
     int opt = 0;
-    char *outputFile = NULL;
+    std::string outputFile = "image.png";
 
     /* Command-line arguments parsing */
-    while( (opt = getopt(argc, argv, "lo:")) != -1) {
+    /** @todo Use getopt_long to enable double dash (--) options */
+    while( (opt = getopt(argc, argv, "f:lo:")) != -1) {
 
         switch (opt) {
+            /* Specify the output format */
+            /** @todo Add validity checks */
+            case 'f':
+                detectExtension = false;
+                fileExtension   = optarg;
+                break; 
+
             /* List all connected cameras and exit */
             case 'l':
                 exit(listConnectedCameras()); 
-
+                break;
             /* Output file specification */
             case 'o':
-                outputFile = optarg; 
+                outputFile = optarg;
                 break; 
-
+               
             /* Missing argument to an option */
             case ':':
                 cerr << "Invalid option." << endl; 
@@ -50,8 +62,34 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    if(detectExtension) {
+        fileExtension = getFileExtension(outputFile);
+    }
+
+    if(fileExtension.empty()) {
+        cerr << "No file extension, cannot specify the output format. Specify an extension or use specific command line options." << endl; 
+        exit(EXIT_FAILURE); 
+    }
+
+    if(fileExtension == "png") {
+        saveAsPNG = true; 
+    }
+
+    else if(fileExtension == "pgm") {
+        saveAsPGM = true; 
+    }
+
+    else if(fileExtension == "bmp") {
+        saveAsBMP = true; 
+    }
+
+    else {
+        cerr << "Invalid file extension: " << fileExtension << "\ncannot specify the output format. " << endl;
+        exit(EXIT_FAILURE); 
+    }
+
     /* Acquisition */
-    singleAcquisition(outputFile); 
+    singleAcquisition(outputFile.c_str()); 
 
     exit(EXIT_SUCCESS); 
 }
@@ -101,7 +139,7 @@ static int listConnectedCameras(void) {
     return EXIT_SUCCESS;  
 }
 
-static void singleAcquisition(char *filename) {
+static void singleAcquisition(const char *filename) {
 
     Image *i = new Image(800u, 600u);
     UEye_Camera *c = new UEye_Camera(1);
@@ -109,7 +147,6 @@ static void singleAcquisition(char *filename) {
     c->setAreaOfInterest(0, 0, 800, 600);
     try {
         c->capture(i); 
-        i->writeToPNG(filename, NULL);
     }
 
     catch(UEye_Exception const &e) {
@@ -118,6 +155,13 @@ static void singleAcquisition(char *filename) {
                 "\nException ID: " << e.id() << endl;
     }
 
+    if(saveAsPNG) { 
+        i->writeToPNG(filename);
+    }
+
+    if(saveAsPGM) {
+        i->writeToPGM(filename); 
+    }
 
     delete i; 
     delete c; 

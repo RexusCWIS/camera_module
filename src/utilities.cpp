@@ -16,3 +16,15 @@ void string_appendInt(std::string &str, int x) {
     return; 
 }
 
+std::string getFileExtension(std::string &filename) {
+    
+    size_t index = filename.rfind('.', filename.length()); 
+        
+    /* If rfind does not find the pattern, it returns npos */
+    if(index != std::string::npos) {
+        return (filename.substr(index + 1, filename.length() - index)); 
+    }
+
+    return ""; 
+}
+
