@@ -32,7 +32,7 @@ unsigned int Image::getHeight(void) const {
     return this->i_height; 
 }
 
-void Image::writeToPNG(char *filename, char *title) {
+void Image::writeToPNG(const char *filename, char *title) {
 
     FILE *fp; 
 
@@ -98,7 +98,7 @@ void Image::writeToPNG(char *filename, char *title) {
     delete [] row; 
 }
 
-size_t Image::writeToPGM(char *filename) {
+size_t Image::writeToPGM(const char *filename) {
 
     size_t bytes = 0; 
     FILE *fp = fopen(filename, "wb"); 
