@@ -26,7 +26,7 @@ static bool saveAsPNG = false, saveAsBMP = false, saveAsPGM = false;
 int main(int argc, char *argv[]) {
 
     int opt = 0;
-    std::string outputFile;
+    std::string outputFile = "image.png";
 
     /* Command-line arguments parsing */
     while( (opt = getopt(argc, argv, "lo:")) != -1) {
