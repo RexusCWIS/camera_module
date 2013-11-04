@@ -12,7 +12,7 @@
 
 #include "types.hpp"
 #include "ueye_camera.hpp"
-#include "ueye_exception.hpp"
+#include "exceptions/ueye_exception.hpp"
 #include "image.hpp"
 
 using namespace std; 

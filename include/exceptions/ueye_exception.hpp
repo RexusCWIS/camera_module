@@ -6,19 +6,18 @@
 #ifndef DEF_UEYE_EXCEPTION_HPP
 #define DEF_UEYE_EXCEPTION_HPP
 
-
+#include "exceptions/camera_exception.hpp"
 #include "types.hpp"
 #include <uEye.h>
 
-#include <string>
-#include <exception>
 using namespace std;
 
-class UEye_Exception: public exception {
+class UEye_Exception: public CameraException {
     
     public: 
-        UEye_Exception(HIDS camID, INT error = IS_NO_SUCCESS, string const& message = "") throw() : 
-            e_camID(camID), e_id(error), e_message(message) {}
+        UEye_Exception(HIDS camID, INT error = IS_NO_SUCCESS, string const& msg = "") throw() : 
+            CameraException(msg), e_camID(camID), e_id(error) {
+            }
 
         HIDS camera() const throw() {
             return e_camID; 
@@ -28,17 +27,12 @@ class UEye_Exception: public exception {
             return e_id; 
         }
 
-        virtual const char* what() const throw() {
-            return e_message.c_str(); 
-        }
-
         virtual ~UEye_Exception() throw() {
         }
 
-    private: 
+    protected: 
         HIDS e_camID; 
         INT e_id;
-        string e_message; 
 
 };
 

@@ -4,7 +4,7 @@
  */
 
 #include "ueye_camera.hpp"
-#include "ueye_exception.hpp"
+#include "exceptions/ueye_exception.hpp"
 
 #include "utilities.hpp"
 
