@@ -21,7 +21,8 @@ using namespace std;
 static int listConnectedCameras(void);
 static void singleAcquisition(const char *filename); 
 
-static bool saveAsPNG = false, saveAsBMP = false, saveAsPGM = false; 
+static bool detectExtension = true, saveAsPNG = false, saveAsBMP = false, saveAsPGM = false;
+static std::string fileExtension = ""; 
 
 int main(int argc, char *argv[]) {
 
@@ -29,13 +30,21 @@ int main(int argc, char *argv[]) {
     std::string outputFile = "image.png";
 
     /* Command-line arguments parsing */
-    while( (opt = getopt(argc, argv, "lo:")) != -1) {
+    /** @todo Use getopt_long to enable double dash (--) options */
+    while( (opt = getopt(argc, argv, "f:lo:")) != -1) {
 
         switch (opt) {
+            /* Specify the output format */
+            /** @todo Add validity checks */
+            case 'f':
+                detectExtension = false;
+                fileExtension   = optarg;
+                break; 
+
             /* List all connected cameras and exit */
             case 'l':
                 exit(listConnectedCameras()); 
-
+                break;
             /* Output file specification */
             case 'o':
                 outputFile = optarg;
@@ -53,26 +62,29 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    std::string ext = getFileExtension(outputFile);
-    if(ext.empty()) {
+    if(detectExtension) {
+        fileExtension = getFileExtension(outputFile);
+    }
+
+    if(fileExtension.empty()) {
         cerr << "No file extension, cannot specify the output format. Specify an extension or use specific command line options." << endl; 
         exit(EXIT_FAILURE); 
     }
 
-    if(ext == "png") {
+    if(fileExtension == "png") {
         saveAsPNG = true; 
     }
 
-    else if(ext == "pgm") {
+    else if(fileExtension == "pgm") {
         saveAsPGM = true; 
     }
 
-    else if(ext == "bmp") {
+    else if(fileExtension == "bmp") {
         saveAsBMP = true; 
     }
 
     else {
-        cerr << "Invalid file extension: " << ext << "\ncannot specify the output format. " << endl;
+        cerr << "Invalid file extension: " << fileExtension << "\ncannot specify the output format. " << endl;
         exit(EXIT_FAILURE); 
     }
 
