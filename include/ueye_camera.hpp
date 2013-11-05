@@ -28,7 +28,7 @@ class UEye_Camera: public Camera {
 
         virtual void capture(Image *i); 
 
-        virtual void setFrameRate(double frameRate);
+        virtual double setFramerate(double framerate);
 
         virtual void setAreaOfInterest(int x, int y, int width, int height); 
 

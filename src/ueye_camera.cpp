@@ -100,8 +100,15 @@ void UEye_Camera::capture(Image *i) {
     return; 
 }
 
-void UEye_Camera::setFrameRate(double frameRate) {
-
+double UEye_Camera::setFramerate(double framerate) {
+    
+    INT status = is_SetFrameRate(this->camID, framerate, &this->m_framerate);
+    
+    if(status != IS_SUCCESS) {
+        string msg = "Could not set the framerate."; 
+        throw UEye_Exception(this->camID, status, msg); 
+    }
+    return this->m_framerate; 
 }
 
 void UEye_Camera::setAreaOfInterest(int x, int y, int width, int height) {
