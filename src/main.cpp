@@ -21,9 +21,20 @@ using namespace std;
 
 static int listConnectedCameras(void);
 static void singleAcquisition(const char *filename); 
+static inline void setDefaults(void); 
 
-static bool detectExtension = true, saveAsPNG = false, saveAsBMP = false, saveAsPGM = false;
-static int nframes = 1; 
+typedef struct {
+    int nframes; 
+    std::string outputFile; 
+    std::string fileExtension; 
+    bool detectExtension; 
+    bool saveAsPNG;
+    bool saveAsBMP; 
+    bool saveAsPGM; 
+}ProgramOptions_s;
+
+static ProgramOptions_s programOpts; 
+
 static std::string fileExtension = ""; 
 
 
@@ -37,7 +48,8 @@ int main(int argc, char *argv[]) {
 
     int opt = 0;
     int longIndex = 0; 
-    std::string outputFile = "image.png";
+
+    setDefaults(); 
 
     /* Command-line arguments parsing */
     /** @todo Use getopt_long to enable double dash (--) options */
@@ -47,8 +59,8 @@ int main(int argc, char *argv[]) {
             /* Specify the output format */
             /** @todo Add validity checks */
             case 'f':
-                detectExtension = false;
-                fileExtension   = optarg;
+                programOpts.detectExtension = false;
+                programOpts.fileExtension   = optarg;
                 break; 
 
             /* List all connected cameras and exit */
@@ -57,7 +69,7 @@ int main(int argc, char *argv[]) {
                 break;
             /* Output file specification */
             case 'o':
-                outputFile = optarg;
+                programOpts.outputFile = optarg;
                 break; 
                
             /* Missing argument to an option */
@@ -73,14 +85,14 @@ int main(int argc, char *argv[]) {
             /* Long option with no short option counterpart */
             case 0:
                 if(strcmp( "nframes", longOpts[longIndex].name) == 0) {
-                    nframes = 10; 
+                    programOpts.nframes = 10; 
                 }
                 break; 
         }
     }
 
-    if(detectExtension) {
-        fileExtension = getFileExtension(outputFile);
+    if(programOpts.detectExtension) {
+        programOpts.fileExtension = getFileExtension(programOpts.outputFile);
     }
 
     if(fileExtension.empty()) {
@@ -89,24 +101,24 @@ int main(int argc, char *argv[]) {
     }
 
     if(fileExtension == "png") {
-        saveAsPNG = true; 
+        programOpts.saveAsPNG = true; 
     }
 
     else if(fileExtension == "pgm") {
-        saveAsPGM = true; 
+        programOpts.saveAsPGM = true; 
     }
 
     else if(fileExtension == "bmp") {
-        saveAsBMP = true; 
+        programOpts.saveAsBMP = true; 
     }
 
     else {
-        cerr << "Invalid file extension: " << fileExtension << "\ncannot specify the output format. " << endl;
+        cerr << "Invalid file extension: " << programOpts.fileExtension << "\ncannot specify the output format. " << endl;
         exit(EXIT_FAILURE); 
     }
 
     /* Acquisition */
-    singleAcquisition(outputFile.c_str()); 
+    singleAcquisition(programOpts.outputFile.c_str()); 
 
     exit(EXIT_SUCCESS); 
 }
@@ -158,7 +170,7 @@ static int listConnectedCameras(void) {
 
 static void singleAcquisition(const char *filename) {
 
-    cout << "Frames: " << nframes << endl; 
+    cout << "Frames: " << programOpts.nframes << endl; 
 
     Image *i = new Image(800u, 600u);
     UEye_Camera *c = new UEye_Camera(1);
@@ -174,11 +186,11 @@ static void singleAcquisition(const char *filename) {
                 "\nException ID: " << e.id() << endl;
     }
 
-    if(saveAsPNG) { 
+    if(programOpts.saveAsPNG) { 
         i->writeToPNG(filename);
     }
 
-    if(saveAsPGM) {
+    if(programOpts.saveAsPGM) {
         i->writeToPGM(filename); 
     }
 
@@ -186,5 +198,15 @@ static void singleAcquisition(const char *filename) {
     delete c; 
 
     return; 
+}
+
+static inline void setDefaults(void) {
+    programOpts.nframes = 1; 
+    programOpts.outputFile = "image.png"; 
+    programOpts.fileExtension = ""; 
+    programOpts.detectExtension = true; 
+    programOpts.saveAsPNG = false; 
+    programOpts.saveAsBMP = false; 
+    programOpts.saveAsPGM = false; 
 }
 
