@@ -5,8 +5,9 @@
  */
 
 #include <iostream>
+#include <string.h>
 #include <stdlib.h>
-#include "unistd.h"
+#include <getopt.h>
 
 #include <uEye.h>
 
@@ -22,16 +23,25 @@ static int listConnectedCameras(void);
 static void singleAcquisition(const char *filename); 
 
 static bool detectExtension = true, saveAsPNG = false, saveAsBMP = false, saveAsPGM = false;
+static int nframes = 1; 
 static std::string fileExtension = ""; 
+
+
+/* Long options definition */
+static const struct option longOpts[] = {
+    {"format", required_argument, NULL, 'f'},
+    {"nframes", required_argument, NULL, 0}
+}; 
 
 int main(int argc, char *argv[]) {
 
     int opt = 0;
+    int longIndex = 0; 
     std::string outputFile = "image.png";
 
     /* Command-line arguments parsing */
     /** @todo Use getopt_long to enable double dash (--) options */
-    while( (opt = getopt(argc, argv, "f:lo:")) != -1) {
+    while( (opt = getopt_long(argc, argv, "f:lo:", longOpts, &longIndex)) != -1) {
 
         switch (opt) {
             /* Specify the output format */
@@ -59,6 +69,13 @@ int main(int argc, char *argv[]) {
             /* Unknown argument, not specified in the optstring */
             case '?':
                 break;
+
+            /* Long option with no short option counterpart */
+            case 0:
+                if(strcmp( "nframes", longOpts[longIndex].name) == 0) {
+                    nframes = 10; 
+                }
+                break; 
         }
     }
 
@@ -140,6 +157,8 @@ static int listConnectedCameras(void) {
 }
 
 static void singleAcquisition(const char *filename) {
+
+    cout << "Frames: " << nframes << endl; 
 
     Image *i = new Image(800u, 600u);
     UEye_Camera *c = new UEye_Camera(1);
