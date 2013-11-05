@@ -2,13 +2,15 @@
 
 # Implicit ryles desactivation
 
-TOPDIR = ../..
+TOPDIR   = ../..
+GTESTDIR = gtest-svn
+LIBGTEST = $(GTESTDIR)/make/libgtest.a
 
 APP = unit.out
 
 CXX = g++
 INCFLAGS = -I$(TOPDIR)/include -Igtest-svn/include -I/opt/local/include
-LIBS = -lpng -lpthread gtest-svn/make/libgtest.a
+LIBS = -lpng -lpthread $(LIBGTEST)
 
 SRC = $(TOPDIR)/src/image.cpp
 TESTSRC = image_test.cpp
@@ -19,12 +21,22 @@ OBJ = $(SRC:.cpp=.o)    \
 all: $(APP)
 
 
-download: 
-	svn checkout http://googletest.googlecode.com/svn/trunk/ gtest-svn
+$(GTESTDIR):
+	svn checkout http://googletest.googlecode.com/svn/trunk/ $(GTESTDIR)
 
-$(APP): download $(OBJ)
+$(LIBGTEST): $(GTESTDIR)
+	cd $(GTESTDIR)/make; make
+	ar -rv $(LIBGTEST) $(GTESTDIR)/make/gtest-all.o
+
+$(APP): $(LIBGTEST) $(OBJ)
 	g++ -o $@ $(OBJ) $(LIBS)
 
 %.o: %.cpp
 	$(CXX) -c $(INCFLAGS) -o $@ $<
+
+clean:
+	rm -rf $(OBJ)
+
+distclean:
+	rm -rf $(APP) $(GTESTDIR)
 
