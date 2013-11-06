@@ -115,6 +115,19 @@ void UEye_Camera::setAreaOfInterest(int x, int y, int width, int height) {
     is_AOI(this->camID, IS_AOI_IMAGE_SET_AOI, (void*) &aoi, sizeof(aoi)); 
 }
 
+void UEye_Camera::displayInfo(void) {
+
+    unsigned int pixelClockRange[3];
+    this->getPixelClockRange(pixelClockRange); 
+
+    std::cout << "Pixel clock:\n============\n" <<
+                 "Current:\t"   << this->getPixelClock() << 
+                 "\nDefault:\t" << this->getDefaultPixelClock() << 
+                 "\nRange:\t"   << pixelClockRange[0] << "(min)\t" <<
+                                   pixelClockRange[1] << "(max)"   <<
+                 "\nStep size:\t" << pixelClockRange[2] << std::endl; 
+}
+
 Int32_t UEye_Camera::getNumberOfCameras(void) {
 
     INT nbOfCams = 0;

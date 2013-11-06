@@ -21,6 +21,7 @@ class Camera {
         virtual void capture(Image *i) = 0; 
         virtual void setFrameRate(double frameRate) = 0;
         virtual void setAreaOfInterest(int width, int height, int x, int y) = 0; 
+        virtual void displayInfo(void) = 0; 
         virtual ~Camera() {};
 
     protected:

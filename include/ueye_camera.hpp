@@ -32,6 +32,13 @@ class UEye_Camera: public Camera {
 
         virtual void setAreaOfInterest(int x, int y, int width, int height); 
 
+        /** 
+         * @brief Displays informations about the camera. 
+         * @details This function prints various informations about the camera on the 
+         *          standard output: default parameters, current configuration... 
+         */
+        virtual void displayInfo(void);
+
         /**
          * @brief Class destructor. 
          * @details Cleans dynamically allocated memory objects and puts the camera
