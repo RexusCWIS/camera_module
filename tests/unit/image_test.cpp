@@ -10,6 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define IMAGE_WIDTH     (800u)
+#define IMAGE_HEIGHT    (600u)
+
 bool isPNG(const char *pngFile); 
 
 class ImageTest : public testing::Test {
@@ -17,14 +20,14 @@ class ImageTest : public testing::Test {
     protected:  
         virtual void SetUp() {
             
-            i_ = new Image(800, 600);
+            i_ = new Image(IMAGE_WIDTH, IMAGE_HEIGHT);
             char *buffer = i_->getImageBuffer();
             
-            for (unsigned int r = 0; r < 600; r++) {
+            for (unsigned int r = 0; r < IMAGE_HEIGHT; r++) {
                 
-                for (unsigned c = 0; c < 800; c++) {
+                for (unsigned c = 0; c < IMAGE_WIDTH; c++) {
                     
-                    buffer[(r* 800) + c] = (char) (rand() & 0xFF);
+                    buffer[(r * IMAGE_WIDTH) + c] = (char) (rand() & 0xFF);
                 }
             }
         }
@@ -37,11 +40,10 @@ class ImageTest : public testing::Test {
         
 };
 
-TEST(Image, Constructors) {
+TEST_F(ImageTest, Constructors) {
 
-    Image *i = new Image(800u, 600u); 
-    EXPECT_EQ(i->getWidth(), 800u); 
-    EXPECT_EQ(i->getHeight(), 600u);  
+    EXPECT_EQ(i_->getWidth(), IMAGE_WIDTH); 
+    EXPECT_EQ(i_->getHeight(), IMAGE_HEIGHT);  
 }
 
 TEST_F(ImageTest, SaveAsPNG) {
