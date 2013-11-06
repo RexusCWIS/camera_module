@@ -165,6 +165,30 @@ void UEye_Camera::getPixelClockRange(unsigned int range[]) {
     (void) status;
 }
 
+unsigned int UEye_Camera::getMinimumPixelClock(void) {
+    
+    unsigned int range[3]; 
+    this->getPixelClockRange(range);
+
+    return range[0]; 
+}
+
+unsigned int UEye_Camera::getMaximumPixelClock(void) {
+    
+    unsigned int range[3]; 
+    this->getPixelClockRange(range);
+
+    return range[1]; 
+}
+
+unsigned int UEye_Camera::getPixelClockStep(void) {
+    
+    unsigned int range[3]; 
+    this->getPixelClockRange(range);
+
+    return range[2]; 
+}
+
 unsigned int UEye_Camera::getDefaultPixelClock(void) {
     
     unsigned int defaultPixelClock; 

@@ -70,8 +70,31 @@ class UEye_Camera: public Camera {
          *          maximum pixel clock and the third index holds the pixel
          *          clock step increment.
          * @param[out]  range   Pointer to the range array. 
+         * @see getMinimumPixelClock(), getMaximumPixelClock(), getPixelClockStep()
          */
-        void getPixelClockRange(unsigned int range[]); 
+        void getPixelClockRange(unsigned int range[]);
+
+        /** 
+         * @brief Returns the minimum authorized pixel clock value.
+         * @see getMaximumPixelClock(), getPixelClockStep(), getPixelClockRange()
+         */
+        unsigned int getMinimumPixelClock(void); 
+
+        /**
+         * @brief Returns the maximum authorized pixel clock value. 
+         * @see getMinimumPixelClock(), getPixelClockStep(), getPixelClockRange()
+         */
+        unsigned int getMaximumPixelClock(void); 
+
+        /**
+         * @brief Returns the discrete step for pixel clock values. 
+         * @details The step represents the minimum difference between 
+         *          two admissible values. Smaller steps must be rounded
+         *          up to the value returned by this function. 
+         * @see getMinimumPixelClock(), getMaximumPixelClock(), getPixelClockRange()
+         */
+        unsigned int getPixelClockStep(void); 
+
 
         unsigned int getDefaultPixelClock(void); 
 
