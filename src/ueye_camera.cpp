@@ -152,6 +152,18 @@ void UEye_Camera::getPixelClockRange(unsigned int range[]) {
     (void) status;
 }
 
+unsigned int UEye_Camera::getDefaultPixelClock(void) {
+    
+    unsigned int defaultPixelClock; 
+
+    INT status = is_PixelClock(this->camID, IS_PIXELCLOCK_CMD_GET_DEFAULT, 
+                               (void *) &defaultPixelClock, sizeof(defaultPixelClock));
+
+    (void) status;
+
+    return defaultPixelClock; 
+}
+
 void UEye_Camera::acquire(void) {
 
 }

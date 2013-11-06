@@ -66,6 +66,8 @@ class UEye_Camera: public Camera {
          */
         void getPixelClockRange(unsigned int range[]); 
 
+        unsigned int getDefaultPixelClock(void); 
+
         /**
          * @brief Starts image acquisition. 
          */
