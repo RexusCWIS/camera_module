@@ -46,6 +46,9 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
         string msg = "Could not set the color mode.";
         throw UEye_Exception(this->camID, status, msg); 
     }
+
+    /* Set the minimum pixel clock */
+    this->setPixelClock(this->getMinimumPixelClock());
 }
 
 void UEye_Camera::capture(Image *i) {
