@@ -18,6 +18,7 @@
 
 using namespace std; 
 
+static int displayCameraInformations(void); 
 static int listConnectedCameras(void);
 static void singleAcquisition(const char *filename); 
 
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]) {
 
     /* Command-line arguments parsing */
     /** @todo Use getopt_long to enable double dash (--) options */
-    while( (opt = getopt(argc, argv, "f:lo:")) != -1) {
+    while( (opt = getopt(argc, argv, "f:lo:i")) != -1) {
 
         switch (opt) {
             /* Specify the output format */
@@ -45,6 +46,13 @@ int main(int argc, char *argv[]) {
             case 'l':
                 exit(listConnectedCameras()); 
                 break;
+           
+            /* Displays informations about the cameras */
+            /** @todo Fix this and mix it with the -l option */
+            case 'i':
+                exit(displayCameraInformations()); 
+                break;
+
             /* Output file specification */
             case 'o':
                 outputFile = optarg;
@@ -94,7 +102,13 @@ int main(int argc, char *argv[]) {
     exit(EXIT_SUCCESS); 
 }
 
+static int displayCameraInformations(void) {
 
+    UEye_Camera *c = new UEye_Camera(1); 
+    c->displayInfo(); 
+    delete c; 
+    return EXIT_SUCCESS; 
+}
 
 static int listConnectedCameras(void) {
 

@@ -26,7 +26,6 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
 
         throw UEye_Exception(this->camID, status, msg); 
     }
-
     /* Access sensor informations */
     status = is_GetSensorInfo(this->camID, &(this->sensorInfo));
 
@@ -47,6 +46,9 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
         string msg = "Could not set the color mode.";
         throw UEye_Exception(this->camID, status, msg); 
     }
+
+    /* Set the minimum pixel clock */
+    this->setPixelClock(this->getMinimumPixelClock());
 }
 
 void UEye_Camera::capture(Image *i) {
@@ -116,6 +118,19 @@ void UEye_Camera::setAreaOfInterest(int x, int y, int width, int height) {
     is_AOI(this->camID, IS_AOI_IMAGE_SET_AOI, (void*) &aoi, sizeof(aoi)); 
 }
 
+void UEye_Camera::displayInfo(void) {
+
+    unsigned int pixelClockRange[3];
+    this->getPixelClockRange(pixelClockRange); 
+
+    std::cout << "Pixel clock:\n============\n" <<
+                 "Current:\t"   << this->getPixelClock() << 
+                 "\nDefault:\t" << this->getDefaultPixelClock() << 
+                 "\nRange:\t"   << pixelClockRange[0] << "(min)\t" <<
+                                   pixelClockRange[1] << "(max)"   <<
+                 "\nStep size:\t" << pixelClockRange[2] << std::endl; 
+}
+
 Int32_t UEye_Camera::getNumberOfCameras(void) {
 
     INT nbOfCams = 0;
@@ -126,6 +141,67 @@ Int32_t UEye_Camera::getNumberOfCameras(void) {
     }
 
     return (Int32_t) nbOfCams; 
+}
+
+unsigned int UEye_Camera::getPixelClock(void) {
+
+    UINT pixelClock = 0; 
+    INT status = is_PixelClock(this->camID, IS_PIXELCLOCK_CMD_GET, 
+                               (void *) &pixelClock, sizeof(pixelClock)); 
+    (void) status;
+
+    return (unsigned int) pixelClock;
+}
+
+void UEye_Camera::setPixelClock(unsigned int pixelClock) {
+    
+    INT status = is_PixelClock(this->camID, IS_PIXELCLOCK_CMD_SET, 
+                               (void *) &pixelClock, sizeof(pixelClock));
+    (void) status; 
+}
+
+void UEye_Camera::getPixelClockRange(unsigned int range[]) {
+    
+    INT status = is_PixelClock(this->camID, IS_PIXELCLOCK_CMD_GET_RANGE, 
+                               (void *) range, 3 * sizeof(unsigned int));
+
+    (void) status;
+}
+
+unsigned int UEye_Camera::getMinimumPixelClock(void) {
+    
+    unsigned int range[3]; 
+    this->getPixelClockRange(range);
+
+    return range[0]; 
+}
+
+unsigned int UEye_Camera::getMaximumPixelClock(void) {
+    
+    unsigned int range[3]; 
+    this->getPixelClockRange(range);
+
+    return range[1]; 
+}
+
+unsigned int UEye_Camera::getPixelClockStep(void) {
+    
+    unsigned int range[3]; 
+    this->getPixelClockRange(range);
+
+    return range[2]; 
+}
+
+unsigned int UEye_Camera::getDefaultPixelClock(void) {
+    
+    unsigned int defaultPixelClock; 
+
+    INT status = is_PixelClock(this->camID, IS_PIXELCLOCK_CMD_GET_DEFAULT, 
+                               (void *) &defaultPixelClock, sizeof(defaultPixelClock));
+
+    (void) status;
+
+    return defaultPixelClock; 
 }
 
 void UEye_Camera::acquire(void) {

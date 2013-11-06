@@ -32,6 +32,13 @@ class UEye_Camera: public Camera {
 
         virtual void setAreaOfInterest(int x, int y, int width, int height); 
 
+        /** 
+         * @brief Displays informations about the camera. 
+         * @details This function prints various informations about the camera on the 
+         *          standard output: default parameters, current configuration... 
+         */
+        virtual void displayInfo(void);
+
         /**
          * @brief Class destructor. 
          * @details Cleans dynamically allocated memory objects and puts the camera
@@ -44,6 +51,52 @@ class UEye_Camera: public Camera {
          * @returns Number of connected cameras. Returns -1 if it was not possible to retrieve this information. 
          */
         static Int32_t getNumberOfCameras(void); 
+
+        /**
+         * @brief Returns the current pixel clock of the camera. 
+         */
+        unsigned int getPixelClock(void); 
+
+        /** 
+         * @brief Sets the pixel clock of the camera. 
+         */
+        void setPixelClock(unsigned int pixelClock);
+
+        /**
+         * @brief Returns the pixel clock range of the camera.
+         * @details This function modifies the @p range array parameter. 
+         *          Once the function has ended, the first index of the array
+         *          holds the minimum pixel clock, the second index holds the 
+         *          maximum pixel clock and the third index holds the pixel
+         *          clock step increment.
+         * @param[out]  range   Pointer to the range array. 
+         * @see getMinimumPixelClock(), getMaximumPixelClock(), getPixelClockStep()
+         */
+        void getPixelClockRange(unsigned int range[]);
+
+        /** 
+         * @brief Returns the minimum authorized pixel clock value.
+         * @see getMaximumPixelClock(), getPixelClockStep(), getPixelClockRange()
+         */
+        unsigned int getMinimumPixelClock(void); 
+
+        /**
+         * @brief Returns the maximum authorized pixel clock value. 
+         * @see getMinimumPixelClock(), getPixelClockStep(), getPixelClockRange()
+         */
+        unsigned int getMaximumPixelClock(void); 
+
+        /**
+         * @brief Returns the discrete step for pixel clock values. 
+         * @details The step represents the minimum difference between 
+         *          two admissible values. Smaller steps must be rounded
+         *          up to the value returned by this function. 
+         * @see getMinimumPixelClock(), getMaximumPixelClock(), getPixelClockRange()
+         */
+        unsigned int getPixelClockStep(void); 
+
+
+        unsigned int getDefaultPixelClock(void); 
 
         /**
          * @brief Starts image acquisition. 
