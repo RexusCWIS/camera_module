@@ -135,7 +135,7 @@ Int32_t UEye_Camera::getNumberOfCameras(void) {
     return (Int32_t) nbOfCams; 
 }
 
-void UEye_Camera::acquire(Image ringBuffer[], unsigned int bufferSize) {
+void UEye_Camera::acquire(Image* ringBuffer[], unsigned int bufferSize) {
 
     INT status  = IS_SUCCESS;
     int *memIDs = new int[bufferSize];  

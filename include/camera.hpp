@@ -17,7 +17,7 @@
 class Camera {
 
     public: 
-        virtual void acquire(void) = 0;
+        virtual void acquire(Image* ringBuffer[], unsigned int bufferSize) = 0;
         virtual void capture(Image *i) = 0; 
         virtual double setFramerate(double frameRate) = 0;
         double getFramerate(void) {
