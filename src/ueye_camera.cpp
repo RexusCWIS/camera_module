@@ -26,7 +26,6 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
 
         throw UEye_Exception(this->camID, status, msg); 
     }
-
     /* Access sensor informations */
     status = is_GetSensorInfo(this->camID, &(this->sensorInfo));
 
@@ -126,6 +125,31 @@ Int32_t UEye_Camera::getNumberOfCameras(void) {
     }
 
     return (Int32_t) nbOfCams; 
+}
+
+unsigned int UEye_Camera::getPixelClock(void) {
+
+    UINT pixelClock = 0; 
+    INT status = is_PixelClock(this->camID, IS_PIXELCLOCK_CMD_GET, 
+                               (void *) &pixelClock, sizeof(pixelClock)); 
+    (void) status;
+
+    return (unsigned int) pixelClock;
+}
+
+void UEye_Camera::setPixelClock(unsigned int pixelClock) {
+    
+    INT status = is_PixelClock(this->camID, IS_PIXELCLOCK_CMD_SET, 
+                               (void *) &pixelClock, sizeof(pixelClock));
+    (void) status; 
+}
+
+void UEye_Camera::getPixelClockRange(unsigned int range[]) {
+    
+    INT status = is_PixelClock(this->camID, IS_PIXELCLOCK_CMD_GET_RANGE, 
+                               (void *) range, 3 * sizeof(unsigned int));
+
+    (void) status;
 }
 
 void UEye_Camera::acquire(void) {

@@ -46,6 +46,27 @@ class UEye_Camera: public Camera {
         static Int32_t getNumberOfCameras(void); 
 
         /**
+         * @brief Returns the current pixel clock of the camera. 
+         */
+        unsigned int getPixelClock(void); 
+
+        /** 
+         * @brief Sets the pixel clock of the camera. 
+         */
+        void setPixelClock(unsigned int pixelClock);
+
+        /**
+         * @brief Returns the pixel clock range of the camera.
+         * @details This function modifies the @p range array parameter. 
+         *          Once the function has ended, the first index of the array
+         *          holds the minimum pixel clock, the second index holds the 
+         *          maximum pixel clock and the third index holds the pixel
+         *          clock step increment.
+         * @param[out]  range   Pointer to the range array. 
+         */
+        void getPixelClockRange(unsigned int range[]); 
+
+        /**
          * @brief Starts image acquisition. 
          */
         virtual void acquire(void); 
