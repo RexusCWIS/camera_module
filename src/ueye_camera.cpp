@@ -135,8 +135,27 @@ Int32_t UEye_Camera::getNumberOfCameras(void) {
     return (Int32_t) nbOfCams; 
 }
 
-void UEye_Camera::acquire(void) {
+void UEye_Camera::acquire(Image ringBuffer[], unsigned int bufferSize) {
 
+    INT status  = IS_SUCCESS;
+    int *memIDs = new int[bufferSize];  
+
+    for(unsigned int incr = 0; incr < bufferSize; incr++) {
+        status = is_SetAllocatedImageMem(this->camID, ringBuffer[incr]->getWidth(), ringBuffer[incr]->getHeight(), 8,
+                                            (char *)ringBuffer[incr]->getImageBuffer(), &memIDs[incr]);
+        
+        if(status == IS_SUCCESS) {
+            
+            status = is_AddToSequence(this->camID, (char *)ringBuffer[incr]->getImageBuffer(), memIDs[incr]);  
+        }
+
+        if(status != IS_SUCCESS) {
+            string msg = "Could not set up the buffer for stream acquisition.";
+            throw UEye_Exception(this->camID, status, msg); 
+        }
+    }
+
+    delete [] memIDs; 
 }
 
 UEye_Camera::~UEye_Camera() {
