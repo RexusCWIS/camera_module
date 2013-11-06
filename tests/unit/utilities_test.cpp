@@ -25,3 +25,9 @@ TEST(UtilitiesTest, MultipleDots) {
     ASSERT_EQ(strcmp(getFileExtension(file).c_str(), "cpp"), 0); 
 }
 
+TEST(UtilitiesTest, NonAsciiCharacters) {
+
+    std::string file = "évaluation~numérique.pdf"; 
+    EXPECT_EQ(strcmp(getFileExtension(file).c_str(), "pdf"), 0); 
+}
+
