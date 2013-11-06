@@ -13,21 +13,21 @@ TEST(UtilitiesTest, Simple) {
     std::string pngFile = "png_image.png";
     std::string pgmFile = "pgm_image.pgm";
 
-    ASSERT_EQ(strcmp(getFileExtension(bmpFile).c_str(), "bmp"), 0); 
-    ASSERT_EQ(strcmp(getFileExtension(pngFile).c_str(), "png"), 0); 
-    ASSERT_EQ(strcmp(getFileExtension(pgmFile).c_str(), "pgm"), 0); 
+    ASSERT_STREQ(getFileExtension(bmpFile).c_str(), "bmp"); 
+    ASSERT_STREQ(getFileExtension(pngFile).c_str(), "png"); 
+    ASSERT_STREQ(getFileExtension(pgmFile).c_str(), "pgm"); 
 }
 
 TEST(UtilitiesTest, MultipleDots) {
 
     std::string file = "i.screw.with.dots.cpp"; 
 
-    ASSERT_EQ(strcmp(getFileExtension(file).c_str(), "cpp"), 0); 
+    ASSERT_STREQ(getFileExtension(file).c_str(), "cpp"); 
 }
 
 TEST(UtilitiesTest, NonAsciiCharacters) {
 
     std::string file = "évaluation~numérique.pdf"; 
-    EXPECT_EQ(strcmp(getFileExtension(file).c_str(), "pdf"), 0); 
+    EXPECT_STREQ(getFileExtension(file).c_str(), "pdf"); 
 }
 
