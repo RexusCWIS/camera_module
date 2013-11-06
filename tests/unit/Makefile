@@ -12,8 +12,10 @@ CXX = g++
 INCFLAGS = -I$(TOPDIR)/include -Igtest-svn/include -I/opt/local/include
 LIBS = -lpng -lpthread $(LIBGTEST)
 
-SRC = $(TOPDIR)/src/image.cpp
-TESTSRC = image_test.cpp
+SRC = $(TOPDIR)/src/image.cpp		\
+	  $(TOPDIR)/src/utilities.cpp
+TESTSRC = image_test.cpp			\
+		  utilities_test.cpp
 
 OBJ = $(SRC:.cpp=.o)    \
       $(TESTSRC:.cpp=.o)
