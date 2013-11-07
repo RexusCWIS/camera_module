@@ -31,10 +31,10 @@ $(LIBGTEST): $(GTESTDIR)
 	ar -rv $(LIBGTEST) $(GTESTDIR)/make/gtest-all.o
 
 $(APP): $(LIBGTEST) $(OBJ)
-	g++ -o $@ $(OBJ) $(LIBS)
+	g++ -g -o $@ $(OBJ) $(LIBS)
 
 %.o: %.cpp
-	$(CXX) -c $(INCFLAGS) -o $@ $<
+	$(CXX) -c -g $(INCFLAGS) -o $@ $<
 
 clean:
 	rm -rf $(OBJ)
