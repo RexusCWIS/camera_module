@@ -6,6 +6,7 @@
 TOPDIR = $(shell pwd)
 SRCDIR = $(TOPDIR)/src
 INCDIR = $(TOPDIR)/include
+DOCDIR = $(TOPDIR)/documentation
 
 CXX = g++
 ARCH     = -m64 
@@ -22,6 +23,11 @@ OBJ = $(SRC:.cpp=.o)
 
 # Build rules
 all: $(APP)
+
+doc: $(DOCDIR)
+
+$(DOCDIR):
+	doxygen Doxyfile
 
 $(APP): $(OBJ)
 	g++ $(ARCH) -o $@ $(OBJ) $(LIBS)
