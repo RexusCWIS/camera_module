@@ -94,7 +94,7 @@ void Image::writeToPNG(const char *filename, char *title) {
 
     fclose(fp);
     png_free_data(png_ptr, info_ptr, PNG_FREE_ALL, -1); 
-    png_destroy_write_struct(&png_ptr, (png_infopp)NULL); 
+    png_destroy_write_struct(&png_ptr, (png_infopp) NULL); 
     delete [] row; 
 }
 
