@@ -1,0 +1,10 @@
+/**
+ * @defgroup unit_tests Unit Tests
+ * @brief Unit tests for the CWIS camera acquisition software.
+ * @details Each class method and function used in the camera acquisition
+ *          software is unit tested. Unit testing consists in testing each
+ *          component one by one to ensure that it provides the required 
+ *          features and handles errors according to the specification. 
+ *
+ *          The unit tests are built upon the Google C++ Unit Test Framework (gtest). 
+ */
