@@ -1,6 +1,8 @@
 /**
  * @file image_test.cpp
- * @brief Image class unit tests. 
+ * @brief Image class unit tests.
+ * @addtogroup unit_tests
+ * @{
  */
 
 #include "gtest/gtest.h"
@@ -147,5 +149,5 @@ bool isPNG(const char *pngFile) {
 }
 
 
-
+/** @} */
 

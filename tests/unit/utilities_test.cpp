@@ -1,6 +1,8 @@
 /**
  * @file utilities_test.cpp
- * @brief Utilities unit tests. 
+ * @brief Utilities unit tests.
+ * @addtogroup unit_tests
+ * @{
  */
 
 #include "utilities.hpp"
@@ -30,4 +32,6 @@ TEST(FileExtensionTest, NonAsciiCharacters) {
     std::string file = "évaluation~numérique.pdf"; 
     EXPECT_STREQ(getFileExtension(file).c_str(), "pdf"); 
 }
+
+/** @} */
 
