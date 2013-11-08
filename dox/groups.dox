@@ -1,5 +1,5 @@
 /**
- * @degroup exceptions Exceptions
+ * @defgroup exceptions Exceptions
  * @brief Exceptions thrown by the camera acquisition code.
  * @details During camera acquisition, the code may throw various exceptions 
  *          depending on the error encountered. These exceptions may be caught
