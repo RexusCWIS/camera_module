@@ -8,14 +8,15 @@
 #ifndef DEF_UEYE_CAMERA_HPP
 #define DEF_UEYE_CAMERA_HPP
 
-#include "types.hpp"
 #include "camera.hpp"
 #include <uEye.h>
 
-#define INIT_SUCCESS                (0)
-#define ERROR_CANT_RETRIEVE_INFO    (-1)
-#define ERROR_CANT_INIT_CAMERA      (-2)
-
+/**
+ * @brief uEye camera class. 
+ * @details This class interacts with the IDS uEye camera SDK to provide
+ *          an abstraction of the camera model. It provides functions to set parameters
+ *          and acquire single or multiple images. 
+ */
 class UEye_Camera: public Camera {
     
     public:
@@ -65,7 +66,7 @@ class UEye_Camera: public Camera {
          * @brief Detects the number of uEye cameras connected to the system.
          * @returns Number of connected cameras. Returns -1 if it was not possible to retrieve this information. 
          */
-        static Int32_t getNumberOfCameras(void); 
+        static int getNumberOfCameras(void); 
 
         /**
          * @brief Returns the current pixel clock of the camera. 

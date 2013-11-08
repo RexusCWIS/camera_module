@@ -1,5 +1,5 @@
 /**
- * @file main.c
+ * @file main.cpp
  * @author Olivier Desenfans
  * @brief CWIS camera acquisition software. 
  */
@@ -10,7 +10,6 @@
 
 #include <uEye.h>
 
-#include "types.hpp"
 #include "utilities.hpp"
 #include "ueye_camera.hpp"
 #include "image.hpp"
@@ -127,7 +126,7 @@ static int listConnectedCameras(void) {
     else {
 
         /* Camera list allocation */
-        camList = (UEYE_CAMERA_LIST *) new UInt8_t[sizeof(ULONG) + 
+        camList = (UEYE_CAMERA_LIST *) new unsigned char[sizeof(ULONG) + 
                                                    numCams * sizeof(UEYE_CAMERA_INFO)];
 
         

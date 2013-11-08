@@ -22,6 +22,8 @@ OBJ = $(SRC:.cpp=.o)    \
 
 all: $(APP)
 
+run: all
+	./$(APP)
 
 $(GTESTDIR):
 	svn checkout http://googletest.googlecode.com/svn/trunk/ $(GTESTDIR)

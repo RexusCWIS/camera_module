@@ -3,10 +3,11 @@
 # Implicit rules desactivation
 .SUFFIXES: 
 
-TOPDIR = $(shell pwd)
-SRCDIR = $(TOPDIR)/src
-INCDIR = $(TOPDIR)/include
-DOCDIR = $(TOPDIR)/documentation
+TOPDIR  = $(shell pwd)
+SRCDIR  = $(TOPDIR)/src
+INCDIR  = $(TOPDIR)/include
+DOCDIR  = $(TOPDIR)/documentation
+TESTDIR = $(TOPDIR)/tests/unit
 
 CXX = g++
 ARCH     = -m64 
@@ -23,6 +24,9 @@ OBJ = $(SRC:.cpp=.o)
 
 # Build rules
 all: $(APP)
+
+test: 
+	cd $(TESTDIR); make run
 
 doc: 
 	doxygen Doxyfile

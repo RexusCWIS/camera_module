@@ -9,7 +9,6 @@
 #define DEF_UEYE_EXCEPTION_HPP
 
 #include "exceptions/camera_exception.hpp"
-#include "types.hpp"
 #include <uEye.h>
 
 using namespace std;

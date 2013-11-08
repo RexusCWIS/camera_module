@@ -17,8 +17,6 @@
 /** @brief Height of the test image. */
 #define IMAGE_HEIGHT    (600u)
 
-bool isPNG(const char *pngFile);
-
 /**
  * @brief Fixture class for the Image class tests. 
  */
@@ -149,21 +147,6 @@ int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS(); 
 }
-
-bool isPNG(const char *pngFile) {
-
-    unsigned char pngHeader[8]; 
-    FILE *fp = fopen(pngFile, "rb"); 
-    if(fp == NULL) {
-        return false; 
-    }
-
-    fread(pngHeader, 1, 8, fp); 
-    fclose(fp);
-    
-    return(!png_sig_cmp(pngHeader, 0, 8)); 
-}
-
 
 /** @} */
 
