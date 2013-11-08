@@ -24,10 +24,9 @@ OBJ = $(SRC:.cpp=.o)
 # Build rules
 all: $(APP)
 
-doc: $(DOCDIR)
-
-$(DOCDIR):
+doc: 
 	doxygen Doxyfile
+
 
 $(APP): $(OBJ)
 	g++ $(ARCH) -o $@ $(OBJ) $(LIBS)
