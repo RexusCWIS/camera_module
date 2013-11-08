@@ -11,10 +11,6 @@
 #include "camera.hpp"
 #include <uEye.h>
 
-#define INIT_SUCCESS                (0)
-#define ERROR_CANT_RETRIEVE_INFO    (-1)
-#define ERROR_CANT_INIT_CAMERA      (-2)
-
 class UEye_Camera: public Camera {
     
     public:
