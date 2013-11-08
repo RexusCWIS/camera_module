@@ -51,7 +51,8 @@ class Image {
 
         /**
          * @brief Writes the image to a PNG file. 
-         * @param[in]   filename    Name of the PNG file.   
+         * @param[in]   filename    Name of the PNG file.  
+         * @param[in]   title       Title of the PNG file. 
          * @see writeToPGM()
          */
         void writeToPNG(const char *filename, char *title = NULL);
