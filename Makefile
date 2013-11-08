@@ -38,6 +38,9 @@ $(APP): $(OBJ)
 clean: 
 	rm -rf $(OBJ)
 
+docclean: 
+	rm -rf $(DOCDIR)
+
 distclean: clean
-	rm -rf $(APP)
+	rm -rf $(APP) $(DOCDIR)
 
