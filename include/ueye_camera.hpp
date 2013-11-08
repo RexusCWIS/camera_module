@@ -28,10 +28,23 @@ class UEye_Camera: public Camera {
          */
         UEye_Camera(HIDS cameraID);
 
+        /**
+         * @brief Acquires a single image on the camera. 
+         * @param[out]  i   Image item storing the captured image. 
+         * @note The image must be of the same size that the area of interest (AOI) of the camera. 
+         *       Use the @ref setAreaOfInterest() method to set the AOI properly. 
+         * @see setAreaOfInterest()
+         */
         virtual void capture(Image *i); 
 
         virtual void setFrameRate(double frameRate);
 
+        /**
+         * @brief Sets the area of interest of the camera.
+         * @details The area of interest (AOI) of the camera is a portion of the field of view
+         *          selected for acquisition. The rest of the field of view is ignored. 
+         *          This feature is used to reach higher framerates. 
+         */
         virtual void setAreaOfInterest(int x, int y, int width, int height); 
 
         /** 
@@ -61,6 +74,8 @@ class UEye_Camera: public Camera {
 
         /** 
          * @brief Sets the pixel clock of the camera. 
+         * @see getMinimumPixelClock(), getMaximumPixelClock(), getPixelClockStep(),
+         *      getPixelClockRange(), getDefaultPixelClock()
          */
         void setPixelClock(unsigned int pixelClock);
 
@@ -72,19 +87,22 @@ class UEye_Camera: public Camera {
          *          maximum pixel clock and the third index holds the pixel
          *          clock step increment.
          * @param[out]  range   Pointer to the range array. 
-         * @see getMinimumPixelClock(), getMaximumPixelClock(), getPixelClockStep()
+         * @see setPixelClock(), getMinimumPixelClock(), getMaximumPixelClock(), 
+         *      getPixelClockStep(), getDefaultPixelClock()
          */
         void getPixelClockRange(unsigned int range[]);
 
         /** 
          * @brief Returns the minimum authorized pixel clock value.
-         * @see getMaximumPixelClock(), getPixelClockStep(), getPixelClockRange()
+         * @see setPixelClock(), getMaximumPixelClock(), getPixelClockStep(), 
+         *      getPixelClockRange(), getDefaultPixelClock()
          */
         unsigned int getMinimumPixelClock(void); 
 
         /**
          * @brief Returns the maximum authorized pixel clock value. 
-         * @see getMinimumPixelClock(), getPixelClockStep(), getPixelClockRange()
+         * @see setPixelClock(), getMinimumPixelClock(), getPixelClockStep(), 
+         *      getPixelClockRange(), getDefaultPixelClock()
          */
         unsigned int getMaximumPixelClock(void); 
 
@@ -93,11 +111,16 @@ class UEye_Camera: public Camera {
          * @details The step represents the minimum difference between 
          *          two admissible values. Smaller steps must be rounded
          *          up to the value returned by this function. 
-         * @see getMinimumPixelClock(), getMaximumPixelClock(), getPixelClockRange()
+         * @see getMinimumPixelClock(), getMaximumPixelClock(), 
+         *      getPixelClockRange(), getDefaultPixelClock()
          */
         unsigned int getPixelClockStep(void); 
 
-
+        /**
+         * @brief Returns the default  pixel clock value.
+         * @see setPixelClock, getMinimumPixelClock(), getMaximumPixelClock(), 
+         *      getPixelClockRange(), getPixelClockStep()
+         */
         unsigned int getDefaultPixelClock(void); 
 
         /**
