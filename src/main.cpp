@@ -1,5 +1,5 @@
 /**
- * @file main.c
+ * @file main.cpp
  * @author Olivier Desenfans
  * @brief CWIS camera acquisition software. 
  */

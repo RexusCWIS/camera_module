@@ -11,6 +11,12 @@
 #include "camera.hpp"
 #include <uEye.h>
 
+/**
+ * @brief uEye camera class. 
+ * @details This class interacts with the IDS uEye camera SDK to provide
+ *          an abstraction of the camera model. It provides functions to set parameters
+ *          and acquire single or multiple images. 
+ */
 class UEye_Camera: public Camera {
     
     public:
