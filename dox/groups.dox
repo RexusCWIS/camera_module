@@ -8,6 +8,14 @@
  */
 
 /**
+ * @defgroup cameras Cameras
+ * @brief Camera handler classes. 
+ * @details The camera classes are all based on the abstract @ref Camera class. 
+ *          Those classes abstract the SDK of their respective manufacturer to
+ *          provide a uniform camera interface.
+ */
+
+/**
  * @defgroup unit_tests Unit Tests
  * @brief Unit tests for the CWIS camera acquisition software.
  * @details Each class method and function used in the camera acquisition
