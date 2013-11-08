@@ -18,12 +18,35 @@
  */
 class Camera {
 
-    public: 
+    public:
+        /**
+         * @brief Starts image acquisition.
+         */
         virtual void acquire(void) = 0;
+        
+        /**
+         * @brief Acquires a single image. 
+         */ 
         virtual void capture(Image *i) = 0; 
+
+        /**
+         * @brief Sets the framerate of the camera.  
+         */
         virtual void setFrameRate(double frameRate) = 0;
+
+        /**
+         * @brief Sets the area of interest of the camera. 
+         */
         virtual void setAreaOfInterest(int width, int height, int x, int y) = 0; 
+
+        /**
+         * @brief Displays manufacturing and runtime informations about the camera. 
+         */
         virtual void displayInfo(void) = 0; 
+
+        /**
+         * @brief Puts the camera in a safe, low power state. 
+         */
         virtual ~Camera() {};
 
     protected:
