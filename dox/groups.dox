@@ -1,4 +1,13 @@
 /**
+ * @degroup exceptions Exceptions
+ * @brief Exceptions thrown by the camera acquisition code.
+ * @details During camera acquisition, the code may throw various exceptions 
+ *          depending on the error encountered. These exceptions may be caught
+ *          by the calling code to avoid a system failure by fixing the problem
+ *          that led to the exception being thrown in the first place. 
+ */
+
+/**
  * @defgroup unit_tests Unit Tests
  * @brief Unit tests for the CWIS camera acquisition software.
  * @details Each class method and function used in the camera acquisition
@@ -8,3 +17,4 @@
  *
  *          The unit tests are built upon the Google C++ Unit Test Framework (gtest). 
  */
+
