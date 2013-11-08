@@ -1,6 +1,8 @@
 /**
  * @file ueye_camera.hpp
  * @brief uEye camera controller class definition. 
+ * @addtogroup cameras
+ * @{
  */
 
 #ifndef DEF_UEYE_CAMERA_HPP
@@ -110,4 +112,6 @@ class UEye_Camera: public Camera {
 };
 
 #endif  /* DEF_UEYE_CAMERA_HPP */
+
+/** @} */
 

@@ -1,6 +1,8 @@
 /** 
  * @file camera.hpp
- * @brief Camera abstract class. 
+ * @brief Camera abstract class.
+ * @addtogroup cameras
+ * @{
  */
 
 #ifndef DEF_CAMERA_HPP
@@ -35,4 +37,6 @@ class Camera {
 
 
 #endif  /* DEF_CAMERA_HPP */
+
+/** @} */
 
