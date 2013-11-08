@@ -12,14 +12,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/** @brief Width of the test image. */
 #define IMAGE_WIDTH     (800u)
+/** @brief Height of the test image. */
 #define IMAGE_HEIGHT    (600u)
 
 bool isPNG(const char *pngFile);
 
+/**
+ * @brief Fixture class for the Image class tests. 
+ */
 class ImageTest : public testing::Test {
     
     protected:  
+        /**
+         * @brief Sets up the fixture class. 
+         */
         virtual void SetUp() {
             
             i_ = new Image(IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -34,10 +42,14 @@ class ImageTest : public testing::Test {
             }
         }
 
+        /**
+         * @brief Tears down the fixture class. 
+         */
         virtual void TearDown() {
             delete i_; 
         }
 
+    /** @brief Test image object. */
     Image *i_; 
         
 };
@@ -128,6 +140,10 @@ TEST_F(ImageTest, SaveAsPNG) {
     png_destroy_read_struct(&png_ptr, (png_infopp) NULL, (png_infopp) NULL); 
 }
 
+/**
+ * @brief Main unit tests control function. 
+ * @details Launches the unit tests and controls the output formats. 
+ */
 int main(int argc, char **argv) {
 
     ::testing::InitGoogleTest(&argc, argv);
