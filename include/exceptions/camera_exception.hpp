@@ -1,6 +1,8 @@
 /**
  * @file camera_exception.hpp
- * @brief Generic camera exception interface. 
+ * @brief Generic camera exception interface.
+ * @addtogroup exceptions
+ * @{
  */
 
 #ifndef DEF_CAMERA_EXCEPTION_HPP
@@ -42,4 +44,6 @@ class CameraException: public exception {
 };
 
 #endif  /* DEF_CAMERA_EXCEPTION_HPP */
+
+/** @} */
 

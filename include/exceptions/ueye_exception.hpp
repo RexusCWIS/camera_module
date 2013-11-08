@@ -1,6 +1,8 @@
 /**
  * @file ueye_exception.hpp
  * @brief Exceptions thrown by the uEye camera class.
+ * @addtogroup exceptions 
+ * @{
  */
 
 #ifndef DEF_UEYE_EXCEPTION_HPP
@@ -57,4 +59,6 @@ class UEye_Exception: public CameraException {
 };
 
 #endif  /* DEF_UEYE_EXCEPTION_HPP */
+
+/** @} */
 
