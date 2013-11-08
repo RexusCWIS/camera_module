@@ -8,7 +8,6 @@
 #ifndef DEF_UEYE_CAMERA_HPP
 #define DEF_UEYE_CAMERA_HPP
 
-#include "types.hpp"
 #include "camera.hpp"
 #include <uEye.h>
 
@@ -65,7 +64,7 @@ class UEye_Camera: public Camera {
          * @brief Detects the number of uEye cameras connected to the system.
          * @returns Number of connected cameras. Returns -1 if it was not possible to retrieve this information. 
          */
-        static Int32_t getNumberOfCameras(void); 
+        static int getNumberOfCameras(void); 
 
         /**
          * @brief Returns the current pixel clock of the camera. 

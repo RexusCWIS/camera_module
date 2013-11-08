@@ -131,7 +131,7 @@ void UEye_Camera::displayInfo(void) {
                  "\nStep size:\t" << pixelClockRange[2] << std::endl; 
 }
 
-Int32_t UEye_Camera::getNumberOfCameras(void) {
+int UEye_Camera::getNumberOfCameras(void) {
 
     INT nbOfCams = 0;
     INT status = is_GetNumberOfCameras(&nbOfCams);
@@ -140,7 +140,7 @@ Int32_t UEye_Camera::getNumberOfCameras(void) {
         nbOfCams = -1; 
     }
 
-    return (Int32_t) nbOfCams; 
+    return (int) nbOfCams; 
 }
 
 unsigned int UEye_Camera::getPixelClock(void) {
