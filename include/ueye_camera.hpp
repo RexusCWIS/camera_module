@@ -127,7 +127,12 @@ class UEye_Camera: public Camera {
         /**
          * @brief Starts image acquisition. 
          */
-        virtual void acquire(Image* ringBuffer[], unsigned int bufferSize); 
+        virtual void start(Image* ringBuffer[], unsigned int bufferSize); 
+
+        /**
+         * @brief Stops the image acquisition. 
+         */
+        virtual void stop(void); 
 
     private: 
         HIDS camID; 

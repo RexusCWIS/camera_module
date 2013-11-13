@@ -211,7 +211,7 @@ unsigned int UEye_Camera::getDefaultPixelClock(void) {
     return defaultPixelClock; 
 }
 
-void UEye_Camera::acquire(Image* ringBuffer[], unsigned int bufferSize) {
+void UEye_Camera::start(Image* ringBuffer[], unsigned int bufferSize) {
 
     INT status  = IS_SUCCESS;
     int *memIDs = new int[bufferSize];  
@@ -232,6 +232,10 @@ void UEye_Camera::acquire(Image* ringBuffer[], unsigned int bufferSize) {
     }
 
     delete [] memIDs; 
+}
+
+void UEye_Camera::stop(void) {
+
 }
 
 UEye_Camera::~UEye_Camera() {

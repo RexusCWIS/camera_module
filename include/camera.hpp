@@ -20,10 +20,12 @@ class Camera {
 
     public: 
         /**
-         * @brief Starts image acquisition.
+         * @brief Starts continuous image acquisition.
          */
-        virtual void acquire(Image* ringBuffer[], unsigned int bufferSize) = 0;
-        
+        virtual void start(Image* ringBuffer[], unsigned int bufferSize) = 0;
+
+        virtual void stop(void) = 0; 
+
         /**
          * @brief Acquires a single image. 
          */ 
@@ -59,7 +61,9 @@ class Camera {
         /** @brief Max image width, defined by the camera sensor. */
         int maxWidth; 
         /** @brief Max image height, defined by the camera sensor. */
-        int maxHeight; 
+        int maxHeight;
+        /** @brief Indicates if the camera is already running. */
+        bool m_running; 
 };
 
 
