@@ -238,6 +238,11 @@ void UEye_Camera::stop(void) {
 
 }
 
+void * UEye_Camera::uEyeEventListener(void *arg) {
+
+
+}
+
 UEye_Camera::~UEye_Camera() {
 
     INT status = is_ExitCamera(this->camID);

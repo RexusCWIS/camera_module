@@ -137,7 +137,11 @@ class UEye_Camera: public Camera {
     private: 
         HIDS camID; 
         SENSORINFO sensorInfo; 
-
+        
+        /**
+         * @brief Acquisition event listener thread. 
+         */ 
+        static void * uEyeEventListener(void *arg); 
 };
 
 #endif  /* DEF_UEYE_CAMERA_HPP */
