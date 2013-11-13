@@ -35,9 +35,6 @@ typedef struct {
 
 static ProgramOptions_s programOpts; 
 
-static std::string fileExtension = ""; 
-
-
 /* Long options definition */
 static const struct option longOpts[] = {
     {"format", required_argument, NULL, 'f'},
@@ -50,6 +47,8 @@ int main(int argc, char *argv[]) {
     int longIndex = 0; 
 
     setDefaults(); 
+
+    cout << "Output file: " << programOpts.outputFile << endl; 
 
     /* Command-line arguments parsing */
     /** @todo Use getopt_long to enable double dash (--) options */
@@ -102,20 +101,20 @@ int main(int argc, char *argv[]) {
         programOpts.fileExtension = getFileExtension(programOpts.outputFile);
     }
 
-    if(fileExtension.empty()) {
+    if(programOpts.fileExtension.empty()) {
         cerr << "No file extension, cannot specify the output format. Specify an extension or use specific command line options." << endl; 
         exit(EXIT_FAILURE); 
     }
 
-    if(fileExtension == "png") {
+    if(programOpts.fileExtension == "png") {
         programOpts.saveAsPNG = true; 
     }
 
-    else if(fileExtension == "pgm") {
+    else if(programOpts.fileExtension == "pgm") {
         programOpts.saveAsPGM = true; 
     }
 
-    else if(fileExtension == "bmp") {
+    else if(programOpts.fileExtension == "bmp") {
         programOpts.saveAsBMP = true; 
     }
 
