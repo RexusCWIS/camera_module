@@ -21,14 +21,52 @@ typedef char pixel_t;
  */ 
 class Image {
 
-    public: 
+    public:
+        /** 
+         * @brief Creates an image of given @p width and @p height.
+         * @details Allocates memory for the image and locks it in RAM to prevent 
+         *          the allocated memory to be swapped back to the hard drive. 
+         */
         Image(unsigned int width, unsigned int height);
+
+        /**
+         * @brief Returns the image buffer. 
+         * @details The image buffer is the memory array allocated by the constructor. 
+         *          This function provides a direct R/W access to this array for efficient
+         *          image acquisition by a camera. 
+         */
         pixel_t *getImageBuffer(void) const;
+
+        /** 
+         * @brief Returns the image width. 
+         * @see getHeight()
+         */
         unsigned int getWidth(void) const; 
+
+        /**
+         * @brief Returns the image height.
+         * @see getWidth()
+         */
         unsigned int getHeight(void) const;
 
+        /**
+         * @brief Writes the image to a PNG file. 
+         * @param[in]   filename    Name of the PNG file.  
+         * @param[in]   title       Title of the PNG file. 
+         * @see writeToPGM()
+         */
         void writeToPNG(const char *filename, char *title = NULL);
-        size_t writeToPGM(const char *filename); 
+
+        /**
+         * @brief Writes the image to a PGM file. 
+         * @param[in]   filename    Name of the PGM file.   
+         * @see writeToPNG()
+         */ 
+        size_t writeToPGM(const char *filename);
+
+        /**
+         * @brief Frees the image memory and unlocks it from RAM. 
+         */
         ~Image(); 
 
     private:

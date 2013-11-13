@@ -13,6 +13,9 @@
 *.la
 *.a
 
+# Documentation directory
+documentation
+
 # Other
 *.swp
 *.png

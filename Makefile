@@ -3,9 +3,11 @@
 # Implicit rules desactivation
 .SUFFIXES: 
 
-TOPDIR = $(shell pwd)
-SRCDIR = $(TOPDIR)/src
-INCDIR = $(TOPDIR)/include
+TOPDIR  = $(shell pwd)
+SRCDIR  = $(TOPDIR)/src
+INCDIR  = $(TOPDIR)/include
+DOCDIR  = $(TOPDIR)/documentation
+TESTDIR = $(TOPDIR)/tests/unit
 
 CXX = g++
 ARCH     = -m64 
@@ -25,6 +27,13 @@ OBJ = $(SRC:.cpp=.o)
 # Build rules
 all: $(APP)
 
+test: 
+	cd $(TESTDIR); make run
+
+doc: 
+	doxygen Doxyfile
+
+
 $(APP): $(OBJ)
 	g++ $(ARCH) -o $@ $(OBJ) $(LIBS)
 
@@ -34,6 +43,9 @@ $(APP): $(OBJ)
 clean: 
 	rm -rf $(OBJ)
 
+docclean: 
+	rm -rf $(DOCDIR)
+
 distclean: clean
-	rm -rf $(APP)
+	rm -rf $(APP) $(DOCDIR)
 

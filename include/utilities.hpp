@@ -14,7 +14,8 @@
 void string_appendInt(std::string &str, int x);
 
 /**
- * @brief Returns the extension of the given @p file. 
+ * @brief Returns the extension of the given @p file.
+ * @param[in]   filename    Name of the file whose extension must be extracted. 
  * @returns The file extension of the given @p file. If the file does not have an extension, 
  *          the function returns an empty string. 
  */

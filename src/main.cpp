@@ -1,5 +1,5 @@
 /**
- * @file main.c
+ * @file main.cpp
  * @author Olivier Desenfans
  * @brief CWIS camera acquisition software. 
  */
@@ -11,7 +11,6 @@
 
 #include <uEye.h>
 
-#include "types.hpp"
 #include "utilities.hpp"
 #include "ueye_camera.hpp"
 #include "image.hpp"
@@ -19,6 +18,7 @@
 
 using namespace std; 
 
+static int displayCameraInformations(void); 
 static int listConnectedCameras(void);
 static void singleAcquisition(const char *filename); 
 static inline void setDefaults(void); 
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 
     /* Command-line arguments parsing */
     /** @todo Use getopt_long to enable double dash (--) options */
-    while( (opt = getopt_long(argc, argv, "f:lo:", longOpts, &longIndex)) != -1) {
+    while( (opt = getopt_long(argc, argv, "f:lo:i", longOpts, &longIndex)) != -1) {
 
         switch (opt) {
             /* Specify the output format */
@@ -67,6 +67,13 @@ int main(int argc, char *argv[]) {
             case 'l':
                 exit(listConnectedCameras()); 
                 break;
+           
+            /* Displays informations about the cameras */
+            /** @todo Fix this and mix it with the -l option */
+            case 'i':
+                exit(displayCameraInformations()); 
+                break;
+
             /* Output file specification */
             case 'o':
                 programOpts.outputFile = optarg;
@@ -123,7 +130,13 @@ int main(int argc, char *argv[]) {
     exit(EXIT_SUCCESS); 
 }
 
+static int displayCameraInformations(void) {
 
+    UEye_Camera *c = new UEye_Camera(1); 
+    c->displayInfo(); 
+    delete c; 
+    return EXIT_SUCCESS; 
+}
 
 static int listConnectedCameras(void) {
 
@@ -142,7 +155,7 @@ static int listConnectedCameras(void) {
     else {
 
         /* Camera list allocation */
-        camList = (UEYE_CAMERA_LIST *) new UInt8_t[sizeof(ULONG) + 
+        camList = (UEYE_CAMERA_LIST *) new unsigned char[sizeof(ULONG) + 
                                                    numCams * sizeof(UEYE_CAMERA_INFO)];
 
         
