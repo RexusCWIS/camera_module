@@ -11,6 +11,8 @@
 #include "camera.hpp"
 #include <uEye.h>
 
+#include <pthread.h>
+
 /**
  * @brief uEye camera class. 
  * @details This class interacts with the IDS uEye camera SDK to provide
@@ -137,11 +139,13 @@ class UEye_Camera: public Camera {
     private: 
         HIDS camID; 
         SENSORINFO sensorInfo; 
-        
+        pthread_t m_eventThread;            /**< @brief Event Listener thread. */ 
+
         /**
          * @brief Acquisition event listener thread. 
          */ 
-        static void * uEyeEventListener(void *arg); 
+        static void * uEyeEventListener(void *arg);
+        void waitForEventThreadEnd(void); 
 };
 
 #endif  /* DEF_UEYE_CAMERA_HPP */

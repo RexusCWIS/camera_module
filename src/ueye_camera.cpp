@@ -9,6 +9,7 @@
 #include "utilities.hpp"
 
 #include <uEye.h>
+#include <pthread.h>
 #include <string>
 #include <iostream>
 #include <stdio.h>
@@ -241,6 +242,11 @@ void UEye_Camera::stop(void) {
 void * UEye_Camera::uEyeEventListener(void *arg) {
 
 
+}
+
+void UEye_Camera::waitForEventThreadEnd(void) {
+
+    pthread_join(m_eventThread, NULL); 
 }
 
 UEye_Camera::~UEye_Camera() {
