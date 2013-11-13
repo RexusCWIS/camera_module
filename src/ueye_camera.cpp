@@ -14,7 +14,7 @@
 #include <iostream>
 #include <stdio.h>
 
-UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
+UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID), m_stop(false) {
 
     INT status = 0;
 
@@ -213,6 +213,13 @@ unsigned int UEye_Camera::getDefaultPixelClock(void) {
 }
 
 void UEye_Camera::start(Image* ringBuffer[], unsigned int bufferSize) {
+ 
+    /* If the camera was already running, stop it */
+    if(this->m_running) {
+        this->stop(); 
+    }
+
+    m_stop = false; 
 
     INT status  = IS_SUCCESS;
     int *memIDs = new int[bufferSize];  
@@ -237,11 +244,22 @@ void UEye_Camera::start(Image* ringBuffer[], unsigned int bufferSize) {
 
 void UEye_Camera::stop(void) {
 
+    this->m_stop = true; 
+    /* Wait for the event thread to exit */
+    this->waitForEventThreadEnd(); 
 }
 
 void * UEye_Camera::uEyeEventListener(void *arg) {
 
+    UEye_Camera * camera = reinterpret_cast<UEye_Camera *>(arg); 
 
+    /* This thread listens to camera events until the order to stop is given */
+    while(!camera->m_stop) {
+
+    }
+    
+    camera->m_running = false;
+    return NULL; 
 }
 
 void UEye_Camera::waitForEventThreadEnd(void) {

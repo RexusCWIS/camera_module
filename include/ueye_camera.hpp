@@ -139,7 +139,8 @@ class UEye_Camera: public Camera {
     private: 
         HIDS camID; 
         SENSORINFO sensorInfo; 
-        pthread_t m_eventThread;            /**< @brief Event Listener thread. */ 
+        pthread_t m_eventThread;            /**< @brief Event Listener thread. */
+        bool m_stop;                        /**< @brief Specifies that the acquisition should stop. */
 
         /**
          * @brief Acquisition event listener thread. 
