@@ -10,7 +10,7 @@ APP = unit.out
 
 CXX = g++
 INCFLAGS = -I$(TOPDIR)/include -Igtest-svn/include -I/opt/local/include
-LIBS = -lpng -lpthread $(LIBGTEST)
+LIBS = -lpng $(LIBGTEST) -lpthread 
 
 SRC = $(TOPDIR)/src/image.cpp		\
 	  $(TOPDIR)/src/utilities.cpp
