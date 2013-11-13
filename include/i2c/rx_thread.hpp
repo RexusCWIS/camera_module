@@ -13,7 +13,8 @@ class RXThread {
         RXThread(I2CBus bus); 
         ~RXThread();
 
-    private I2CBus m_bus; 
+    private: 
+        I2CBus m_bus; 
 };
 
 #endif  /* DEF_RX_THREAD_HPP */
