@@ -292,3 +292,8 @@ UEye_Camera::~UEye_Camera() {
     (void) status;
 }
 
+HIDS UEye_Camera::getCameraID(void) const {
+
+    return this->camID; 
+}
+

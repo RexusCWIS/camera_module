@@ -135,7 +135,9 @@ class UEye_Camera: public Camera {
         /**
          * @brief Stops the image acquisition. 
          */
-        virtual void stop(void); 
+        virtual void stop(void);
+
+        HIDS getCameraID(void) const; 
 
     private: 
         HIDS camID; 
