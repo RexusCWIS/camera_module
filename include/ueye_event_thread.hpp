@@ -14,7 +14,9 @@ class UEye_EventThread {
     public: 
         UEye_EventThread(HIDS camID, int event, void (*callback)(void)); 
         ~UEye_EventThread(); 
-        
+ 
+        bool isRunning(void) const; 
+
         void start(void); 
         void stop(void);
 

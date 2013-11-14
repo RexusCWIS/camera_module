@@ -5,6 +5,8 @@
 
 #include "ueye_event_thread.hpp"
 
+#define EVENT_TIMEOUT 1
+
 UEye_EventThread::UEye_EventThread(HIDS camID, int event, void (*callback)(void)) :
 	m_camID(camID), m_event(event), m_eventCallback(callback) {
 
@@ -20,12 +22,21 @@ UEye_EventThread::~UEye_EventThread() {
     }
 }
 
+bool UEye_EventThread::isRunning(void) const {
+    
+    return this->m_running; 
+}
+
 void UEye_EventThread::start(void) {
 
     if(!this->m_running) {
         
-        this->m_stop = false;
-        pthread_create(&m_eventThread, NULL, handler, this); 
+        int status = is_EnableEvent(this->m_camID, this->m_event);
+        
+        if(status == IS_SUCCESS) {
+            this->m_stop = false;
+            pthread_create(&m_eventThread, NULL, handler, this); 
+        }
     }
 }
 
@@ -33,6 +44,7 @@ void UEye_EventThread::stop(void) {
 
     this->m_stop = true;
     this->waitForThreadEnd();
+    is_DisableEvent(this->m_camID, this->m_event); 
 
 }
 
@@ -47,6 +59,9 @@ void * UEye_EventThread::handler(void * arg) {
 
     while(!thread->m_stop) {
         
+        if(is_WaitEvent(thread->m_camID, thread->m_event, EVENT_TIMEOUT) == IS_SUCCESS) {
+            thread->m_eventCallback();  
+        }
     }
 
     thread->m_running = false;
