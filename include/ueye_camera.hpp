@@ -9,6 +9,7 @@
 #define DEF_UEYE_CAMERA_HPP
 
 #include "camera.hpp"
+#include "ueye_event_thread.hpp"
 #include <uEye.h>
 
 #include <pthread.h>
@@ -139,14 +140,8 @@ class UEye_Camera: public Camera {
     private: 
         HIDS camID; 
         SENSORINFO sensorInfo; 
-        pthread_t m_eventThread;            /**< @brief Event Listener thread. */
         bool m_stop;                        /**< @brief Specifies that the acquisition should stop. */
-
-        /**
-         * @brief Acquisition event listener thread. 
-         */ 
-        static void * uEyeEventListener(void *arg);
-        void waitForEventThreadEnd(void); 
+        UEye_EventThread *acquisitionEventThread; 
 };
 
 #endif  /* DEF_UEYE_CAMERA_HPP */

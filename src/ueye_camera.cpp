@@ -245,31 +245,6 @@ void UEye_Camera::start(Image* ringBuffer[], unsigned int bufferSize) {
 void UEye_Camera::stop(void) {
 
     this->m_stop = true; 
-    /* Wait for the event thread to exit */
-    this->waitForEventThreadEnd(); 
-}
-
-void * UEye_Camera::uEyeEventListener(void *arg) {
-
-    UEye_Camera * camera = reinterpret_cast<UEye_Camera *>(arg); 
-
-    /* Image acquisition event */
-    is_EnableEvent(camera->camID, IS_SET_EVENT_FRAME); 
-
-    /* This thread listens to camera events until the order to stop is given */
-    while(!camera->m_stop) {
-
-    }
-    
-    is_DisableEvent(camera->camID, IS_SET_EVENT_FRAME);
-
-    camera->m_running = false;
-    return NULL; 
-}
-
-void UEye_Camera::waitForEventThreadEnd(void) {
-
-    pthread_join(m_eventThread, NULL); 
 }
 
 UEye_Camera::~UEye_Camera() {
