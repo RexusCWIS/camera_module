@@ -253,11 +253,16 @@ void * UEye_Camera::uEyeEventListener(void *arg) {
 
     UEye_Camera * camera = reinterpret_cast<UEye_Camera *>(arg); 
 
+    /* Image acquisition event */
+    is_EnableEvent(camera->camID, IS_SET_EVENT_FRAME); 
+
     /* This thread listens to camera events until the order to stop is given */
     while(!camera->m_stop) {
 
     }
     
+    is_DisableEvent(camera->camID, IS_SET_EVENT_FRAME);
+
     camera->m_running = false;
     return NULL; 
 }
