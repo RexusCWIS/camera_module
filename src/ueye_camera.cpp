@@ -212,16 +212,18 @@ unsigned int UEye_Camera::getDefaultPixelClock(void) {
     return defaultPixelClock; 
 }
 
-void UEye_Camera::start(Image* ringBuffer[], unsigned int bufferSize) {
+void UEye_Camera::start(Image* ringBuffer[], size_t bufferSize) {
  
     /* If the camera was already running, stop it */
     if(this->m_running) {
         this->stop(); 
     }
 
-    m_stop = false; 
+    this->m_ringBufferSize = bufferSize; 
 
     INT status  = IS_SUCCESS;
+
+    /* Set camera memory buffers */
     this->m_memID = new int[bufferSize];  
 
     for(unsigned int incr = 0; incr < bufferSize; incr++) {
@@ -257,9 +259,23 @@ void UEye_Camera::start(Image* ringBuffer[], unsigned int bufferSize) {
 
 void UEye_Camera::stop(void) {
 
-    this->m_stop = true;
-
+    /* Stop live acquisition */
+    INT status = IS_NO_SUCCESS;
+    while(status != IS_SUCCESS) {
+        status = is_StopLiveVideo(this->camID, IS_WAIT); 
+    }
+   
+    /* Stop the event handler threads */
     acquisitionEventThread->stop(); 
+    
+    /* Clear image sequence from the camera memory */
+    is_ClearSequence(this->camID); 
+
+    for(unsigned int incr; incr < this->m_ringBufferSize; incr++) {
+
+         
+    }
+
     delete acquisitionEventThread; 
     delete [] this->m_memID; 
 }
