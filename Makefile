@@ -10,7 +10,6 @@ DOCDIR  = $(TOPDIR)/documentation
 TESTDIR = $(TOPDIR)/tests/unit
 
 CXX = g++
-ARCH     = -m64 
 LIBS	 = -lueye_api -lpng -lpthread 
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
@@ -18,6 +17,7 @@ APP = cwis_camera.out
 
 SRC = $(SRCDIR)/main.cpp			\
 	  $(SRCDIR)/ueye_camera.cpp 	\
+	  $(SRCDIR)/ueye_event_thread.cpp 	\
 	  $(SRCDIR)/image.cpp			\
 	  $(SRCDIR)/utilities.cpp		\
 	  $(SRCDIR)/i2c/i2c_bus.cpp		\
@@ -35,7 +35,7 @@ doc:
 
 
 $(APP): $(OBJ)
-	g++ $(ARCH) -o $@ $(OBJ) $(LIBS)
+	g++ -o $@ $(OBJ) $(LIBS)
 
 %.o: %.cpp
 	@$(CXX) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -o $@ $<
