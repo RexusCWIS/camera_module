@@ -62,6 +62,8 @@ class Camera {
         int maxWidth; 
         /** @brief Max image height, defined by the camera sensor. */
         int maxHeight;
+        /** @brief Pointer to an array of Image objects for ring buffering. */
+        Image *m_ringBuffer; 
         /** @brief Size of the ring buffer. */
         size_t m_ringBufferSize;
         /** @brief Indicates if the camera is already running. */

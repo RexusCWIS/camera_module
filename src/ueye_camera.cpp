@@ -219,6 +219,7 @@ void UEye_Camera::start(Image* ringBuffer[], size_t bufferSize) {
         this->stop(); 
     }
 
+    this->m_ringBuffer = ringBuffer; 
     this->m_ringBufferSize = bufferSize; 
 
     INT status  = IS_SUCCESS;
@@ -265,17 +266,18 @@ void UEye_Camera::stop(void) {
         status = is_StopLiveVideo(this->camID, IS_WAIT); 
     }
    
-    /* Stop the event handler threads */
-    acquisitionEventThread->stop(); 
-    
     /* Clear image sequence from the camera memory */
     is_ClearSequence(this->camID); 
 
     for(unsigned int incr; incr < this->m_ringBufferSize; incr++) {
 
-         
+        is_FreeImageMem(this->camID, this->m_ringBuffer[incr], this->m_memID[incr]); 
     }
-
+    
+    /* Stop the event handler threads */
+    acquisitionEventThread->stop(); 
+   
+    /* Free allocated memory */
     delete acquisitionEventThread; 
     delete [] this->m_memID; 
 }
