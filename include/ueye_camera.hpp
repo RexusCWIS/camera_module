@@ -139,7 +139,8 @@ class UEye_Camera: public Camera {
 
     private: 
         HIDS camID; 
-        SENSORINFO sensorInfo; 
+        SENSORINFO sensorInfo;
+        int *m_memID;                       /**< @brief Pointer to an array of memory ID tags for acquisition. */
         bool m_stop;                        /**< @brief Specifies that the acquisition should stop. */
         UEye_EventThread *acquisitionEventThread; 
 };

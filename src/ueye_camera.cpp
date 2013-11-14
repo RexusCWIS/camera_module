@@ -222,15 +222,15 @@ void UEye_Camera::start(Image* ringBuffer[], unsigned int bufferSize) {
     m_stop = false; 
 
     INT status  = IS_SUCCESS;
-    int *memIDs = new int[bufferSize];  
+    this->m_memID = new int[bufferSize];  
 
     for(unsigned int incr = 0; incr < bufferSize; incr++) {
         status = is_SetAllocatedImageMem(this->camID, ringBuffer[incr]->getWidth(), ringBuffer[incr]->getHeight(), 8,
-                                            (char *)ringBuffer[incr]->getImageBuffer(), &memIDs[incr]);
+                                            (char *)ringBuffer[incr]->getImageBuffer(), &this->m_memID[incr]);
         
         if(status == IS_SUCCESS) {
             
-            status = is_AddToSequence(this->camID, (char *)ringBuffer[incr]->getImageBuffer(), memIDs[incr]);  
+            status = is_AddToSequence(this->camID, (char *)ringBuffer[incr]->getImageBuffer(), this->m_memID[incr]);  
         }
 
         if(status != IS_SUCCESS) {
@@ -238,13 +238,12 @@ void UEye_Camera::start(Image* ringBuffer[], unsigned int bufferSize) {
             throw UEye_Exception(this->camID, status, msg); 
         }
     }
-
-    delete [] memIDs; 
 }
 
 void UEye_Camera::stop(void) {
 
     this->m_stop = true; 
+    delete [] this->m_memID; 
 }
 
 UEye_Camera::~UEye_Camera() {
