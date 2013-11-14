@@ -238,11 +238,29 @@ void UEye_Camera::start(Image* ringBuffer[], unsigned int bufferSize) {
             throw UEye_Exception(this->camID, status, msg); 
         }
     }
+    
+    /* Install event handler threads */
+    /** @todo Add status related event handlers */
+    acquisitionEventThread = new UEye_EventThread(this->camID, IS_SET_EVENT_FRAME, NULL);
+    acquisitionEventThread->start();
+
+    /* Start live capture */
+    status = is_CaptureVideo(this->camID, IS_DONT_WAIT); 
+
+    if(status != IS_SUCCESS) {
+        string msg = "Could not start live camera acquisition."; 
+        throw UEye_Exception(this->camID, status, msg); 
+    }
+    
+    return; 
 }
 
 void UEye_Camera::stop(void) {
 
-    this->m_stop = true; 
+    this->m_stop = true;
+
+    acquisitionEventThread->stop(); 
+    delete acquisitionEventThread; 
     delete [] this->m_memID; 
 }
 
