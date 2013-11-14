@@ -282,6 +282,10 @@ void UEye_Camera::stop(void) {
     delete [] this->m_memID; 
 }
 
+void UEye_Camera::acquisitionCallback(UEye_Camera *camera) {
+
+}
+
 UEye_Camera::~UEye_Camera() {
 
     INT status = is_ExitCamera(this->camID);

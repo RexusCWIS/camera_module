@@ -142,7 +142,10 @@ class UEye_Camera: public Camera {
         SENSORINFO sensorInfo;
         int *m_memID;                       /**< @brief Pointer to an array of memory ID tags for acquisition. */
         bool m_stop;                        /**< @brief Specifies that the acquisition should stop. */
-        UEye_EventThread *acquisitionEventThread; 
+        UEye_EventThread *acquisitionEventThread;
+
+        /** @brief Callback function for an acquisition event. */
+        static void acquisitionCallback(UEye_Camera *camera); 
 };
 
 #endif  /* DEF_UEYE_CAMERA_HPP */
