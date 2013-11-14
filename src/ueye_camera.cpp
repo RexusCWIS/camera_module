@@ -271,7 +271,7 @@ void UEye_Camera::stop(void) {
 
     for(unsigned int incr; incr < this->m_ringBufferSize; incr++) {
 
-        is_FreeImageMem(this->camID, this->m_ringBuffer[incr], this->m_memID[incr]); 
+        is_FreeImageMem(this->camID, this->m_ringBuffer[incr]->getImageBuffer(), this->m_memID[incr]); 
     }
     
     /* Stop the event handler threads */
