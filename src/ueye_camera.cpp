@@ -244,7 +244,7 @@ void UEye_Camera::start(Image* ringBuffer[], size_t bufferSize) {
     
     /* Install event handler threads */
     /** @todo Add status related event handlers */
-    acquisitionEventThread = new UEye_EventThread(this->camID, IS_SET_EVENT_FRAME, NULL);
+    acquisitionEventThread = new UEye_EventThread(this, IS_SET_EVENT_FRAME, NULL);
     acquisitionEventThread->start();
 
     /* Start live capture */

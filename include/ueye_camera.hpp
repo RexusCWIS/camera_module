@@ -14,6 +14,8 @@
 
 #include <pthread.h>
 
+class UEye_EventThread; 
+
 /**
  * @brief uEye camera class. 
  * @details This class interacts with the IDS uEye camera SDK to provide

@@ -6,8 +6,11 @@
 #ifndef DEF_UEYE_EVENT_THREAD_HPP
 #define DEF_UEYE_EVENT_THREAD_HPP
 
+#include "ueye_camera.hpp"
 #include <uEye.h>
 #include <pthread.h>
+
+class UEye_Camera; 
 
 /**
  * @brief uEye camera event management thread class.
@@ -21,7 +24,7 @@ class UEye_EventThread {
         /**
          * @brief Constructor. Sets the camera ID, the event type and the callback function. 
          */
-        UEye_EventThread(HIDS camID, int event, void (*callback)(void)); 
+        UEye_EventThread(const UEye_Camera *camera, int event, void (*callback)(void)); 
 
         /**
          * @brief Detructor. Stops the event handling and disables the event. 
@@ -45,7 +48,7 @@ class UEye_EventThread {
         void stop(void);
 
     private:
-        HIDS m_camID;                   /**< ID of the camera whose event is managed by this instance. */ 
+        const UEye_Camera* m_camera;    /**< Pointer to the camera object whose event is managed by this instance. */ 
         int  m_event;                   /**< ID of the event handled by this instance. */
         void (*m_eventCallback)(void);  /**< Callback function to handle the event. */
         pthread_t m_eventThread;        /**< Thread structure. */
