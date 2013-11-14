@@ -7,7 +7,7 @@
 
 #define EVENT_TIMEOUT 1
 
-UEye_EventThread::UEye_EventThread(const UEye_Camera *camera, int event, void (*callback)(void)) :
+UEye_EventThread::UEye_EventThread(const UEye_Camera *camera, int event, void (*callback)(const UEye_Camera *)) :
 	m_camera(camera), m_event(event), m_eventCallback(callback) {
 
     this->m_stop = false; 
@@ -60,7 +60,7 @@ void * UEye_EventThread::handler(void * arg) {
     while(!thread->m_stop) {
         
         if(is_WaitEvent(thread->m_camera->getCameraID(), thread->m_event, EVENT_TIMEOUT) == IS_SUCCESS) {
-            thread->m_eventCallback();  
+            thread->m_eventCallback(thread->m_camera);  
         }
     }
 

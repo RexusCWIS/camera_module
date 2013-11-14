@@ -244,7 +244,7 @@ void UEye_Camera::start(Image* ringBuffer[], size_t bufferSize) {
     
     /* Install event handler threads */
     /** @todo Add status related event handlers */
-    acquisitionEventThread = new UEye_EventThread(this, IS_SET_EVENT_FRAME, NULL);
+    acquisitionEventThread = new UEye_EventThread(this, IS_SET_EVENT_FRAME, &UEye_Camera::acquisitionCallback);
     acquisitionEventThread->start();
 
     /* Start live capture */
@@ -282,7 +282,7 @@ void UEye_Camera::stop(void) {
     delete [] this->m_memID; 
 }
 
-void UEye_Camera::acquisitionCallback(UEye_Camera *camera) {
+void UEye_Camera::acquisitionCallback(const UEye_Camera *camera) {
 
 }
 

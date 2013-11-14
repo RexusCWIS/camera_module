@@ -24,7 +24,7 @@ class UEye_EventThread {
         /**
          * @brief Constructor. Sets the camera ID, the event type and the callback function. 
          */
-        UEye_EventThread(const UEye_Camera *camera, int event, void (*callback)(void)); 
+        UEye_EventThread(const UEye_Camera *camera, int event, void (*callback)(const UEye_Camera *)); 
 
         /**
          * @brief Detructor. Stops the event handling and disables the event. 
@@ -48,12 +48,12 @@ class UEye_EventThread {
         void stop(void);
 
     private:
-        const UEye_Camera* m_camera;    /**< Pointer to the camera object whose event is managed by this instance. */ 
-        int  m_event;                   /**< ID of the event handled by this instance. */
-        void (*m_eventCallback)(void);  /**< Callback function to handle the event. */
-        pthread_t m_eventThread;        /**< Thread structure. */
-        bool m_stop;                    /**< Order to stop the event listening. */
-        bool m_running;                 /**< Event listening status. */
+        const UEye_Camera* m_camera;                    /**< Pointer to the camera object whose event is managed by this instance. */ 
+        int  m_event;                                   /**< ID of the event handled by this instance. */
+        void (*m_eventCallback)(const UEye_Camera *);   /**< Callback function to handle the event. */
+        pthread_t m_eventThread;                        /**< Thread structure. */
+        bool m_stop;                                    /**< Order to stop the event listening. */
+        bool m_running;                                 /**< Event listening status. */
 
         /**
          * @brief Waits for the handler thread to end.

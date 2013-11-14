@@ -149,7 +149,7 @@ class UEye_Camera: public Camera {
         UEye_EventThread *acquisitionEventThread;
 
         /** @brief Callback function for an acquisition event. */
-        static void acquisitionCallback(UEye_Camera *camera); 
+        static void acquisitionCallback(const UEye_Camera *camera); 
 };
 
 #endif  /* DEF_UEYE_CAMERA_HPP */
