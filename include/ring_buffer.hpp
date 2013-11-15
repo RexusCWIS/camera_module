@@ -15,7 +15,7 @@ class RingBuffer {
         ~RingBuffer();
 	    size_t getSize(void) const;
     
-        Image * &operator[] (const int index); 
+        Image * &operator[] (const unsigned int index); 
 
     private: 
         Image **m_imageArray;
