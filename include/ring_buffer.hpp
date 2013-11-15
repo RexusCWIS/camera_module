@@ -13,6 +13,7 @@ class RingBuffer {
     public: 
         RingBuffer(size_t nbOfImages); 
         ~RingBuffer();
+	size_t getSize(void) const; 
     private: 
         Image **m_imageArray;
         size_t m_ringBufferSize; 

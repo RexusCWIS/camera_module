@@ -17,3 +17,6 @@ RingBuffer::~RingBuffer() {
     m_imageArray = NULL; 
 }
 
+size_t RingBuffer::getSize(void) const {
+    return this->m_ringBufferSize; 
+}
