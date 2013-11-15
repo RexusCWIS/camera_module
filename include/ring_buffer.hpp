@@ -14,13 +14,13 @@ class RingBuffer {
         RingBuffer(size_t nbOfImages); 
         ~RingBuffer();
 	    size_t getSize(void) const;
-    
+        Image * at(const size_t index) const;
+
         Image*& operator[] (const size_t index); 
-        const Image*& operator[] (const size_t index) const; 
 
     private: 
         Image **m_imageArray;
-        size_t m_ringBufferSize; 
+        size_t m_size; 
         std::map<char *, Image *> m_bufferToImage; 
 
 };

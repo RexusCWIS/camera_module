@@ -6,7 +6,7 @@
 #include "ring_buffer.hpp"
 
 RingBuffer::RingBuffer(size_t nbOfImages) :
-        m_ringBufferSize(nbOfImages) {
+        m_size(nbOfImages) {
 
     this->m_imageArray = new Image *[nbOfImages];  
 }
@@ -18,15 +18,20 @@ RingBuffer::~RingBuffer() {
 }
 
 size_t RingBuffer::getSize(void) const {
-    return this->m_ringBufferSize; 
+    return this->m_size; 
+}
+
+Image * RingBuffer::at(const size_t index) const {
+    
+    if(index < this->m_size) {
+        return m_imageArray[index];
+    }
+
+    return NULL; 
 }
 
 Image*& RingBuffer::operator[] (const size_t index) {
 
-    return &m_imageArray[index]; 
+    return m_imageArray[index]; 
 }
 
-const Image*& RingBuffer::operator[] (const size_t index) const {
-
-    return &m_imageArray[index]; 
-}
