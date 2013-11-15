@@ -19,6 +19,7 @@ SRC = $(SRCDIR)/main.cpp			\
 	  $(SRCDIR)/ueye_camera.cpp 	\
 	  $(SRCDIR)/ueye_event_thread.cpp 	\
 	  $(SRCDIR)/image.cpp			\
+	  $(SRCDIR)/ring_buffer.cpp		\
 	  $(SRCDIR)/utilities.cpp		\
 	  $(SRCDIR)/i2c/i2c_bus.cpp		\
 	  $(SRCDIR)/i2c/rx_thread.cpp

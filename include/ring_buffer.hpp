@@ -16,7 +16,7 @@ class RingBuffer {
     private: 
         Image **m_imageArray;
         size_t m_ringBufferSize; 
-        std::map<char *><Image *> m_bufferToImage; 
+        std::map<char *, Image *> m_bufferToImage; 
 
 };
 
