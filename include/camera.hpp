@@ -9,6 +9,7 @@
 #define DEF_CAMERA_HPP
 
 #include "image.hpp"
+#include "ring_buffer.hpp"
 
 /**
  * @brief Abstract camera class. 
@@ -22,7 +23,7 @@ class Camera {
         /**
          * @brief Starts continuous image acquisition.
          */
-        virtual void start(Image* ringBuffer[], size_t bufferSize) = 0;
+        virtual void start(RingBuffer *ringBuffer) = 0;
 
         virtual void stop(void) = 0; 
 
@@ -62,10 +63,8 @@ class Camera {
         int maxWidth; 
         /** @brief Max image height, defined by the camera sensor. */
         int maxHeight;
-        /** @brief Pointer to an array of Image objects for ring buffering. */
-        Image **m_ringBuffer; 
-        /** @brief Size of the ring buffer. */
-        size_t m_ringBufferSize;
+        /** @brief Pointer to the ring buffer currently used for image acquisition. */
+        RingBuffer *m_ringBuffer; 
         /** @brief Indicates if the camera is already running. */
         bool m_running; 
 };

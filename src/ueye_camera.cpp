@@ -212,7 +212,7 @@ unsigned int UEye_Camera::getDefaultPixelClock(void) {
     return defaultPixelClock; 
 }
 
-void UEye_Camera::start(Image* ringBuffer[], size_t bufferSize) {
+void UEye_Camera::start(RingBuffer* ringBuffer) {
  
     /* If the camera was already running, stop it */
     if(this->m_running) {
@@ -220,14 +220,13 @@ void UEye_Camera::start(Image* ringBuffer[], size_t bufferSize) {
     }
 
     this->m_ringBuffer = ringBuffer; 
-    this->m_ringBufferSize = bufferSize; 
 
     INT status  = IS_SUCCESS;
 
     /* Set camera memory buffers */
-    this->m_memID = new int[bufferSize];  
+    this->m_memID = new int[ringBuffer->getSize()];  
 
-    for(unsigned int incr = 0; incr < bufferSize; incr++) {
+    for(unsigned int incr = 0; incr < ringBuffer->getSize(); incr++) {
         status = is_SetAllocatedImageMem(this->camID, ringBuffer[incr]->getWidth(), ringBuffer[incr]->getHeight(), 8,
                                             (char *)ringBuffer[incr]->getImageBuffer(), &this->m_memID[incr]);
         
@@ -269,7 +268,7 @@ void UEye_Camera::stop(void) {
     /* Clear image sequence from the camera memory */
     is_ClearSequence(this->camID); 
 
-    for(unsigned int incr; incr < this->m_ringBufferSize; incr++) {
+    for(unsigned int incr; incr < this->m_ringBuffer->getSize(); incr++) {
 
         is_FreeImageMem(this->camID, this->m_ringBuffer[incr]->getImageBuffer(), this->m_memID[incr]); 
     }

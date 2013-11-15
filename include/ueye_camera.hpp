@@ -132,7 +132,7 @@ class UEye_Camera: public Camera {
         /**
          * @brief Starts image acquisition. 
          */
-        virtual void start(Image* ringBuffer[], size_t bufferSize); 
+        virtual void start(RingBuffer *ringBuffer); 
 
         /**
          * @brief Stops the image acquisition. 
