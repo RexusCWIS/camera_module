@@ -21,8 +21,12 @@ size_t RingBuffer::getSize(void) const {
     return this->m_ringBufferSize; 
 }
 
-Image * &RingBuffer::operator[] (const unsigned int index) {
+Image*& RingBuffer::operator[] (const size_t index) {
 
-    return m_imageArray[index]; 
+    return &m_imageArray[index]; 
 }
 
+const Image*& RingBuffer::operator[] (const size_t index) const {
+
+    return &m_imageArray[index]; 
+}

@@ -212,7 +212,7 @@ unsigned int UEye_Camera::getDefaultPixelClock(void) {
     return defaultPixelClock; 
 }
 
-void UEye_Camera::start(RingBuffer* ringBuffer) {
+void UEye_Camera::start(RingBuffer *ringBuffer) {
  
     /* If the camera was already running, stop it */
     if(this->m_running) {
@@ -227,12 +227,12 @@ void UEye_Camera::start(RingBuffer* ringBuffer) {
     this->m_memID = new int[ringBuffer->getSize()];  
 
     for(unsigned int incr = 0; incr < ringBuffer->getSize(); incr++) {
-        status = is_SetAllocatedImageMem(this->camID, ringBuffer[incr]->getWidth(), ringBuffer[incr]->getHeight(), 8,
-                                            (char *)ringBuffer[incr]->getImageBuffer(), &this->m_memID[incr]);
+        status = is_SetAllocatedImageMem(this->camID, (ringBuffer[incr])->getWidth(), ringBuffer[incr]->getHeight(), 8,
+                                            (ringBuffer[incr])->getImageBuffer(), &this->m_memID[incr]);
         
         if(status == IS_SUCCESS) {
             
-            status = is_AddToSequence(this->camID, (char *)ringBuffer[incr]->getImageBuffer(), this->m_memID[incr]);  
+            status = is_AddToSequence(this->camID, (ringBuffer[incr])->getImageBuffer(), this->m_memID[incr]);  
         }
 
         if(status != IS_SUCCESS) {
