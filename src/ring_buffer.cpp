@@ -20,3 +20,13 @@ RingBuffer::~RingBuffer() {
 size_t RingBuffer::getSize(void) const {
     return this->m_ringBufferSize; 
 }
+
+Image * &RingBuffer::operator[] (const ind index) {
+
+    if(index < this->m_ringBufferSize) {
+        return m_imageArray[index];
+    }
+
+    return NULL; 
+}
+
