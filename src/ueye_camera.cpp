@@ -227,12 +227,12 @@ void UEye_Camera::start(RingBuffer *ringBuffer) {
     this->m_memID = new int[ringBuffer->getSize()];  
 
     for(unsigned int incr = 0; incr < ringBuffer->getSize(); incr++) {
-        status = is_SetAllocatedImageMem(this->camID, (ringBuffer[incr])->getWidth(), ringBuffer[incr]->getHeight(), 8,
-                                            (ringBuffer[incr])->getImageBuffer(), &this->m_memID[incr]);
+        status = is_SetAllocatedImageMem(this->camID, ringBuffer->at(incr)->getWidth(), ringBuffer->at(incr)->getHeight(), 8,
+                                            ringBuffer->at(incr)->getImageBuffer(), &this->m_memID[incr]);
         
         if(status == IS_SUCCESS) {
             
-            status = is_AddToSequence(this->camID, (ringBuffer[incr])->getImageBuffer(), this->m_memID[incr]);  
+            status = is_AddToSequence(this->camID, ringBuffer->at(incr)->getImageBuffer(), this->m_memID[incr]);  
         }
 
         if(status != IS_SUCCESS) {
@@ -270,7 +270,7 @@ void UEye_Camera::stop(void) {
 
     for(unsigned int incr; incr < this->m_ringBuffer->getSize(); incr++) {
 
-        is_FreeImageMem(this->camID, this->m_ringBuffer[incr]->getImageBuffer(), this->m_memID[incr]); 
+        is_FreeImageMem(this->camID, this->m_ringBuffer->at(incr)->getImageBuffer(), this->m_memID[incr]); 
     }
     
     /* Stop the event handler threads */
