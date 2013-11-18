@@ -283,6 +283,7 @@ void UEye_Camera::stop(void) {
 
 void UEye_Camera::acquisitionCallback(const UEye_Camera *camera) {
 
+    /** @todo Implement callback to a user-defined function */
 }
 
 UEye_Camera::~UEye_Camera() {
