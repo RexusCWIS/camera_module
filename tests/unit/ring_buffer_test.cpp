@@ -55,7 +55,7 @@ TEST_F(RingBufferTest, Accessors) {
     ASSERT_EQ(rb_->at(rbSize + 1), (Image *) NULL); 
 
     for(unsigned int incr = 0; incr < rbSize; incr++) {
-        ASSERT_NE((rb_->at(incr), (Image *) NULL)); 
+        ASSERT_NE(rb_->at(incr), (Image *) NULL); 
         ASSERT_EQ((*rb_)[incr], rb_->at(incr));  
     }
 }
