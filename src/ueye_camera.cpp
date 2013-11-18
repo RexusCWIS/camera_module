@@ -9,11 +9,12 @@
 #include "utilities.hpp"
 
 #include <uEye.h>
+#include <pthread.h>
 #include <string>
 #include <iostream>
 #include <stdio.h>
 
-UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID) {
+UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID), m_stop(false) {
 
     INT status = 0;
 
@@ -102,8 +103,15 @@ void UEye_Camera::capture(Image *i) {
     return; 
 }
 
-void UEye_Camera::setFrameRate(double frameRate) {
-
+double UEye_Camera::setFramerate(double framerate) {
+    
+    INT status = is_SetFrameRate(this->camID, framerate, &this->m_framerate);
+    
+    if(status != IS_SUCCESS) {
+        string msg = "Could not set the framerate."; 
+        throw UEye_Exception(this->camID, status, msg); 
+    }
+    return this->m_framerate; 
 }
 
 void UEye_Camera::setAreaOfInterest(int x, int y, int width, int height) {
@@ -204,13 +212,88 @@ unsigned int UEye_Camera::getDefaultPixelClock(void) {
     return defaultPixelClock; 
 }
 
-void UEye_Camera::acquire(void) {
+void UEye_Camera::start(RingBuffer *ringBuffer) {
+ 
+    /* If the camera was already running, stop it */
+    if(this->m_running) {
+        this->stop(); 
+    }
 
+    this->m_ringBuffer = ringBuffer; 
+
+    INT status  = IS_SUCCESS;
+
+    /* Set camera memory buffers */
+    this->m_memID = new int[ringBuffer->getSize()];  
+
+    for(unsigned int incr = 0; incr < ringBuffer->getSize(); incr++) {
+        status = is_SetAllocatedImageMem(this->camID, ringBuffer->at(incr)->getWidth(), ringBuffer->at(incr)->getHeight(), 8,
+                                            ringBuffer->at(incr)->getImageBuffer(), &this->m_memID[incr]);
+        
+        if(status == IS_SUCCESS) {
+            
+            status = is_AddToSequence(this->camID, ringBuffer->at(incr)->getImageBuffer(), this->m_memID[incr]);  
+        }
+
+        if(status != IS_SUCCESS) {
+            string msg = "Could not set up the buffer for stream acquisition.";
+            throw UEye_Exception(this->camID, status, msg); 
+        }
+    }
+    
+    /* Install event handler threads */
+    /** @todo Add status related event handlers */
+    acquisitionEventThread = new UEye_EventThread(this, IS_SET_EVENT_FRAME, &UEye_Camera::acquisitionCallback);
+    acquisitionEventThread->start();
+
+    /* Start live capture */
+    status = is_CaptureVideo(this->camID, IS_DONT_WAIT); 
+
+    if(status != IS_SUCCESS) {
+        string msg = "Could not start live camera acquisition."; 
+        throw UEye_Exception(this->camID, status, msg); 
+    }
+    
+    return; 
+}
+
+void UEye_Camera::stop(void) {
+
+    /* Stop live acquisition */
+    INT status = IS_NO_SUCCESS;
+    while(status != IS_SUCCESS) {
+        status = is_StopLiveVideo(this->camID, IS_WAIT); 
+    }
+   
+    /* Clear image sequence from the camera memory */
+    is_ClearSequence(this->camID); 
+
+    for(unsigned int incr; incr < this->m_ringBuffer->getSize(); incr++) {
+
+        is_FreeImageMem(this->camID, this->m_ringBuffer->at(incr)->getImageBuffer(), this->m_memID[incr]); 
+    }
+    
+    /* Stop the event handler threads */
+    acquisitionEventThread->stop(); 
+   
+    /* Free allocated memory */
+    delete acquisitionEventThread; 
+    delete [] this->m_memID; 
+}
+
+void UEye_Camera::acquisitionCallback(const UEye_Camera *camera) {
+
+    /** @todo Implement callback to a user-defined function */
 }
 
 UEye_Camera::~UEye_Camera() {
 
     INT status = is_ExitCamera(this->camID);
     (void) status;
+}
+
+HIDS UEye_Camera::getCameraID(void) const {
+
+    return this->camID; 
 }
 

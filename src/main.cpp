@@ -5,8 +5,9 @@
  */
 
 #include <iostream>
+#include <string.h>
 #include <stdlib.h>
-#include "unistd.h"
+#include <getopt.h>
 
 #include <uEye.h>
 
@@ -20,25 +21,45 @@ using namespace std;
 static int displayCameraInformations(void); 
 static int listConnectedCameras(void);
 static void singleAcquisition(const char *filename); 
+static inline void setDefaults(void); 
 
-static bool detectExtension = true, saveAsPNG = false, saveAsBMP = false, saveAsPGM = false;
-static std::string fileExtension = ""; 
+typedef struct {
+    int nframes; 
+    std::string outputFile; 
+    std::string fileExtension; 
+    bool detectExtension; 
+    bool saveAsPNG;
+    bool saveAsBMP; 
+    bool saveAsPGM; 
+}ProgramOptions_s;
+
+static ProgramOptions_s programOpts; 
+
+/* Long options definition */
+static const struct option longOpts[] = {
+    {"format", required_argument, NULL, 'f'},
+    {"nframes", required_argument, NULL, 0}
+}; 
 
 int main(int argc, char *argv[]) {
 
     int opt = 0;
-    std::string outputFile = "image.png";
+    int longIndex = 0; 
+
+    setDefaults(); 
+
+    cout << "Output file: " << programOpts.outputFile << endl; 
 
     /* Command-line arguments parsing */
     /** @todo Use getopt_long to enable double dash (--) options */
-    while( (opt = getopt(argc, argv, "f:lo:i")) != -1) {
+    while( (opt = getopt_long(argc, argv, "f:lo:i", longOpts, &longIndex)) != -1) {
 
         switch (opt) {
             /* Specify the output format */
             /** @todo Add validity checks */
             case 'f':
-                detectExtension = false;
-                fileExtension   = optarg;
+                programOpts.detectExtension = false;
+                programOpts.fileExtension   = optarg;
                 break; 
 
             /* List all connected cameras and exit */
@@ -54,7 +75,7 @@ int main(int argc, char *argv[]) {
 
             /* Output file specification */
             case 'o':
-                outputFile = optarg;
+                programOpts.outputFile = optarg;
                 break; 
                
             /* Missing argument to an option */
@@ -66,37 +87,44 @@ int main(int argc, char *argv[]) {
             /* Unknown argument, not specified in the optstring */
             case '?':
                 break;
+
+            /* Long option with no short option counterpart */
+            case 0:
+                if(strcmp( "nframes", longOpts[longIndex].name) == 0) {
+                    programOpts.nframes = 10; 
+                }
+                break; 
         }
     }
 
-    if(detectExtension) {
-        fileExtension = getFileExtension(outputFile);
+    if(programOpts.detectExtension) {
+        programOpts.fileExtension = getFileExtension(programOpts.outputFile);
     }
 
-    if(fileExtension.empty()) {
+    if(programOpts.fileExtension.empty()) {
         cerr << "No file extension, cannot specify the output format. Specify an extension or use specific command line options." << endl; 
         exit(EXIT_FAILURE); 
     }
 
-    if(fileExtension == "png") {
-        saveAsPNG = true; 
+    if(programOpts.fileExtension == "png") {
+        programOpts.saveAsPNG = true; 
     }
 
-    else if(fileExtension == "pgm") {
-        saveAsPGM = true; 
+    else if(programOpts.fileExtension == "pgm") {
+        programOpts.saveAsPGM = true; 
     }
 
-    else if(fileExtension == "bmp") {
-        saveAsBMP = true; 
+    else if(programOpts.fileExtension == "bmp") {
+        programOpts.saveAsBMP = true; 
     }
 
     else {
-        cerr << "Invalid file extension: " << fileExtension << "\ncannot specify the output format. " << endl;
+        cerr << "Invalid file extension: " << programOpts.fileExtension << "\ncannot specify the output format. " << endl;
         exit(EXIT_FAILURE); 
     }
 
     /* Acquisition */
-    singleAcquisition(outputFile.c_str()); 
+    singleAcquisition(programOpts.outputFile.c_str()); 
 
     exit(EXIT_SUCCESS); 
 }
@@ -154,6 +182,8 @@ static int listConnectedCameras(void) {
 
 static void singleAcquisition(const char *filename) {
 
+    cout << "Frames: " << programOpts.nframes << endl; 
+
     Image *i = new Image(800u, 600u);
     UEye_Camera *c = new UEye_Camera(1);
 
@@ -168,11 +198,11 @@ static void singleAcquisition(const char *filename) {
                 "\nException ID: " << e.id() << endl;
     }
 
-    if(saveAsPNG) { 
+    if(programOpts.saveAsPNG) { 
         i->writeToPNG(filename);
     }
 
-    if(saveAsPGM) {
+    if(programOpts.saveAsPGM) {
         i->writeToPGM(filename); 
     }
 
@@ -180,5 +210,15 @@ static void singleAcquisition(const char *filename) {
     delete c; 
 
     return; 
+}
+
+static inline void setDefaults(void) {
+    programOpts.nframes = 1; 
+    programOpts.outputFile = "image.png"; 
+    programOpts.fileExtension = ""; 
+    programOpts.detectExtension = true; 
+    programOpts.saveAsPNG = false; 
+    programOpts.saveAsBMP = false; 
+    programOpts.saveAsPGM = false; 
 }
 

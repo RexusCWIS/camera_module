@@ -9,7 +9,12 @@
 #define DEF_UEYE_CAMERA_HPP
 
 #include "camera.hpp"
+#include "ueye_event_thread.hpp"
 #include <uEye.h>
+
+#include <pthread.h>
+
+class UEye_EventThread; 
 
 /**
  * @brief uEye camera class. 
@@ -38,7 +43,7 @@ class UEye_Camera: public Camera {
          */
         virtual void capture(Image *i); 
 
-        virtual void setFrameRate(double frameRate);
+        virtual double setFramerate(double framerate);
 
         /**
          * @brief Sets the area of interest of the camera.
@@ -127,12 +132,24 @@ class UEye_Camera: public Camera {
         /**
          * @brief Starts image acquisition. 
          */
-        virtual void acquire(void); 
+        virtual void start(RingBuffer *ringBuffer); 
+
+        /**
+         * @brief Stops the image acquisition. 
+         */
+        virtual void stop(void);
+
+        HIDS getCameraID(void) const; 
 
     private: 
         HIDS camID; 
-        SENSORINFO sensorInfo; 
+        SENSORINFO sensorInfo;
+        int *m_memID;                       /**< @brief Pointer to an array of memory ID tags for acquisition. */
+        bool m_stop;                        /**< @brief Specifies that the acquisition should stop. */
+        UEye_EventThread *acquisitionEventThread;
 
+        /** @brief Callback function for an acquisition event. */
+        static void acquisitionCallback(const UEye_Camera *camera); 
 };
 
 #endif  /* DEF_UEYE_CAMERA_HPP */

@@ -9,6 +9,7 @@
 #define DEF_CAMERA_HPP
 
 #include "image.hpp"
+#include "ring_buffer.hpp"
 
 /**
  * @brief Abstract camera class. 
@@ -18,12 +19,14 @@
  */
 class Camera {
 
-    public:
+    public: 
         /**
-         * @brief Starts image acquisition.
+         * @brief Starts continuous image acquisition.
          */
-        virtual void acquire(void) = 0;
-        
+        virtual void start(RingBuffer *ringBuffer) = 0;
+
+        virtual void stop(void) = 0; 
+
         /**
          * @brief Acquires a single image. 
          */ 
@@ -32,7 +35,11 @@ class Camera {
         /**
          * @brief Sets the framerate of the camera.  
          */
-        virtual void setFrameRate(double frameRate) = 0;
+        virtual double setFramerate(double frameRate) = 0;
+        
+        double getFramerate(void) {
+            return this->m_framerate; 
+        }
 
         /**
          * @brief Sets the area of interest of the camera. 
@@ -51,11 +58,15 @@ class Camera {
 
     protected:
         /** @brief Current camera framerate (in frames per second). */
-        double m_frameRate;
+        double m_framerate;
         /** @brief Max image width, defined by the camera sensor. */
         int maxWidth; 
         /** @brief Max image height, defined by the camera sensor. */
-        int maxHeight; 
+        int maxHeight;
+        /** @brief Pointer to the ring buffer currently used for image acquisition. */
+        RingBuffer *m_ringBuffer; 
+        /** @brief Indicates if the camera is already running. */
+        bool m_running; 
 };
 
 
