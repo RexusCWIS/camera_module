@@ -13,8 +13,10 @@ INCFLAGS = -I$(TOPDIR)/include -Igtest-svn/include -I/opt/local/include
 LIBS = -lpng $(LIBGTEST) -lpthread 
 
 SRC = $(TOPDIR)/src/image.cpp		\
+	  $(TOPDIR)/src/ring_buffer.cpp	\
 	  $(TOPDIR)/src/utilities.cpp
 TESTSRC = image_test.cpp			\
+		  ring_buffer_test.cpp		\
 		  utilities_test.cpp
 
 OBJ = $(SRC:.cpp=.o)    \
