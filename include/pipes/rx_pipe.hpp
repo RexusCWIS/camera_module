@@ -1,6 +1,6 @@
 /**
  * @file rx_pipe.hpp
- * @brief Receiver pipe class implementation.
+ * @brief Receiver pipe class definition.
  */
 
 #ifndef DEF_RX_PIPE_HPP
