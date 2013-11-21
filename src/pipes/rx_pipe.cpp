@@ -6,11 +6,13 @@
 #include "pipes/rx_pipe.hpp"
 
 /** @todo Implement error handling (open and close operations, ...) */
-RXPipe::RXPipe(const std::string &pipefile, void (*rxCallback)(char *, int)) :
+RXPipe::RXPipe(const std::string &pipefile, void (*rxCallback)(char *, int), int dataFrameSize) :
         m_callback(rxCallback) {
 
     this->m_running = false; 
     this->m_stop = false;
+
+    this->m_dataFrameSize = (dataFrameSize > 0) ? dataFrameSize : 0; 
 
     this->m_pipe = new std::filebuf;
     this->m_pipe->open(pipefile.c_str(), std::ios_base::in); 
@@ -53,14 +55,18 @@ void * RXPipe::thread(void *arg) {
     while(!rxPipe->m_stop) {
         if(rxPipe->m_pipe->is_open()) {
             
-            std::streamsize nbOfData = rxPipe->m_pipe->in_avail(); 
-            if(nbOfData > 0) {
+            std::streamsize dataSize = rxPipe->m_pipe->in_avail(); 
+            if(dataSize > 0) {
     
-                char *data = new char[nbOfData]; 
-                rxPipe->m_pipe->sgetn(data, nbOfData);
+                if(rxPipe->m_dataFrameSize != 0) {
+                    dataSize = rxPipe->m_dataFrameSize; 
+                }
+
+                char *data = new char[dataSize]; 
+                rxPipe->m_pipe->sgetn(data, dataSize);
                 rxPipe->m_pipe->pubsync(); 
 
-                rxPipe->m_callback(data, nbOfData); 
+                rxPipe->m_callback(data, dataSize); 
 
                 delete [] data; 
             }
