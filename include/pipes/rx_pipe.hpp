@@ -12,7 +12,7 @@
 
 class RXPipe {
     public: 
-        RXPipe(const std::string &pipefile, void (*rxCallback)(void));
+        RXPipe(const std::string &pipefile, void (*rxCallback)(char *, int));
         ~RXPipe(); 
         
         void start(void); 
@@ -20,7 +20,7 @@ class RXPipe {
 
     protected:
         std::filebuf *m_pipe;
-        void (*m_callback)(void); 
+        void (*m_callback)(char *, int); 
         bool m_running; 
         bool m_stop;
         pthread_t m_rxThread;
