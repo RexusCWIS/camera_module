@@ -15,14 +15,15 @@ WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declarat
 
 APP = cwis_camera.out
 
-SRC = $(SRCDIR)/main.cpp			\
-	  $(SRCDIR)/ueye_camera.cpp 	\
+SRC = $(SRCDIR)/main.cpp			    \
+	  $(SRCDIR)/ueye_camera.cpp 	    \
 	  $(SRCDIR)/ueye_event_thread.cpp 	\
-	  $(SRCDIR)/image.cpp			\
-	  $(SRCDIR)/ring_buffer.cpp		\
-	  $(SRCDIR)/utilities.cpp		\
-	  $(SRCDIR)/i2c/i2c_bus.cpp		\
-	  $(SRCDIR)/i2c/rx_thread.cpp
+	  $(SRCDIR)/image.cpp			    \
+	  $(SRCDIR)/ring_buffer.cpp		    \
+	  $(SRCDIR)/utilities.cpp		    \
+	  $(SRCDIR)/serial/i2c_bus.cpp		\
+	  $(SRCDIR)/serial/rx_thread.cpp    \
+      $(SRCDIR)/pipes/rx_pipe.cpp
 OBJ = $(SRC:.cpp=.o)
 
 # Build rules
