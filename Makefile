@@ -23,7 +23,8 @@ SRC = $(SRCDIR)/main.cpp			    \
 	  $(SRCDIR)/utilities.cpp		    \
 	  $(SRCDIR)/serial/i2c_bus.cpp		\
 	  $(SRCDIR)/serial/rx_thread.cpp    \
-      $(SRCDIR)/pipes/rx_pipe.cpp
+      $(SRCDIR)/pipes/rx_pipe.cpp       \
+      $(SRCDIR)/pipes/tx_pipe.cpp
 OBJ = $(SRC:.cpp=.o)
 
 # Build rules
