@@ -14,7 +14,7 @@ class TXPipe {
         TXPipe(const std::string &pipefile); 
         ~TXPipe();
 
-        void send(char *data, int dataSize);
+        void send(const char *data, int dataSize);
     private:
         std::filebuf *m_pipe; 
 };

@@ -17,7 +17,7 @@ TXPipe::~TXPipe() {
     delete this->m_pipe; 
 }
 
-void TXPipe::send(char *data, int dataSize) {
+void TXPipe::send(const char *data, int dataSize) {
     
     this->m_pipe->sputn(data, dataSize);
     this->m_pipe->pubsync(); 
