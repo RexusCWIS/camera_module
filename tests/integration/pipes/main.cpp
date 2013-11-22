@@ -8,6 +8,7 @@
 
 #include <string>
 #include <iostream>
+#include <unistd.h>
 
 static void rxCallback(char *data, int dataSize) {
 
@@ -25,8 +26,7 @@ int main(int argc, char **argv) {
 
     tx.send(msg.c_str(), msg.size());
 
-    for(unsigned int incr = 0; incr < 100000000; incr++)
-        ;
+    sleep(10); 
 
     rx.stop();
 }
