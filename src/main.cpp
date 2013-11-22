@@ -161,11 +161,21 @@ static void orderProcessing(char orders[], int size) {
     
     switch(orders[size-1]) {
         case 'G':
-            std::cout << "The experiment has STARTED." << std::endl; 
+            std::cout << "The experiment has STARTED." << std::endl;
+            try {
+                cp.c->start(cp.rb); 
+            }
+
+            catch(UEye_Exception const &e) {
+        
+                cerr << "Camera " << e.camera() << ": " << e.what() <<
+                    "\nException ID: " << e.id() << endl;
+            }
             break; 
         case 'S':
-            cp.done = true;
+            cp.c->stop(); 
             std::cout << "The experiment is OVER." << std::endl; 
+            cp.done = true;
             break;
         
         default:
@@ -174,7 +184,10 @@ static void orderProcessing(char orders[], int size) {
 }
 
 static void prepareForAcquisition(void) {
-    cp.c = new UEye_Camera(1); 
+    cp.c  = new UEye_Camera(1);
+    cp.c->setAreaOfInterest(0, 0, 800, 600);
+
+    cp.rb = new RingBuffer(800u, 600u, 10); 
     cp.rxpipe = new RXPipe("/tmp/camera_pipe.p", &orderProcessing);
     cp.rxpipe->start(); 
 }

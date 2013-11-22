@@ -283,7 +283,10 @@ void UEye_Camera::stop(void) {
 
 void UEye_Camera::acquisitionCallback(const UEye_Camera *camera) {
 
+    static int cntr = 0; 
     /** @todo Implement callback to a user-defined function */
+    std::cout << "Image " << cntr << " acquired." << std::endl; 
+    cntr++; 
 }
 
 UEye_Camera::~UEye_Camera() {
