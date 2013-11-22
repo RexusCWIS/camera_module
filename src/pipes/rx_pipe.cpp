@@ -56,7 +56,7 @@ void * RXPipe::thread(void *arg) {
         if(rxPipe->m_pipe->is_open()) {
             
             std::streamsize dataSize = rxPipe->m_pipe->in_avail(); 
-            if(dataSize > rxPipe->m_dataFrameSize) {
+            if((dataSize > 0 && rxPipe->m_dataFrameSize == 0) || (dataSize >= rxPipe->m_dataFrameSize)) {
     
                 if(rxPipe->m_dataFrameSize != 0) {
                     dataSize = rxPipe->m_dataFrameSize; 
