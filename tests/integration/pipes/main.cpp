@@ -18,14 +18,18 @@ static void rxCallback(char *data, int dataSize) {
 int main(int argc, char **argv) {
     
     TXPipe tx("my_pipe"); 
-    RXPipe rx("my_pipe", &rxCallback, 0);
+    RXPipe rx("my_pipe", &rxCallback, 1);
 
     std::string msg = "Through pipes and valleys I shall hunt you"; 
 
     rx.start();
 
-    tx.send(msg.c_str(), msg.size());
+    tx.send("G", 1);
 
+    sleep(2);
+
+    tx.send("S", 1);  
+ 
     sleep(1); 
 
     rx.stop();
