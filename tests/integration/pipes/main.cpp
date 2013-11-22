@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 
     tx.send(msg.c_str(), msg.size());
 
-    sleep(10); 
+    sleep(1); 
 
     rx.stop();
 }
