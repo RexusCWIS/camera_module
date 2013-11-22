@@ -22,7 +22,8 @@ using namespace std;
 static int displayCameraInformations(void); 
 static int listConnectedCameras(void);
 static void singleAcquisition(const char *filename); 
-static void prepareForAcquisition(void); 
+static void prepareForAcquisition(void);
+static void saveImage(char *buffer); 
 static inline void setDefaults(void); 
 
 typedef struct {
@@ -41,7 +42,8 @@ typedef struct {
     UEye_Camera *c; 
     RingBuffer *rb;
     RXPipe *rxpipe;
-    bool done; 
+    unsigned int cntr; 
+    bool done;
 }CameraParameters_s; 
 
 static ProgramOptions_s programOpts; 
@@ -147,7 +149,8 @@ int main(int argc, char *argv[]) {
         while(!cp.done)
             ;
         delete cp.c; 
-        delete cp.rxpipe; 
+        delete cp.rxpipe;
+        delete cp.rb; 
     }
 
     else {
@@ -163,7 +166,7 @@ static void orderProcessing(char orders[], int size) {
         case 'G':
             std::cout << "The experiment has STARTED." << std::endl;
             try {
-                cp.c->start(cp.rb); 
+                cp.c->start(cp.rb, &saveImage); 
             }
 
             catch(UEye_Exception const &e) {
@@ -183,11 +186,25 @@ static void orderProcessing(char orders[], int size) {
     }
 }
 
+static void saveImage(char *buffer) {
+
+    std::string filename = "images/image";
+    string_appendInt(filename, cp.cntr);
+    filename += ".png"; 
+
+    Image *i = cp.rb->getImageFromBuffer(buffer);
+    i->writeToPNG(filename.c_str()); 
+    cp.cntr++; 
+}
+
 static void prepareForAcquisition(void) {
+
     cp.c  = new UEye_Camera(1);
-    cp.c->setAreaOfInterest(0, 0, 800, 600);
+    cp.c->setAreaOfInterest(0, 0, 800u, 600u);
 
     cp.rb = new RingBuffer(800u, 600u, 10); 
+    cp.cntr = 0u;
+
     cp.rxpipe = new RXPipe("/tmp/camera_pipe.p", &orderProcessing);
     cp.rxpipe->start(); 
 }
