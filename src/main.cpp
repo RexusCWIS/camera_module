@@ -14,6 +14,7 @@
 #include "utilities.hpp"
 #include "ueye_camera.hpp"
 #include "image.hpp"
+#include "pipes/rx_pipe.hpp"
 #include "exceptions/ueye_exception.hpp"
 
 using namespace std; 
@@ -21,19 +22,31 @@ using namespace std;
 static int displayCameraInformations(void); 
 static int listConnectedCameras(void);
 static void singleAcquisition(const char *filename); 
+static void prepareForAcquisition(void); 
 static inline void setDefaults(void); 
 
 typedef struct {
     int nframes; 
     std::string outputFile; 
     std::string fileExtension; 
+    std::string outputDir; 
     bool detectExtension; 
     bool saveAsPNG;
     bool saveAsBMP; 
     bool saveAsPGM; 
+    bool acquisition; 
 }ProgramOptions_s;
 
+typedef struct {
+    UEye_Camera *c; 
+    RingBuffer *rb;
+    RXPipe *rxpipe;
+    bool done; 
+}CameraParameters_s; 
+
 static ProgramOptions_s programOpts; 
+static CameraParameters_s cp; 
+
 
 /* Long options definition */
 static const struct option longOpts[] = {
@@ -52,9 +65,14 @@ int main(int argc, char *argv[]) {
 
     /* Command-line arguments parsing */
     /** @todo Use getopt_long to enable double dash (--) options */
-    while( (opt = getopt_long(argc, argv, "f:lo:i", longOpts, &longIndex)) != -1) {
+    while( (opt = getopt_long(argc, argv, "a:f:lo:i", longOpts, &longIndex)) != -1) {
 
         switch (opt) {
+            case 'a':
+                programOpts.acquisition = true; 
+                programOpts.outputDir = optarg; 
+                break; 
+
             /* Specify the output format */
             /** @todo Add validity checks */
             case 'f':
@@ -124,9 +142,41 @@ int main(int argc, char *argv[]) {
     }
 
     /* Acquisition */
-    singleAcquisition(programOpts.outputFile.c_str()); 
+    if(programOpts.acquisition) {
+        prepareForAcquisition(); 
+        while(!cp.done)
+            ;
+        delete cp.c; 
+        delete cp.rxpipe; 
+    }
+
+    else {
+        singleAcquisition(programOpts.outputFile.c_str()); 
+    }
 
     exit(EXIT_SUCCESS); 
+}
+
+static void orderProcessing(char orders[], int size) {
+    
+    switch(orders[size-1]) {
+        case 'G':
+            std::cout << "The experiment has STARTED." << std::endl; 
+            break; 
+        case 'S':
+            cp.done = true;
+            std::cout << "The experiment is OVER." << std::endl; 
+            break;
+        
+        default:
+            break; 
+    }
+}
+
+static void prepareForAcquisition(void) {
+    cp.c = new UEye_Camera(1); 
+    cp.rxpipe = new RXPipe("/tmp/camera_pipe.p", &orderProcessing);
+    cp.rxpipe->start(); 
 }
 
 static int displayCameraInformations(void) {
@@ -216,9 +266,11 @@ static inline void setDefaults(void) {
     programOpts.nframes = 1; 
     programOpts.outputFile = "image.png"; 
     programOpts.fileExtension = ""; 
+    programOpts.outputDir = "images"; 
     programOpts.detectExtension = true; 
     programOpts.saveAsPNG = false; 
     programOpts.saveAsBMP = false; 
     programOpts.saveAsPGM = false; 
+    programOpts.acquisition = false; 
 }
 
