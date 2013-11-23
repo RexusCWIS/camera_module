@@ -4,6 +4,11 @@
  */
 
 #include "pipes/rx_pipe.hpp"
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+#define BUFFER_SIZE 256
 
 /** @todo Implement error handling (open and close operations, ...) */
 RXPipe::RXPipe(const std::string &pipefile, void (*rxCallback)(char *, int), int dataFrameSize) :
@@ -12,10 +17,12 @@ RXPipe::RXPipe(const std::string &pipefile, void (*rxCallback)(char *, int), int
     this->m_running = false; 
     this->m_stop = false;
 
-    this->m_dataFrameSize = (dataFrameSize > 0) ? dataFrameSize : 0; 
+    this->m_dataFrameSize = (dataFrameSize > 0) ? dataFrameSize : BUFFER_SIZE;
+    
+    this->m_fifo = pipefile.c_str();
+    //mkfifo(this->m_fifo, 0666); 
+    this->m_fd = open(this->m_fifo, O_RDONLY); 
 
-    this->m_pipe = new std::filebuf;
-    this->m_pipe->open(pipefile.c_str(), std::ios_base::in); 
 }
 
 RXPipe::~RXPipe() {
@@ -24,8 +31,7 @@ RXPipe::~RXPipe() {
         this->stop(); 
     }
 
-    this->m_pipe->close(); 
-    delete this->m_pipe; 
+    close(this->m_fd); 
 }
 
 void RXPipe::start(void) {
@@ -53,24 +59,9 @@ void * RXPipe::thread(void *arg) {
     RXPipe *rxPipe = reinterpret_cast<RXPipe *>(arg);
 
     while(!rxPipe->m_stop) {
-        if(rxPipe->m_pipe->is_open()) {
-            
-            std::streamsize dataSize = rxPipe->m_pipe->in_avail(); 
-            if((dataSize > 0 && rxPipe->m_dataFrameSize == 0) || (dataSize >= rxPipe->m_dataFrameSize)) {
-    
-                if(rxPipe->m_dataFrameSize != 0) {
-                    dataSize = rxPipe->m_dataFrameSize; 
-                }
-
-                char *data = new char[dataSize]; 
-                rxPipe->m_pipe->sgetn(data, dataSize);
-                rxPipe->m_pipe->pubsync(); 
-
-                rxPipe->m_callback(data, dataSize); 
-
-                delete [] data; 
-            }
-        }
+       
+        read(rxPipe->m_fd, rxPipe->m_rxBuffer, rxPipe->m_dataFrameSize); 
+        rxPipe->m_callback(rxPipe->m_rxBuffer, rxPipe->m_dataFrameSize); 
     }
 
     return NULL;

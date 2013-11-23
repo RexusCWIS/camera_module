@@ -19,9 +19,11 @@ class RXPipe {
         void stop(void); 
 
     protected:
-        std::filebuf *m_pipe;
+        const char *m_fifo; 
+        int m_fd; 
         void (*m_callback)(char *, int); 
-        int m_dataFrameSize; 
+        int m_dataFrameSize;
+        char *m_rxBuffer; 
         pthread_t m_rxThread;
         bool m_running; 
         bool m_stop;
