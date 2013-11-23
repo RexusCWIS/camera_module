@@ -10,6 +10,7 @@
 
 TXPipe::TXPipe(const std::string &pipefile) {
 
+    this->m_fifo = pipefile.c_str(); 
     mkfifo(this->m_fifo, 0666); 
     this->fd = open(this->m_fifo, O_WRONLY); 
 }
