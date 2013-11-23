@@ -16,7 +16,7 @@ class TXPipe {
 
         void send(const char *data, int dataSize);
     private:
-        char *m_fifo;
+        const char *m_fifo;
         int fd; 
 };
 
