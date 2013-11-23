@@ -4,22 +4,23 @@
  */
 
 #include "pipes/tx_pipe.hpp"
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 TXPipe::TXPipe(const std::string &pipefile) {
 
-    this->m_pipe = new std::filebuf; 
-    this->m_pipe->open(pipefile.c_str(), std::ios_base::out); 
+    mkfifo(this->m_fifo, 0666); 
+    this->fd = open(this->m_fifo, O_WRONLY); 
 }
 
 TXPipe::~TXPipe() {
 
-    this->m_pipe->close(); 
-    delete this->m_pipe; 
+    close(this->fd); 
 }
 
 void TXPipe::send(const char *data, int dataSize) {
     
-    this->m_pipe->sputn(data, dataSize);
-    this->m_pipe->pubsync(); 
+    write(this->fd, data, dataSize); 
 }
 

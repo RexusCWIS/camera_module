@@ -16,7 +16,8 @@ class TXPipe {
 
         void send(const char *data, int dataSize);
     private:
-        std::filebuf *m_pipe; 
+        char *m_fifo;
+        int fd; 
 };
 
 #endif  /* DEF_TX_PIPE_HPP */
