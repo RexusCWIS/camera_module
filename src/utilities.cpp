@@ -5,6 +5,20 @@
 
 #include "utilities.hpp"
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <string.h>
+
+void createDirectory(const std::string &dirname) {
+    
+    errno = 0; 
+
+    if(!mkdir(dirname.c_str(), 0666)) {
+        perror(strerror(errno));
+        exit(EXIT_FAILURE); 
+    }
+}
 
 void string_appendInt(std::string &str, int x) {
 
