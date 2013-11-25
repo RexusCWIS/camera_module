@@ -26,6 +26,11 @@ static void prepareForAcquisition(void);
 static void saveImage(char *buffer); 
 static inline void setDefaults(void); 
 
+typedef enum {
+    SINGLE, 
+    MULTIPLE
+}ProgramMode_e; 
+
 typedef struct {
     int nframes; 
     std::string outputFile; 
@@ -35,7 +40,6 @@ typedef struct {
     bool saveAsPNG;
     bool saveAsBMP; 
     bool saveAsPGM; 
-    bool acquisition; 
 }ProgramOptions_s;
 
 typedef struct {
@@ -46,14 +50,14 @@ typedef struct {
     bool done;
 }CameraParameters_s; 
 
-static ProgramOptions_s programOpts; 
+static ProgramOptions_s programOpts;
+static ProgramMode_e programMode; 
 static CameraParameters_s cp; 
 
 
 /* Long options definition */
 static const struct option longOpts[] = {
-    {"format", required_argument, NULL, 'f'},
-    {"nframes", required_argument, NULL, 0}
+    {"format", required_argument, NULL, 'f'}
 }; 
 
 int main(int argc, char *argv[]) {
@@ -71,7 +75,7 @@ int main(int argc, char *argv[]) {
 
         switch (opt) {
             case 'a':
-                programOpts.acquisition = true; 
+                programMode = MULTIPLE; 
                 programOpts.outputDir = optarg; 
                 break; 
 
@@ -95,6 +99,7 @@ int main(int argc, char *argv[]) {
 
             /* Output file specification */
             case 'o':
+                programMode = SINGLE; 
                 programOpts.outputFile = optarg;
                 break; 
                
@@ -110,9 +115,6 @@ int main(int argc, char *argv[]) {
 
             /* Long option with no short option counterpart */
             case 0:
-                if(strcmp( "nframes", longOpts[longIndex].name) == 0) {
-                    programOpts.nframes = 10; 
-                }
                 break; 
         }
     }
@@ -144,7 +146,7 @@ int main(int argc, char *argv[]) {
     }
 
     /* Acquisition */
-    if(programOpts.acquisition) {
+    if(programMode == MULTIPLE) {
         prepareForAcquisition(); 
         while(!cp.done)
             ;
@@ -300,7 +302,8 @@ static inline void setDefaults(void) {
     programOpts.detectExtension = true; 
     programOpts.saveAsPNG = false; 
     programOpts.saveAsBMP = false; 
-    programOpts.saveAsPGM = false; 
-    programOpts.acquisition = false; 
+    programOpts.saveAsPGM = false;
+    
+    programMode = SINGLE; 
 }
 
