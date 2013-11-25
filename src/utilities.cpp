@@ -10,14 +10,26 @@
 #include <errno.h>
 #include <string.h>
 
-void createDirectory(const std::string &dirname) {
+int createDirectory(const std::string &dirname) {
     
     errno = 0; 
 
-    if(!mkdir(dirname.c_str(), 0666)) {
-        perror(strerror(errno));
-        exit(EXIT_FAILURE); 
+    if(mkdir(dirname.c_str(), 0666) != 0) {
+        switch(errno) {
+            /* If the file exists, check that it is a directory */
+            case EEXIST:
+                struct stat info; 
+                stat(dirname.c_str(), &info);
+                return (S_ISDIR(info.st_mode)); 
+                break;
+            default: 
+                perror(strerror(errno));
+                return 0;
+                break; 
+        }
     }
+
+    return 1; 
 }
 
 void string_appendInt(std::string &str, int x) {
