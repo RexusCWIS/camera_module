@@ -9,6 +9,10 @@
 #include "gtest/gtest.h"
 #include <string>
 
+TEST(DirectoryCreation, Standard) {
+    ASSERT_TRUE(createDirectory("testDir")); 
+}
+
 /**
  * @brief Tests the @ref getFileExtension() method with simple file names.  
  */
