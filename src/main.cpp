@@ -190,10 +190,13 @@ static void saveImage(char *buffer) {
 
     std::string filename = "images/image";
     string_appendInt(filename, cp.cntr);
-    filename += ".png"; 
+    filename += ".pgm"; 
 
     Image *i = cp.rb->getImageFromBuffer(buffer);
-    i->writeToPNG(filename.c_str()); 
+    if(i->isBeingWritten()) {
+        std::cout << "Ring buffer overflow!" << std::endl; 
+    }
+    i->writeToPGM(filename.c_str()); 
     cp.cntr++; 
 }
 

@@ -12,6 +12,7 @@ Image::Image(unsigned int width, unsigned int height) :
             i_width(width), i_height(height) {
  
     unsigned int imageSize = width * height; 
+    this->i_isBeingWritten = false; 
 
     this->i_buffer = new pixel_t[imageSize];
     mlock(this->i_buffer, imageSize); 
@@ -41,6 +42,8 @@ void Image::writeToPNG(const char *filename, char *title) {
     png_infop info_ptr; 
     png_bytep row;
 
+    this->i_isBeingWritten = true;
+    
     /* Open the file */
     fp = fopen(filename, "wb");
     if (fp == NULL) {
@@ -96,16 +99,20 @@ void Image::writeToPNG(const char *filename, char *title) {
     png_free_data(png_ptr, info_ptr, PNG_FREE_ALL, -1); 
     png_destroy_write_struct(&png_ptr, (png_infopp) NULL); 
     delete [] row; 
+    
+    this->i_isBeingWritten = false;
 }
 
 size_t Image::writeToPGM(const char *filename) {
 
+    this->i_isBeingWritten = true;
+    
     size_t bytes = 0; 
     FILE *fp = fopen(filename, "wb"); 
     if (fp == NULL) {
         /** @todo Throw file exception */
     }
-
+    
     /* PGM file header.
      * The P5 indicator on the first line specifies the PGM format.
      */
@@ -116,8 +123,15 @@ size_t Image::writeToPGM(const char *filename) {
     bytes += fwrite(this->i_buffer, sizeof(pixel_t), this->i_width * this->i_height, fp); 
 
     fclose(fp);
+    
+    this->i_isBeingWritten = false;
 
     return bytes; 
+}
+
+bool Image::isBeingWritten(void) {
+    
+    return this->i_isBeingWritten; 
 }
 
 Image::~Image() {
