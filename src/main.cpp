@@ -29,17 +29,21 @@ static inline void setDefaults(void);
 typedef enum {
     SINGLE, 
     MULTIPLE
-}ProgramMode_e; 
+}ProgramMode_e;
+
+typedef enum {
+    PNG,
+    BMP, 
+    PGM
+}OutputFormat_e; 
 
 typedef struct {
     int nframes; 
     std::string outputFile; 
     std::string fileExtension; 
     std::string outputDir; 
-    bool detectExtension; 
-    bool saveAsPNG;
-    bool saveAsBMP; 
-    bool saveAsPGM; 
+    bool detectExtension;
+    OutputFormat_e format; 
 }ProgramOptions_s;
 
 typedef struct {
@@ -119,6 +123,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    /* Automatic extension detection */ 
     if(programOpts.detectExtension) {
         programOpts.fileExtension = getFileExtension(programOpts.outputFile);
     }
@@ -128,16 +133,17 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE); 
     }
 
+    /* Detect the extension provided using the -f command line argument */
     if(programOpts.fileExtension == "png") {
-        programOpts.saveAsPNG = true; 
+        programOpts.format = PNG; 
     }
 
     else if(programOpts.fileExtension == "pgm") {
-        programOpts.saveAsPGM = true; 
+        programOpts.format = PGM; 
     }
 
     else if(programOpts.fileExtension == "bmp") {
-        programOpts.saveAsBMP = true; 
+        programOpts.format = BMP; 
     }
 
     else {
@@ -280,12 +286,15 @@ static void singleAcquisition(const char *filename) {
                 "\nException ID: " << e.id() << endl;
     }
 
-    if(programOpts.saveAsPNG) { 
-        i->writeToPNG(filename);
-    }
-
-    if(programOpts.saveAsPGM) {
-        i->writeToPGM(filename); 
+    switch(programOpts.format) {
+        case PNG: 
+            i->writeToPNG(filename);
+            break; 
+        case PGM: 
+            i->writeToPGM(filename); 
+            break; 
+        default: 
+            break; 
     }
 
     delete i; 
@@ -297,13 +306,11 @@ static void singleAcquisition(const char *filename) {
 static inline void setDefaults(void) {
     programOpts.nframes = 1; 
     programOpts.outputFile = "image.png"; 
-    programOpts.fileExtension = ""; 
+    programOpts.fileExtension = "png"; 
     programOpts.outputDir = "images"; 
-    programOpts.detectExtension = true; 
-    programOpts.saveAsPNG = false; 
-    programOpts.saveAsBMP = false; 
-    programOpts.saveAsPGM = false;
-    
+    programOpts.detectExtension = false; 
+    programOpts.format = PNG; 
+
     programMode = SINGLE; 
 }
 
