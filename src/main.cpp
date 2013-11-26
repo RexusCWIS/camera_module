@@ -74,7 +74,6 @@ int main(int argc, char *argv[]) {
     cout << "Output file: " << programOpts.outputFile << endl; 
 
     /* Command-line arguments parsing */
-    /** @todo Use getopt_long to enable double dash (--) options */
     while( (opt = getopt_long(argc, argv, "a:f:lo:i", longOpts, &longIndex)) != -1) {
 
         switch (opt) {
@@ -198,9 +197,11 @@ static void saveImage(char *buffer) {
 
     std::string filename = "images/image";
     string_appendInt(filename, cp.cntr);
-    filename += ".png"; 
+    filename += programOpts.fileExtension; 
 
     Image *i = cp.rb->getImageFromBuffer(buffer);
+
+    /** @todo Propose multiple formats here */
     i->writeToPNG(filename.c_str()); 
     cp.cntr++; 
 }
