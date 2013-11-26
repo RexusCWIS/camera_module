@@ -12,6 +12,7 @@ Image::Image(unsigned int width, unsigned int height) :
             i_width(width), i_height(height) {
  
     unsigned int imageSize = width * height; 
+    this->i_isBeingWritten = false; 
 
     this->i_buffer = new pixel_t[imageSize];
     mlock(this->i_buffer, imageSize); 
