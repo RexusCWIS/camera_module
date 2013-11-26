@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
         switch (opt) {
             case 'a':
                 programMode = MULTIPLE; 
-                programOpts.outputDir = optarg; 
+                programOpts.outputDir = optarg;
                 break; 
 
             /* Specify the output format */
@@ -152,9 +152,15 @@ int main(int argc, char *argv[]) {
 
     /* Acquisition */
     if(programMode == MULTIPLE) {
+        if(!createDirectory(programOpts.outputDir)) {
+            exit(EXIT_FAILURE); 
+        }
+
         prepareForAcquisition(); 
+        
         while(!cp.done)
             ;
+        
         delete cp.c; 
         delete cp.rxpipe;
         delete cp.rb; 
@@ -195,7 +201,7 @@ static void orderProcessing(char orders[], int size) {
 
 static void saveImage(char *buffer) {
 
-    std::string filename = "images/image";
+    std::string filename = programOpts.outputDir + "/image";
     string_appendInt(filename, cp.cntr);
     filename += programOpts.fileExtension; 
 
