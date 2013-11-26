@@ -11,25 +11,30 @@
 #include <string.h>
 
 int createDirectory(const std::string &dirname) {
+
+    int rvalue = 1; 
     
     errno = 0; 
 
-    if(mkdir(dirname.c_str(), 0666) != 0) {
+    if(mkdir(dirname.c_str(), 0777) != 0) {
         switch(errno) {
             /* If the file exists, check that it is a directory */
             case EEXIST:
                 struct stat info; 
                 stat(dirname.c_str(), &info);
-                return (S_ISDIR(info.st_mode)); 
+                rvalue = (S_ISDIR(info.st_mode)); 
                 break;
             default: 
                 perror(strerror(errno));
-                return 0;
+                rvalue = 0; 
                 break; 
         }
     }
+    
+    /* Permissions are not properly set by mkdir, we have to set them with chmod */
+    chmod(dirname.c_str(), 0777);
 
-    return 1; 
+    return rvalue; 
 }
 
 void string_appendInt(std::string &str, int x) {
