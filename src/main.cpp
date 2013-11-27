@@ -26,16 +26,24 @@ static void prepareForAcquisition(void);
 static void saveImage(char *buffer); 
 static inline void setDefaults(void); 
 
+typedef enum {
+    SINGLE, 
+    MULTIPLE
+}ProgramMode_e;
+
+typedef enum {
+    PNG,
+    BMP, 
+    PGM
+}OutputFormat_e; 
+
 typedef struct {
     int nframes; 
     std::string outputFile; 
     std::string fileExtension; 
     std::string outputDir; 
-    bool detectExtension; 
-    bool saveAsPNG;
-    bool saveAsBMP; 
-    bool saveAsPGM; 
-    bool acquisition; 
+    bool detectExtension;
+    OutputFormat_e format; 
 }ProgramOptions_s;
 
 typedef struct {
@@ -46,14 +54,14 @@ typedef struct {
     bool done;
 }CameraParameters_s; 
 
-static ProgramOptions_s programOpts; 
+static ProgramOptions_s programOpts;
+static ProgramMode_e programMode; 
 static CameraParameters_s cp; 
 
 
 /* Long options definition */
 static const struct option longOpts[] = {
-    {"format", required_argument, NULL, 'f'},
-    {"nframes", required_argument, NULL, 0}
+    {"format", required_argument, NULL, 'f'}
 }; 
 
 int main(int argc, char *argv[]) {
@@ -66,13 +74,12 @@ int main(int argc, char *argv[]) {
     cout << "Output file: " << programOpts.outputFile << endl; 
 
     /* Command-line arguments parsing */
-    /** @todo Use getopt_long to enable double dash (--) options */
     while( (opt = getopt_long(argc, argv, "a:f:lo:i", longOpts, &longIndex)) != -1) {
 
         switch (opt) {
             case 'a':
-                programOpts.acquisition = true; 
-                programOpts.outputDir = optarg; 
+                programMode = MULTIPLE; 
+                programOpts.outputDir = optarg;
                 break; 
 
             /* Specify the output format */
@@ -95,6 +102,7 @@ int main(int argc, char *argv[]) {
 
             /* Output file specification */
             case 'o':
+                programMode = SINGLE; 
                 programOpts.outputFile = optarg;
                 break; 
                
@@ -110,13 +118,11 @@ int main(int argc, char *argv[]) {
 
             /* Long option with no short option counterpart */
             case 0:
-                if(strcmp( "nframes", longOpts[longIndex].name) == 0) {
-                    programOpts.nframes = 10; 
-                }
                 break; 
         }
     }
 
+    /* Automatic extension detection */ 
     if(programOpts.detectExtension) {
         programOpts.fileExtension = getFileExtension(programOpts.outputFile);
     }
@@ -126,16 +132,17 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE); 
     }
 
+    /* Detect the extension provided using the -f command line argument */
     if(programOpts.fileExtension == "png") {
-        programOpts.saveAsPNG = true; 
+        programOpts.format = PNG; 
     }
 
     else if(programOpts.fileExtension == "pgm") {
-        programOpts.saveAsPGM = true; 
+        programOpts.format = PGM; 
     }
 
     else if(programOpts.fileExtension == "bmp") {
-        programOpts.saveAsBMP = true; 
+        programOpts.format = BMP; 
     }
 
     else {
@@ -144,10 +151,16 @@ int main(int argc, char *argv[]) {
     }
 
     /* Acquisition */
-    if(programOpts.acquisition) {
+    if(programMode == MULTIPLE) {
+        if(!createDirectory(programOpts.outputDir)) {
+            exit(EXIT_FAILURE); 
+        }
+
         prepareForAcquisition(); 
+        
         while(!cp.done)
             ;
+        
         delete cp.c; 
         delete cp.rxpipe;
         delete cp.rb; 
@@ -188,9 +201,10 @@ static void orderProcessing(char orders[], int size) {
 
 static void saveImage(char *buffer) {
 
-    std::string filename = "images/image";
+    std::string filename = programOpts.outputDir + "/image";
     string_appendInt(filename, cp.cntr);
-    filename += ".pgm"; 
+    
+    filename += programOpts.fileExtension; 
 
     Image *i = cp.rb->getImageFromBuffer(buffer);
     if(i->isBeingWritten()) {
@@ -281,12 +295,15 @@ static void singleAcquisition(const char *filename) {
                 "\nException ID: " << e.id() << endl;
     }
 
-    if(programOpts.saveAsPNG) { 
-        i->writeToPNG(filename);
-    }
-
-    if(programOpts.saveAsPGM) {
-        i->writeToPGM(filename); 
+    switch(programOpts.format) {
+        case PNG: 
+            i->writeToPNG(filename);
+            break; 
+        case PGM: 
+            i->writeToPGM(filename); 
+            break; 
+        default: 
+            break; 
     }
 
     delete i; 
@@ -298,12 +315,11 @@ static void singleAcquisition(const char *filename) {
 static inline void setDefaults(void) {
     programOpts.nframes = 1; 
     programOpts.outputFile = "image.png"; 
-    programOpts.fileExtension = ""; 
+    programOpts.fileExtension = "png"; 
     programOpts.outputDir = "images"; 
-    programOpts.detectExtension = true; 
-    programOpts.saveAsPNG = false; 
-    programOpts.saveAsBMP = false; 
-    programOpts.saveAsPGM = false; 
-    programOpts.acquisition = false; 
+    programOpts.detectExtension = false; 
+    programOpts.format = PNG; 
+
+    programMode = SINGLE; 
 }
 
