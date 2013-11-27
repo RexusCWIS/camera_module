@@ -8,7 +8,7 @@ SRCDIR  = $(TOPDIR)
 INCDIR  = $(TOPDIR)
 LIBDIR  = ../../libs
 
-CXX = g++ -std=c++0x 
+CXX = g++ -std=c++0x -O2 
 LIBS	 = -L$(LIBDIR) -lcwis-utils -lcwis-camera  -lcwis-pipes -lueye_api -lpng -lpthread
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 

@@ -26,10 +26,13 @@ int main(int argc, char **argv) {
     }
 
     const auto startTime = std::chrono::monotonic_clock::now(); 
+    
+    for(unsigned incr = 0; incr < NB_OF_IMAGES; incr++) {
+        i[incr]->writeToPGM("image.pgm"); 
+    } 
+    double elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::monotonic_clock::now() - startTime).count() / 1000.0;
 
-    double elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::monotonic_clock::now() - startTime).count() / 1000.0;
-
-    std::cout << "Elapsed time: " << elapsedTime << "seconds" << std::endl; 
+    std::cout << "Average time per image: " << (elapsedTime / NB_OF_IMAGES) << " milliseconds" << std::endl; 
 
     for(unsigned incr = 0; incr < NB_OF_IMAGES; incr++) {
         delete i[incr]; 

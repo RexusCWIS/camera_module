@@ -7,7 +7,7 @@ TOPDIR   = ..
 SRCDIR   = $(TOPDIR)/camera
 INCDIR   = $(TOPDIR)/camera
 
-CXX = g++
+CXX = g++ -O2
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 LIB = $(TOPDIR)/libcwis-camera.a
