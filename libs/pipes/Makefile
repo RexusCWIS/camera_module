@@ -4,8 +4,8 @@
 .SUFFIXES: 
 
 TOPDIR   = ..
-SRCDIR   = $(TOPDIR)/pipes/src
-INCDIR   = $(TOPDIR)/pipes/include
+SRCDIR   = $(TOPDIR)/pipes
+INCDIR   = $(TOPDIR)/pipes
 
 CXX = g++
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow

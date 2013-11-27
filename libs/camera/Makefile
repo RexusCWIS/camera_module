@@ -4,8 +4,8 @@
 .SUFFIXES: 
 
 TOPDIR   = ..
-SRCDIR   = $(TOPDIR)/camera/src
-INCDIR   = $(TOPDIR)/camera/include
+SRCDIR   = $(TOPDIR)/camera
+INCDIR   = $(TOPDIR)/camera
 
 CXX = g++
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
