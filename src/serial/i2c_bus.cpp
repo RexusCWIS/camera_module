@@ -3,7 +3,7 @@
  * @I2CBus class implementation.
  */
 
-#include "i2c/i2c_bus.hpp"
+#include "serial/i2c_bus.hpp"
 
 I2CBus::I2CBus(std::string tty) {
 

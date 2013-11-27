@@ -6,7 +6,7 @@
 #ifndef DEF_RX_THREAD_HPP
 #define DEF_RX_THREAD_HPP
 
-#include "i2c/i2c_bus.hpp"
+#include "serial/i2c_bus.hpp"
 
 class RXThread {
     public: 

@@ -8,6 +8,11 @@
 
 #include <string>
 
+/**
+ * @brief Creates a directory.  
+ */
+int createDirectory(const std::string &dirname); 
+
 /** 
  * @brief Appends the given @p integer to the given @p string. 
  */

@@ -65,6 +65,12 @@ class Image {
         size_t writeToPGM(const char *filename);
 
         /**
+         * @brief Specifies if the image is currently being written to disk. 
+         * @returns @p true if the image is currently being written. 
+         */
+        bool isBeingWritten(void); 
+
+        /**
          * @brief Frees the image memory and unlocks it from RAM. 
          */
         ~Image(); 
@@ -77,7 +83,10 @@ class Image {
         /** @brief Number of bytes required to store a single pixel. */
         
         /** @brief Memory buffer holding the actual image. */
-        pixel_t *i_buffer; 
+        pixel_t *i_buffer;
+    
+        /** @brief Indicates if the image buffer is currently being written by a process to persistent memory. */
+        bool i_isBeingWritten; 
 };
 
 

@@ -16,8 +16,9 @@
 
 UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID), m_stop(false) {
 
-    INT status = 0;
+    this->m_running = false; 
 
+    INT status = 0;
     /* Initialize the camera */
     status = is_InitCamera(&(this->camID), NULL);
 
@@ -212,15 +213,17 @@ unsigned int UEye_Camera::getDefaultPixelClock(void) {
     return defaultPixelClock; 
 }
 
-void UEye_Camera::start(RingBuffer *ringBuffer) {
+void UEye_Camera::start(RingBuffer *ringBuffer, void (*callback)(char *))  {
  
     /* If the camera was already running, stop it */
     if(this->m_running) {
         this->stop(); 
     }
 
-    this->m_ringBuffer = ringBuffer; 
+    this->m_ringBuffer   = ringBuffer; 
+    this->m_userCallback = callback; 
 
+    /* Set the camera in live acquisition mode */
     INT status  = IS_SUCCESS;
 
     /* Set camera memory buffers */
@@ -253,6 +256,8 @@ void UEye_Camera::start(RingBuffer *ringBuffer) {
         string msg = "Could not start live camera acquisition."; 
         throw UEye_Exception(this->camID, status, msg); 
     }
+
+    this->m_running = true; 
     
     return; 
 }
@@ -264,6 +269,8 @@ void UEye_Camera::stop(void) {
     while(status != IS_SUCCESS) {
         status = is_StopLiveVideo(this->camID, IS_WAIT); 
     }
+
+    this->m_running = false; 
    
     /* Clear image sequence from the camera memory */
     is_ClearSequence(this->camID); 
@@ -283,7 +290,21 @@ void UEye_Camera::stop(void) {
 
 void UEye_Camera::acquisitionCallback(const UEye_Camera *camera) {
 
+    static int cntr = 0; 
     /** @todo Implement callback to a user-defined function */
+    std::cout << "Image " << cntr << " acquired." << std::endl; 
+    cntr++;
+    
+    if(camera->m_userCallback != NULL) {
+        INT dummy   = 0; 
+        char *pLast = NULL; 
+        char *pCur  = NULL; 
+        if(is_GetActSeqBuf(camera->camID, &dummy, &pCur, &pLast) == IS_SUCCESS) {
+            if(pLast != NULL) {
+                camera->m_userCallback(pLast); 
+            }
+        }
+    }
 }
 
 UEye_Camera::~UEye_Camera() {
