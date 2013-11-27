@@ -11,11 +11,11 @@
 
 #include <uEye.h>
 
-#include "utilities.hpp"
-#include "ueye_camera.hpp"
-#include "image.hpp"
+#include "utils/utilities.hpp"
+#include "camera/ueye_camera.hpp"
+#include "camera/image.hpp"
 #include "pipes/rx_pipe.hpp"
-#include "exceptions/ueye_exception.hpp"
+#include "camera/exceptions/ueye_exception.hpp"
 
 using namespace std; 
 
