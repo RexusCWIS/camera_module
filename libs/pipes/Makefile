@@ -4,29 +4,20 @@
 .SUFFIXES: 
 
 TOPDIR   = ..
-SRCDIR   = $(TOPDIR)/camera/src
-INCDIR   = $(TOPDIR)/camera/include
+SRCDIR   = $(TOPDIR)/pipes/src
+INCDIR   = $(TOPDIR)/pipes/include
 
 CXX = g++
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
-LIB = $(TOPDIR)/libcwis-camera.a
+LIB = $(TOPDIR)/libcwis-pipes.a
 
-SRC = $(SRCDIR)/ueye_camera.cpp 	    \
-	  $(SRCDIR)/ueye_event_thread.cpp 	\
-	  $(SRCDIR)/image.cpp			    \
-	  $(SRCDIR)/ring_buffer.cpp		    
+SRC = $(SRCDIR)/rx_pipe.cpp			\
+	  $(SRCDIR)/tx_pipe.cpp
 OBJ = $(SRC:.cpp=.o)
 
 # Build rules
 all: $(LIB)
-
-test: 
-	cd $(TESTDIR); make run
-
-doc: 
-	doxygen Doxyfile
-
 
 $(LIB): $(OBJ)
 	ar -rv $(LIB) $(OBJ) 

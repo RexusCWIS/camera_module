@@ -3,7 +3,7 @@
  * @brief Receiver pipe class implementation. 
  */
 
-#include "pipes/rx_pipe.hpp"
+#include "rx_pipe.hpp"
 
 /** @todo Implement error handling (open and close operations, ...) */
 RXPipe::RXPipe(const std::string &pipefile, void (*rxCallback)(char *, int), int dataFrameSize) :

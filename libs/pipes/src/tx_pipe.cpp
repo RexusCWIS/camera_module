@@ -3,7 +3,7 @@
  * @brief Transmitter pipe class definition. 
  */
 
-#include "pipes/tx_pipe.hpp"
+#include "tx_pipe.hpp"
 
 TXPipe::TXPipe(const std::string &pipefile) {
 
