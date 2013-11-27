@@ -25,12 +25,14 @@ int main(int argc, char **argv) {
         }
     }
 
-    const auto startTime = std::chrono::steady_clock::now(); 
+    const auto startTime = std::chrono::monotonic_clock::now(); 
 
-    double elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count() / 1000.0;
+    double elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::monotonic_clock::now() - startTime).count() / 1000.0;
 
     std::cout << "Elapsed time: " << elapsedTime << "seconds" << std::endl; 
 
-    delete [] i; 
+    for(unsigned incr = 0; incr < NB_OF_IMAGES; incr++) {
+        delete i[incr]; 
+    }
 }
 
