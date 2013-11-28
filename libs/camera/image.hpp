@@ -7,6 +7,7 @@
 #define DEF_IMAGE_HPP
 
 #include <stdlib.h>
+#include <string>
 
 /** @brief Modular type for the pixel size. */
 typedef char pixel_t; 
@@ -84,9 +85,7 @@ class Image {
         unsigned int i_size; 
         /** @brief Number of bytes required to store a single pixel. */
  
-        const char *i_pgmHeader;
-
-        unsigned int i_pgmHeaderSize; 
+        std::string i_pgmHeader;
 
         /** @brief Memory buffer holding the actual image. */
         pixel_t *i_buffer;

@@ -23,10 +23,7 @@ Image::Image(unsigned int width, unsigned int height) :
 
     ss << "P5\n# COMMENT\n" << width << " " << height  << "\n255\n";
 
-    std::string header = ss.str();
-
-    this->i_pgmHeader = header.c_str();
-    this->i_pgmHeaderSize = header.size(); 
+    this->i_pgmHeader = ss.str();
 }
 
 pixel_t * Image::getImageBuffer(void) const {
@@ -125,7 +122,7 @@ size_t Image::writeToPGM(const char *filename) {
     }
     
     /* PGM file header */
-    bytes += fwrite(this->i_pgmHeader, sizeof(char), this->i_pgmHeaderSize, fp); 
+    bytes += fwrite(this->i_pgmHeader.c_str(), sizeof(char), this->i_pgmHeader.size(), fp); 
 
     /* Write the actual image data */
     bytes += fwrite(this->i_buffer, sizeof(pixel_t), this->i_size, fp); 
