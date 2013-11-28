@@ -152,6 +152,23 @@ int UEye_Camera::getNumberOfCameras(void) {
     return (int) nbOfCams; 
 }
 
+void UEye_Camera::setAutoGain(void) {
+
+    double autoGain = 1.0; 
+    if(is_SetAutoParameter(this->camID, IS_SET_ENABLE_AUTO_GAIN, &autoGain, NULL) != IS_SUCCESS) {
+        std::cerr << "Could not set auto gain" << std::endl; 
+    }
+    
+}
+
+void UEye_Camera::setAutoExposure(void) {
+    
+    double autoExposure = 1.0; 
+    if(is_SetAutoParameter(this->camID, IS_SET_ENABLE_AUTO_SHUTTER, &autoExposure, NULL) != IS_SUCCESS) {
+        std::cerr << "Could not set auto exposure time" << std::endl; 
+    }
+}
+
 unsigned int UEye_Camera::getPixelClock(void) {
 
     UINT pixelClock = 0; 

@@ -74,6 +74,16 @@ class UEye_Camera: public Camera {
         static int getNumberOfCameras(void); 
 
         /**
+         * @brief Sets automatic hardware gain control.
+         */
+        void setAutoGain(void); 
+
+        /**
+         * @brief Sets automatic hardware exposure time control.
+         */
+        void setAutoExposure(void); 
+
+        /**
          * @brief Returns the current pixel clock of the camera. 
          */
         unsigned int getPixelClock(void); 
