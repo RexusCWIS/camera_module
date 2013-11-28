@@ -6,10 +6,11 @@
 #include "camera/image.hpp"
 #include <chrono>
 #include <iostream>
+#include <cstdlib>
 
 #define NB_OF_IMAGES    100
-#define IMAGE_WIDTH     800
-#define IMAGE_HEIGHT    600
+#define IMAGE_WIDTH     3400
+#define IMAGE_HEIGHT    1300
 
 int main(int argc, char **argv) {
 
@@ -25,17 +26,24 @@ int main(int argc, char **argv) {
         }
     }
 
+    #ifndef PROFILING
     const auto startTime = std::chrono::monotonic_clock::now(); 
-    
-    for(unsigned incr = 0; incr < NB_OF_IMAGES; incr++) {
+    #endif
+
+    for(unsigned int incr = 0; incr < NB_OF_IMAGES; incr++) {
         i[incr]->writeToPGM("image.pgm"); 
-    } 
+    }
+
+    #ifndef PROFILING
     double elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::monotonic_clock::now() - startTime).count() / 1000.0;
 
     std::cout << "Average time per image: " << (elapsedTime / NB_OF_IMAGES) << " milliseconds" << std::endl; 
+    #endif
 
-    for(unsigned incr = 0; incr < NB_OF_IMAGES; incr++) {
+    for(unsigned int incr = 0; incr < NB_OF_IMAGES; incr++) {
         delete i[incr]; 
     }
+
+    exit(EXIT_SUCCESS); 
 }
 

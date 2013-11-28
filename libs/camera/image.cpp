@@ -7,15 +7,23 @@
 #include <png.h>
 #include <sys/mman.h>
 #include <stdio.h>
+#include <sstream>
 
 Image::Image(unsigned int width, unsigned int height) : 
             i_width(width), i_height(height) {
  
-    unsigned int imageSize = width * height; 
+    this->i_size = width * height; 
     this->i_isBeingWritten = false; 
 
-    this->i_buffer = new pixel_t[imageSize];
-    mlock(this->i_buffer, imageSize); 
+    this->i_buffer = new pixel_t[this->i_size];
+    mlock(this->i_buffer, this->i_size);
+
+    /* Prepare the PGM header */
+    std::stringstream ss;
+
+    ss << "P5\n# COMMENT\n" << width << " " << height  << "\n255\n";
+
+    this->i_pgmHeader = ss.str();
 }
 
 pixel_t * Image::getImageBuffer(void) const {
@@ -113,14 +121,11 @@ size_t Image::writeToPGM(const char *filename) {
         /** @todo Throw file exception */
     }
     
-    /* PGM file header.
-     * The P5 indicator on the first line specifies the PGM format.
-     */
-    bytes += fprintf(fp, "P5\n# COMMENT\n%d %d\n%d\n", 
-                     this->i_width, this->i_height, 0xFF); 
+    /* PGM file header */
+    bytes += fwrite(this->i_pgmHeader.c_str(), sizeof(char), this->i_pgmHeader.size(), fp); 
 
     /* Write the actual image data */
-    bytes += fwrite(this->i_buffer, sizeof(pixel_t), this->i_width * this->i_height, fp); 
+    bytes += fwrite(this->i_buffer, sizeof(pixel_t), this->i_size, fp); 
 
     fclose(fp);
     

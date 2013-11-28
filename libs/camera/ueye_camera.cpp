@@ -292,7 +292,7 @@ void UEye_Camera::stop(void) {
     /* Clear image sequence from the camera memory */
     is_ClearSequence(this->camID); 
 
-    for(unsigned int incr; incr < this->m_ringBuffer->getSize(); incr++) {
+    for(unsigned int incr = 0; incr < this->m_ringBuffer->getSize(); incr++) {
 
         is_FreeImageMem(this->camID, this->m_ringBuffer->at(incr)->getImageBuffer(), this->m_memID[incr]); 
     }
