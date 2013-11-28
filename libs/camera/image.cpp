@@ -7,6 +7,7 @@
 #include <png.h>
 #include <sys/mman.h>
 #include <stdio.h>
+#include <sstream>
 
 Image::Image(unsigned int width, unsigned int height) : 
             i_width(width), i_height(height) {
@@ -15,7 +16,17 @@ Image::Image(unsigned int width, unsigned int height) :
     this->i_isBeingWritten = false; 
 
     this->i_buffer = new pixel_t[imageSize];
-    mlock(this->i_buffer, imageSize); 
+    mlock(this->i_buffer, imageSize);
+
+    /* Prepare the PGM header */
+    std::stringstream ss;
+
+    ss << "P5\n# COMMENT\n" << width << " " << height  << "\n255\n";
+
+    std::string header = ss.str();
+
+    this->i_pgmHeader = header.c_str();
+    this->i_pgmHeaderSize = header.size(); 
 }
 
 pixel_t * Image::getImageBuffer(void) const {
@@ -116,8 +127,7 @@ size_t Image::writeToPGM(const char *filename) {
     /* PGM file header.
      * The P5 indicator on the first line specifies the PGM format.
      */
-    bytes += fprintf(fp, "P5\n# COMMENT\n%d %d\n%d\n", 
-                     this->i_width, this->i_height, 0xFF); 
+    bytes += fwrite(this->i_pgmHeader, sizeof(char), this->i_pgmHeaderSize, fp); 
 
     /* Write the actual image data */
     bytes += fwrite(this->i_buffer, sizeof(pixel_t), this->i_width * this->i_height, fp); 

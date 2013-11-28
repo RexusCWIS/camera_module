@@ -32,7 +32,7 @@ $(LIB): $(OBJ)
 	ar -rv $(LIB) $(OBJ) 
 
 %.o: %.cpp
-	@$(CXX) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -I$(TOPDIR) -o $@ $<
+	$(CXX) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -I$(TOPDIR) -o $@ $< 
 
 clean: 
 	rm -rf $(OBJ)

@@ -81,7 +81,11 @@ class Image {
         /** @brief Image height. */
         unsigned int i_height;
         /** @brief Number of bytes required to store a single pixel. */
-        
+ 
+        const char *i_pgmHeader;
+
+        unsigned int i_pgmHeaderSize; 
+
         /** @brief Memory buffer holding the actual image. */
         pixel_t *i_buffer;
     

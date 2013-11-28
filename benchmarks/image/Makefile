@@ -9,7 +9,8 @@ INCDIR  = $(TOPDIR)
 LIBDIR  = ../../libs
 
 CXX = g++ -std=c++0x -O2 
-LIBS	 = -L$(LIBDIR) -lcwis-utils -lcwis-camera  -lcwis-pipes -lueye_api -lpng -lpthread
+# LIBS	 = -L$(LIBDIR) -lcwis-utils -lcwis-camera  -lcwis-pipes -lueye_api -lpng -lpthread
+LIBS = ../../libs/camera/image.o -lpng
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 APP = image-benchmark.out
@@ -21,10 +22,10 @@ OBJ = $(SRC:.cpp=.o)
 all: $(APP)
 
 $(APP): $(OBJ)
-	g++ -o $@ $(OBJ) $(LIBS)
+	g++ -o $@ $(OBJ) $(LIBS) 
 
 %.o: %.cpp
-	@$(CXX) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -I$(LIBDIR) -o $@ $<
+	@$(CXX) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -I$(LIBDIR) -o $@ $< 
 
 clean: 
 	rm -rf $(OBJ)
