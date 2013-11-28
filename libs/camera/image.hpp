@@ -80,6 +80,8 @@ class Image {
         unsigned int i_width; 
         /** @brief Image height. */
         unsigned int i_height;
+
+        unsigned int i_size; 
         /** @brief Number of bytes required to store a single pixel. */
  
         const char *i_pgmHeader;
