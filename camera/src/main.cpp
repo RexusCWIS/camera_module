@@ -20,54 +20,37 @@
 #include "pipes/rx_pipe.hpp"
 #include "camera/exceptions/ueye_exception.hpp"
 
+#include "camera_settings.hpp"
+
 using namespace std; 
 
 static int displayCameraInformations(void); 
 static int listConnectedCameras(void);
-static void singleAcquisition(const char *filename); 
 static void prepareForAcquisition(void);
 static void saveImage(char *buffer);
 static void * acquisitionThread(void *arg); 
 static inline void setDefaults(void); 
 
-typedef enum {
-    SINGLE, 
-    MULTIPLE
-}ProgramMode_e;
-
-typedef enum {
-    PNG,
-    BMP, 
-    PGM
-}OutputFormat_e; 
-
 typedef struct {
-    int nframes; 
-    std::string outputFile; 
-    std::string fileExtension; 
     std::string outputDir; 
-    bool detectExtension;
-    OutputFormat_e format; 
 }ProgramOptions_s;
 
 typedef struct {
     UEye_Camera *c; 
     RingBuffer *rb;
     RXPipe *rxpipe;
-    unsigned int cntr; 
     bool done;
 }CameraParameters_s; 
 
 static ProgramOptions_s programOpts;
-static ProgramMode_e programMode; 
-static CameraParameters_s cp;
+static CameraParameters_s cp; 
 
 static sem_t nbOfBufferedImages;  
 
 
 /* Long options definition */
 static const struct option longOpts[] = {
-    {"format", required_argument, NULL, 'f'}
+    {"output-dir", required_argument, NULL, 'd'}
 }; 
 
 int main(int argc, char *argv[]) {
@@ -77,22 +60,12 @@ int main(int argc, char *argv[]) {
 
     setDefaults(); 
 
-    cout << "Output file: " << programOpts.outputFile << endl; 
-
     /* Command-line arguments parsing */
-    while( (opt = getopt_long(argc, argv, "a:f:lo:i", longOpts, &longIndex)) != -1) {
+    while( (opt = getopt_long(argc, argv, "d:il", longOpts, &longIndex)) != -1) {
 
         switch (opt) {
-            case 'a':
-                programMode = MULTIPLE; 
+            case 'd':
                 programOpts.outputDir = optarg;
-                break; 
-
-            /* Specify the output format */
-            /** @todo Add validity checks */
-            case 'f':
-                programOpts.detectExtension = false;
-                programOpts.fileExtension   = optarg;
                 break; 
 
             /* List all connected cameras and exit */
@@ -106,12 +79,6 @@ int main(int argc, char *argv[]) {
                 exit(displayCameraInformations()); 
                 break;
 
-            /* Output file specification */
-            case 'o':
-                programMode = SINGLE; 
-                programOpts.outputFile = optarg;
-                break; 
-               
             /* Missing argument to an option */
             case ':':
                 cerr << "Invalid option." << endl; 
@@ -128,53 +95,19 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    /* Automatic extension detection */ 
-    if(programOpts.detectExtension) {
-        programOpts.fileExtension = getFileExtension(programOpts.outputFile);
-    }
-
-    if(programOpts.fileExtension.empty()) {
-        cerr << "No file extension, cannot specify the output format. Specify an extension or use specific command line options." << endl; 
-        exit(EXIT_FAILURE); 
-    }
-
-    /* Detect the extension provided using the -f command line argument */
-    if(programOpts.fileExtension == "png") {
-        programOpts.format = PNG; 
-    }
-
-    else if(programOpts.fileExtension == "pgm") {
-        programOpts.format = PGM; 
-    }
-
-    else if(programOpts.fileExtension == "bmp") {
-        programOpts.format = BMP; 
-    }
-
-    else {
-        cerr << "Invalid file extension: " << programOpts.fileExtension << "\ncannot specify the output format. " << endl;
-        exit(EXIT_FAILURE); 
-    }
-
     /* Acquisition */
-    if(programMode == MULTIPLE) {
-        if(!createDirectory(programOpts.outputDir)) {
-            exit(EXIT_FAILURE); 
-        }
-
-        prepareForAcquisition(); 
-        
-        while(!cp.done)
-            ;
-        
-        delete cp.c; 
-        delete cp.rxpipe;
-        delete cp.rb; 
+    if(!createDirectory(programOpts.outputDir)) {
+        exit(EXIT_FAILURE); 
     }
 
-    else {
-        singleAcquisition(programOpts.outputFile.c_str()); 
-    }
+    prepareForAcquisition(); 
+        
+    while(!cp.done)
+        ;
+        
+    delete cp.c; 
+    delete cp.rxpipe;
+    delete cp.rb; 
 
     exit(EXIT_SUCCESS); 
 }
@@ -208,17 +141,14 @@ static void orderProcessing(char orders[], int size) {
 static void saveImage(char *buffer) {
 
     std::string filename = programOpts.outputDir + "/image";
-    string_appendInt(filename, cp.cntr);
  
-    filename += "."; 
-    filename += programOpts.fileExtension; 
+    filename += ".pgm"; 
 
     Image *i = cp.rb->getImageFromBuffer(buffer);
     if(i->isBeingWritten()) {
         std::cout << "Ring buffer overflow!" << std::endl; 
     }
     i->writeToPGM(filename.c_str()); 
-    cp.cntr++; 
 }
 
 static void *acquisitionThread(void *arg) {
@@ -257,7 +187,6 @@ static void prepareForAcquisition(void) {
     std::cout << "Framerate: " << fr << " frames per second" << std::endl; 
 
     cp.rb = new RingBuffer(AOI_WIDTH, AOI_HEIGHT, RING_BUFFER_SIZE); 
-    cp.cntr = 0u;
 
     cp.rxpipe = new RXPipe("/tmp/camera_pipe.p", &orderProcessing);
     cp.rxpipe->start(); 
@@ -314,49 +243,7 @@ static int listConnectedCameras(void) {
     return EXIT_SUCCESS;  
 }
 
-static void singleAcquisition(const char *filename) {
-
-    cout << "Frames: " << programOpts.nframes << endl; 
-
-    Image *i = new Image(800u, 600u);
-    UEye_Camera *c = new UEye_Camera(1);
-
-    c->setAreaOfInterest(0, 0, 800, 600);
-    try {
-        c->capture(i); 
-    }
-
-    catch(UEye_Exception const &e) {
-        
-        cerr << "Camera " << e.camera() << ": " << e.what() <<
-                "\nException ID: " << e.id() << endl;
-    }
-
-    switch(programOpts.format) {
-        case PNG: 
-            i->writeToPNG(filename);
-            break; 
-        case PGM: 
-            i->writeToPGM(filename); 
-            break; 
-        default: 
-            break; 
-    }
-
-    delete i; 
-    delete c; 
-
-    return; 
-}
-
 static inline void setDefaults(void) {
-    programOpts.nframes = 1; 
-    programOpts.outputFile = "image.pgm"; 
-    programOpts.fileExtension = "pgm"; 
     programOpts.outputDir = "images"; 
-    programOpts.detectExtension = false; 
-    programOpts.format = PNG; 
-
-    programMode = SINGLE; 
 }
 
