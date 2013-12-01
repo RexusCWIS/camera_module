@@ -203,7 +203,8 @@ static void saveImage(char *buffer) {
 
     std::string filename = programOpts.outputDir + "/image";
     string_appendInt(filename, cp.cntr);
-    
+ 
+    filename += "."; 
     filename += programOpts.fileExtension; 
 
     Image *i = cp.rb->getImageFromBuffer(buffer);
@@ -217,9 +218,14 @@ static void saveImage(char *buffer) {
 static void prepareForAcquisition(void) {
 
     cp.c  = new UEye_Camera(1);
-    cp.c->setAreaOfInterest(0, 0, 800u, 600u);
+    cp.c->setAreaOfInterest(AOI_H_OFFSET, AOI_V_OFFSET, AOI_WIDTH, AOI_HEIGHT);
+    cp.c->setAutoExposure(); 
+    cp.c->setAutoGain(); 
+    double fr = cp.c->setFramerate(5.0);
+    
+    std::cout << "Framerate: " << fr << " frames per second" << std::endl; 
 
-    cp.rb = new RingBuffer(800u, 600u, 10); 
+    cp.rb = new RingBuffer(AOI_WIDTH, AOI_HEIGHT, 10); 
     cp.cntr = 0u;
 
     cp.rxpipe = new RXPipe("/tmp/camera_pipe.p", &orderProcessing);

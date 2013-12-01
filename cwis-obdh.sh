@@ -7,5 +7,5 @@ rm -f /tmp/camera_pipe.p
 
 # Experiment
 ./simulator/cwis_sim.out &
-./camera/cwis_camera.out -a images
+./camera/cwis_camera.out -a images -f pgm
 

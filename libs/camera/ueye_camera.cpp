@@ -50,7 +50,7 @@ UEye_Camera::UEye_Camera(HIDS cameraID) : camID(cameraID), m_stop(false) {
     }
 
     /* Set the minimum pixel clock */
-    this->setPixelClock(this->getMinimumPixelClock());
+    this->setPixelClock(16);
 }
 
 void UEye_Camera::capture(Image *i) {

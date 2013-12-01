@@ -4,20 +4,17 @@
 .SUFFIXES: 
 
 TOPDIR = $(shell pwd) 
-CAMDIR = ../camera
+LIBDIR = ../libs
 
 APP = cwis_sim.out
 
 CXX = g++
-INCFLAGS = -I$(CAMDIR)/include
-LIBS = 
-
-PIPESRC = $(CAMDIR)/src/pipes/tx_pipe.cpp     
+INCFLAGS = -I$(LIBDIR)
+LIBS = -L$(LIBDIR) -lcwis-pipes 
 
 SIMSRC  = main.cpp
 
-OBJ = $(PIPESRC:.cpp=.o)    \
-	  $(SIMSRC:.cpp=.o)
+OBJ = $(SIMSRC:.cpp=.o)
 
 all: $(APP)
 
