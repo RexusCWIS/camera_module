@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <getopt.h>
 
+#include <pthread.h>
+#include <semaphore.h>
+
 #include <uEye.h>
 
 #include "utils/utilities.hpp"
@@ -23,7 +26,8 @@ static int displayCameraInformations(void);
 static int listConnectedCameras(void);
 static void singleAcquisition(const char *filename); 
 static void prepareForAcquisition(void);
-static void saveImage(char *buffer); 
+static void saveImage(char *buffer);
+static void * acquisitionThread(void *arg); 
 static inline void setDefaults(void); 
 
 typedef enum {
@@ -56,7 +60,9 @@ typedef struct {
 
 static ProgramOptions_s programOpts;
 static ProgramMode_e programMode; 
-static CameraParameters_s cp; 
+static CameraParameters_s cp;
+
+static sem_t nbOfBufferedImages;  
 
 
 /* Long options definition */
@@ -215,6 +221,31 @@ static void saveImage(char *buffer) {
     cp.cntr++; 
 }
 
+static void *acquisitionThread(void *arg) {
+
+    unsigned int currentImage = 0, 
+                 imageCounter = 0;
+
+    std::string filename;
+
+    while(!endOfAcquisition) {
+   
+        /* While there are images in the ring buffer, save them */
+        if(acquiredImages) {
+            filename = programOpts.outputDir + "/image";
+            string_appendInt(filename, imageCounter);
+ 
+            filename += ".pgm"; 
+            
+            cp.rb->at(currentImage)->writeToPGM(filename);
+
+            imageCounter++;
+            currentImage = imageCounter % RING_BUFFER_SIZE; 
+            acquiredImages--; 
+        }
+    }
+}
+
 static void prepareForAcquisition(void) {
 
     cp.c  = new UEye_Camera(1);
@@ -225,7 +256,7 @@ static void prepareForAcquisition(void) {
     
     std::cout << "Framerate: " << fr << " frames per second" << std::endl; 
 
-    cp.rb = new RingBuffer(AOI_WIDTH, AOI_HEIGHT, 10); 
+    cp.rb = new RingBuffer(AOI_WIDTH, AOI_HEIGHT, RING_BUFFER_SIZE); 
     cp.cntr = 0u;
 
     cp.rxpipe = new RXPipe("/tmp/camera_pipe.p", &orderProcessing);
@@ -320,8 +351,8 @@ static void singleAcquisition(const char *filename) {
 
 static inline void setDefaults(void) {
     programOpts.nframes = 1; 
-    programOpts.outputFile = "image.png"; 
-    programOpts.fileExtension = "png"; 
+    programOpts.outputFile = "image.pgm"; 
+    programOpts.fileExtension = "pgm"; 
     programOpts.outputDir = "images"; 
     programOpts.detectExtension = false; 
     programOpts.format = PNG; 
