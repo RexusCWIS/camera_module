@@ -17,6 +17,8 @@
 #include "pipes/rx_pipe.hpp"
 #include "camera/exceptions/ueye_exception.hpp"
 
+#include "camera_settings.hpp"
+
 using namespace std; 
 
 static int displayCameraInformations(void); 
@@ -37,7 +39,6 @@ typedef struct {
 }CameraParameters_s; 
 
 static ProgramOptions_s programOpts;
-static ProgramMode_e programMode; 
 static CameraParameters_s cp; 
 
 
@@ -53,14 +54,11 @@ int main(int argc, char *argv[]) {
 
     setDefaults(); 
 
-    cout << "Output file: " << programOpts.outputFile << endl; 
-
     /* Command-line arguments parsing */
     while( (opt = getopt_long(argc, argv, "d:il", longOpts, &longIndex)) != -1) {
 
         switch (opt) {
             case 'd':
-                programMode = MULTIPLE; 
                 programOpts.outputDir = optarg;
                 break; 
 
@@ -137,17 +135,14 @@ static void orderProcessing(char orders[], int size) {
 static void saveImage(char *buffer) {
 
     std::string filename = programOpts.outputDir + "/image";
-    string_appendInt(filename, cp.cntr);
  
-    filename += "."; 
-    filename += programOpts.fileExtension; 
+    filename += ".pgm"; 
 
     Image *i = cp.rb->getImageFromBuffer(buffer);
     if(i->isBeingWritten()) {
         std::cout << "Ring buffer overflow!" << std::endl; 
     }
     i->writeToPGM(filename.c_str()); 
-    cp.cntr++; 
 }
 
 static void prepareForAcquisition(void) {
@@ -161,7 +156,6 @@ static void prepareForAcquisition(void) {
     std::cout << "Framerate: " << fr << " frames per second" << std::endl; 
 
     cp.rb = new RingBuffer(AOI_WIDTH, AOI_HEIGHT, 10); 
-    cp.cntr = 0u;
 
     cp.rxpipe = new RXPipe("/tmp/camera_pipe.p", &orderProcessing);
     cp.rxpipe->start(); 
@@ -219,13 +213,6 @@ static int listConnectedCameras(void) {
 }
 
 static inline void setDefaults(void) {
-    programOpts.nframes = 1; 
-    programOpts.outputFile = "image.png"; 
-    programOpts.fileExtension = "png"; 
     programOpts.outputDir = "images"; 
-    programOpts.detectExtension = false; 
-    programOpts.format = PNG; 
-
-    programMode = SINGLE; 
 }
 
