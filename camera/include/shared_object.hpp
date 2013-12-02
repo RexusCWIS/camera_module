@@ -11,8 +11,9 @@
 template <typename T>
 class SharedObject {    
     public: 
-        SharedObject() {
+        SharedObject(const T &value) {
             pthread_mutex_init(&mutex, NULL);
+            m_value(value); 
         }
 
         ~SharedObject() {
@@ -25,9 +26,10 @@ class SharedObject {
         void unlock(void) {
             pthread_mutex_unlock(&mutex); 
         }
-        
+         
+        T m_value; 
+    
     private: 
-        T m_object; 
         pthread_mutex_t m_mutex; 
 };
 
