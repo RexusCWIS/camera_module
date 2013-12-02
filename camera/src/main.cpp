@@ -59,9 +59,7 @@ int main(int argc, char *argv[]) {
     int longIndex = 0; 
 
     setDefaults();
-
-    sem_init(&nbOfBufferedImages, 0, 0); 
-
+    
     /* Command-line arguments parsing */
     while( (opt = getopt_long(argc, argv, "d:il", longOpts, &longIndex)) != -1) {
 
@@ -142,9 +140,9 @@ static void orderProcessing(char orders[], int size) {
 
 static void saveImage(char *buffer) {
 
-    nbOfAcquiredImages.lock(); 
-    nbOfAcquiredImages.m_value++;  
-    nbOfAcquiredImages.unlock(); 
+    nbOfBufferedImages.lock(); 
+    nbOfBufferedImages.m_value++;  
+    nbOfBufferedImages.unlock(); 
 
 }
 
@@ -158,9 +156,9 @@ static void *acquisitionThread(void *arg) {
 
     while(!endOfAcquisition.m_value) {
   
-        nbOfAcquiredImages.lock(); 
-        bufferedImages = nbOfAcquiredImages.m_value; 
-        nbOfAcquiredImages.unlock(); 
+        nbOfBufferedImages.lock(); 
+        bufferedImages = nbOfBufferedImages.m_value; 
+        nbOfBufferedImages.unlock(); 
 
         /* While there are images in the ring buffer, save them */
         if(bufferedImages != 0) {
@@ -169,11 +167,13 @@ static void *acquisitionThread(void *arg) {
  
             filename += ".pgm"; 
             
-            cp.rb->at(currentImage)->writeToPGM(filename);
+            cp.rb->at(currentImage)->writeToPGM(filename.c_str());
 
             imageCounter++;
             currentImage = imageCounter % RING_BUFFER_SIZE; 
-            acquiredImages--; 
+            nbOfBufferedImages.lock(); 
+            nbOfBufferedImages.m_value--; 
+            nbOfBufferedImages.unlock(); 
         }
     }
 }
