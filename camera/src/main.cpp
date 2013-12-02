@@ -28,7 +28,7 @@ static int displayCameraInformations(void);
 static int listConnectedCameras(void);
 static void prepareForAcquisition(void);
 static void saveImage(char *buffer);
-static void * acquisitionThread(void *arg); 
+static void * storage(void *arg); 
 static inline void setDefaults(void); 
 
 typedef struct {
@@ -39,14 +39,14 @@ typedef struct {
     UEye_Camera *c; 
     RingBuffer *rb;
     RXPipe *rxpipe;
-    bool done;
 }CameraParameters_s; 
 
 static ProgramOptions_s programOpts;
 static CameraParameters_s cp; 
 
 static SharedObject<unsigned int> nbOfBufferedImages(0);
-static SharedObject<bool> endOfAcquisition(false); 
+static bool endOfAcquisition;  
+static thread_t storageThread; 
 
 /* Long options definition */
 static const struct option longOpts[] = {
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 
     prepareForAcquisition(); 
         
-    while(!cp.done)
+    while(!endOfAcquisition)
         ;
         
     delete cp.c; 
@@ -117,8 +117,10 @@ static void orderProcessing(char orders[], int size) {
     switch(orders[size-1]) {
         case 'G':
             std::cout << "The experiment has STARTED." << std::endl;
-            try {
-                cp.c->start(cp.rb, &saveImage); 
+            pthread_create(&storageThread, NULL, &storage, NULL); 
+            
+            try {    
+                cp.c->start(cp.rb, &saveImage);
             }
 
             catch(UEye_Exception const &e) {
@@ -130,7 +132,7 @@ static void orderProcessing(char orders[], int size) {
         case 'S':
             cp.c->stop(); 
             std::cout << "The experiment is OVER." << std::endl; 
-            cp.done = true;
+            endOfAcquisition = true; 
             break;
         
         default:
@@ -140,22 +142,25 @@ static void orderProcessing(char orders[], int size) {
 
 static void saveImage(char *buffer) {
 
+    /** @todo Reprocess the entire callback functionality */
+    (void) buffer; 
+
     nbOfBufferedImages.lock(); 
     nbOfBufferedImages.m_value++;  
     nbOfBufferedImages.unlock(); 
 
 }
 
-static void *acquisitionThread(void *arg) {
+static void *storage(void *arg) {
 
     unsigned int currentImage = 0, 
                  imageCounter = 0, 
-                 bufferedImages = 0;
+                 bufferedImages = 1;
 
     std::string filename;
 
-    while(!endOfAcquisition.m_value) {
-  
+    while((!endOfAcquisition) || bufferedImages) {
+
         nbOfBufferedImages.lock(); 
         bufferedImages = nbOfBufferedImages.m_value; 
         nbOfBufferedImages.unlock(); 
@@ -180,6 +185,9 @@ static void *acquisitionThread(void *arg) {
 
 static void prepareForAcquisition(void) {
 
+    endOfAcquisition = false;
+
+    
     cp.c  = new UEye_Camera(1);
     cp.c->setAreaOfInterest(AOI_H_OFFSET, AOI_V_OFFSET, AOI_WIDTH, AOI_HEIGHT);
     cp.c->setAutoExposure(); 
@@ -246,6 +254,6 @@ static int listConnectedCameras(void) {
 }
 
 static inline void setDefaults(void) {
-    programOpts.outputDir = "images"; 
+    programOpts.outputDir = "images";
 }
 
