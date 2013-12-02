@@ -46,7 +46,7 @@ static CameraParameters_s cp;
 
 static SharedObject<unsigned int> nbOfBufferedImages(0);
 static bool endOfAcquisition;  
-static thread_t storageThread; 
+static pthread_t storageThread; 
 
 /* Long options definition */
 static const struct option longOpts[] = {
@@ -153,6 +153,8 @@ static void saveImage(char *buffer) {
 
 static void *storage(void *arg) {
 
+    (void) arg; 
+
     unsigned int currentImage = 0, 
                  imageCounter = 0, 
                  bufferedImages = 1;
@@ -181,6 +183,8 @@ static void *storage(void *arg) {
             nbOfBufferedImages.unlock(); 
         }
     }
+    
+    return NULL; 
 }
 
 static void prepareForAcquisition(void) {
