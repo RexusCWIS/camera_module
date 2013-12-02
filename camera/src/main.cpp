@@ -10,7 +10,7 @@
 #include <getopt.h>
 
 #include <pthread.h>
-#include <semaphore.h>
+#include "shared_object.hpp"
 
 #include <uEye.h>
 
@@ -45,8 +45,8 @@ typedef struct {
 static ProgramOptions_s programOpts;
 static CameraParameters_s cp; 
 
-static sem_t nbOfBufferedImages;  
-
+static SharedObject<unsigned int> nbOfBufferedImages(0);
+static SharedObject<bool> endOfAcquisition(false); 
 
 /* Long options definition */
 static const struct option longOpts[] = {
@@ -58,7 +58,9 @@ int main(int argc, char *argv[]) {
     int opt = 0;
     int longIndex = 0; 
 
-    setDefaults(); 
+    setDefaults();
+
+    sem_init(&nbOfBufferedImages, 0, 0); 
 
     /* Command-line arguments parsing */
     while( (opt = getopt_long(argc, argv, "d:il", longOpts, &longIndex)) != -1) {
@@ -140,28 +142,28 @@ static void orderProcessing(char orders[], int size) {
 
 static void saveImage(char *buffer) {
 
-    std::string filename = programOpts.outputDir + "/image";
- 
-    filename += ".pgm"; 
+    nbOfAcquiredImages.lock(); 
+    nbOfAcquiredImages.m_value++;  
+    nbOfAcquiredImages.unlock(); 
 
-    Image *i = cp.rb->getImageFromBuffer(buffer);
-    if(i->isBeingWritten()) {
-        std::cout << "Ring buffer overflow!" << std::endl; 
-    }
-    i->writeToPGM(filename.c_str()); 
 }
 
 static void *acquisitionThread(void *arg) {
 
     unsigned int currentImage = 0, 
-                 imageCounter = 0;
+                 imageCounter = 0, 
+                 bufferedImages = 0;
 
     std::string filename;
 
-    while(!endOfAcquisition) {
-   
+    while(!endOfAcquisition.m_value) {
+  
+        nbOfAcquiredImages.lock(); 
+        bufferedImages = nbOfAcquiredImages.m_value; 
+        nbOfAcquiredImages.unlock(); 
+
         /* While there are images in the ring buffer, save them */
-        if(acquiredImages) {
+        if(bufferedImages != 0) {
             filename = programOpts.outputDir + "/image";
             string_appendInt(filename, imageCounter);
  
