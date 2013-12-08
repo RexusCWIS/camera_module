@@ -11,6 +11,8 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "usbiss.h"
+
 static void display_version(void); 
 static void set_i2c_mode(void); 
 
@@ -80,23 +82,13 @@ void set_i2c_mode(void) {
 }
 
 static void display_version(void) {
+    
+    iss_info_t info; 
 
-	buf[0] = 0x5Au; 
-	buf[1] = 0x01u; 
+    iss_get_info(&info); 
 
-	if(write(fd, buf, 2) < 0) {
-		perror("display_version write"); 
-	}
- 
-	if(tcdrain(fd) < 0) {
-		perror("display_version tcdrain"); 
-	}
- 
-	if(read(fd, buf, 3) < 0) {
-		perror("display_version read"); 
-	} 
-
-	printf("USB-ISS Module ID:\t%u\n", buf[0]); 
-	printf("USB-ISS Firmware version:\t%u\n\n", buf[1]);  
+    std::cout << "USB-ISS Module ID: " << info.id << std::endl;  
+	std::cout << "USB-ISS Firmware version: " << info.firmware << std::endl; 
+    std::cout << "USB-ISS serial number: " << info.serial << std::endl;
 }
 

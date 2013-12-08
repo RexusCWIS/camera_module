@@ -7,13 +7,15 @@ TOPDIR  = $(shell pwd)
 SRCDIR  = $(TOPDIR)
 INCDIR  = $(TOPDIR)
 
+CC  = gcc
 CXX = g++
-LIBS	 = -L../libs -lcwis-pipes -lpthread
+#LIBS	 = -L../libs -lcwis-pipes -lpthread
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 APP = i2c-com.out
 
-SRC = $(SRCDIR)/main.cpp
+SRC = $(SRCDIR)/main.cpp    \
+      $(SRCDIR)/usbiss.c    
 OBJ = $(SRC:.cpp=.o)
 
 # Build rules
@@ -24,6 +26,9 @@ $(APP): $(OBJ)
 
 %.o: %.cpp
 	@$(CXX) $(ARCH) $(WARNINGS) -c -I$(INCDIR) -I../libs/ -o $@ $<
+
+%.o: %.c
+	@$(CC) $(ARCH) $(WARNINGS) -c -I$(INCDIR) $I../libs/ -o $@ $<
 
 clean: 
 	rm -rf $(OBJ)
