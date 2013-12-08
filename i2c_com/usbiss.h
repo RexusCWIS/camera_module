@@ -20,6 +20,13 @@ typedef enum {
 	SERIAL		= 0x1u
 } iss_mode_t;
 
+typedef enum {
+    IO_MODE_OUTPUT_LOW    = 0x0u,
+    IO_MODE_OUTPUT_HIGH   = 0x1u,
+    IO_MODE_DIGITAL_INPUT = 0x2u, 
+    IO_MODE_ANALOG_INPUT  = 0x3u
+} iss_io_mode_t; 
+
 typedef struct {
     unsigned char id; 
     unsigned char firmware; 
@@ -30,7 +37,9 @@ int iss_init(const char *device);
 
 void iss_get_info(iss_info_t *info);
 
-int iss_set_mode(iss_mode_t mode); 
+int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode);
+
+void iss_close(void); 
 
 #endif	/* DEF_USBISS_H */
 
