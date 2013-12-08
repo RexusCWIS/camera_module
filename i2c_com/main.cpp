@@ -12,6 +12,9 @@
 #include <unistd.h>
 
 static void display_version(void); 
+static void set_i2c_mode(void); 
+
+static unsigned char buf[20];
 
 /** Device file descriptor */
 static int fd; 
@@ -43,18 +46,45 @@ int main(int argc, char *argv[]) {
 		perror("tcsetattr config"); 
 	}
 
-	display_version(); 		
+	display_version(); 	
+
+	set_i2c_mode(); 	
 
 	close(fd); 
 
 	exit(EXIT_SUCCESS); 
 }
 
+void set_i2c_mode(void) {
+	
+	buf[0] = 0x5Au; 
+	buf[1] = 0x02u;
+	buf[2] = 0x40u;
+	buf[3] = 0x00u; 	
+
+	if(write(fd, buf, 4) < 0) {
+		perror("set_i2c_mode write"); 
+	}
+ 
+	if(tcdrain(fd) < 0) {
+		perror("set_i2c_mode tcdrain"); 
+	}
+ 
+	if(read(fd, buf, 2) < 0) {
+		perror("set_i2c_mode read"); 
+	} 
+	
+	if(buf[0] != 0xFFu) {
+		printf("set_i2c_mode: Error setting I2C mode!\n\n"); 
+	}
+}
+
 static void display_version(void) {
 
-	unsigned char buf[3] = {0x5Au, 0x01u};
+	buf[0] = 0x5Au; 
+	buf[1] = 0x01u; 
 
-	if(write(fd, buf, sizeof(buf)) < 0) {
+	if(write(fd, buf, 2) < 0) {
 		perror("display_version write"); 
 	}
  
