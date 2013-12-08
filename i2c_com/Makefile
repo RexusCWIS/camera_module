@@ -14,9 +14,10 @@ WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declarat
 
 APP = i2c-com.out
 
-SRC = $(SRCDIR)/main.cpp    \
-      $(SRCDIR)/usbiss.c    
-OBJ = $(SRC:.cpp=.o)
+CSRC   = $(SRCDIR)/usbiss.c    
+CPPSRC = $(SRCDIR)/main.cpp    
+
+OBJ = $(CSRC:.c=.o) $(CPPSRC:.cpp=.o)
 
 # Build rules
 all: $(APP)
