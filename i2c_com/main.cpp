@@ -18,47 +18,19 @@ static void set_i2c_mode(void);
 
 static unsigned char buf[20];
 
-/** Device file descriptor */
-static int fd; 
-
 int main(int argc, char *argv[]) {
 
-	struct termios defaults; 
-	struct termios config; 
-
-	const char *device = "/dev/ttyACM0";
-
-	fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
-
-	if(fd == -1) {
-		std::cerr << "Could not open device: " << device << std::endl; 
-		exit(EXIT_FAILURE); 
-	}
-
-	/* Grab current port settings */
-	if(tcgetattr(fd, &defaults) < 0) {
-		perror("tcgetattr"); 
-	}
-
-	/* Set configuration for raw data */
-	cfmakeraw(&config); 
-
-	/* Set new configuration */
-	if(tcsetattr(fd, TCSANOW, &config) < 0) {
-		perror("tcsetattr config"); 
-	}
+	iss_init("/dev/ttyACM0"); 
 
 	display_version(); 	
 
 	set_i2c_mode(); 	
 
-	close(fd); 
-
 	exit(EXIT_SUCCESS); 
 }
 
 void set_i2c_mode(void) {
-	
+/*	
 	buf[0] = 0x5Au; 
 	buf[1] = 0x02u;
 	buf[2] = 0x40u;
@@ -78,7 +50,7 @@ void set_i2c_mode(void) {
 	
 	if(buf[0] != 0xFFu) {
 		printf("set_i2c_mode: Error setting I2C mode!\n\n"); 
-	}
+	} */
 }
 
 static void display_version(void) {
@@ -87,8 +59,8 @@ static void display_version(void) {
 
     iss_get_info(&info); 
 
-    std::cout << "USB-ISS Module ID: " << info.id << std::endl;  
-	std::cout << "USB-ISS Firmware version: " << info.firmware << std::endl; 
+    std::cout << "USB-ISS Module ID: " << (unsigned int) info.id << std::endl;  
+	std::cout << "USB-ISS Firmware version: " << (unsigned int) info.firmware << std::endl; 
     std::cout << "USB-ISS serial number: " << info.serial << std::endl;
 }
 
