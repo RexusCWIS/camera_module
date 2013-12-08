@@ -20,7 +20,7 @@
 #define GET_SER_NUM 0x03u
 
 #define ISS_ACKNOWLEDGE 0xFFu
-#define ISS_UNKNWOWN_COMMAND    0x05u
+#define ISS_UNKNOWN_COMMAND     0x05u
 #define ISS_INTERNAL_ERROR1     0x06u
 #define ISS_INTERNAL_ERROR2     0x07u
 
@@ -132,7 +132,7 @@ int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode) {
 void iss_close(void) {
    
     /* Restore port default */
-    if (tcsetattr(fd, TCSANOW, &defaults) < 0) { 
+    if (tcsetattr(dev_fd, TCSANOW, &iss_defaults) < 0) { 
         perror("tcsetattr default");
     }
 
