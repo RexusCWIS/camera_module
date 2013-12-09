@@ -7,7 +7,7 @@ TOPDIR  = $(shell pwd)
 SRCDIR  = $(TOPDIR)
 INCDIR  = $(TOPDIR)
 
-CC  = gcc
+CC  = g++
 CXX = g++
 #LIBS	 = -L../libs -lcwis-pipes -lpthread
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
