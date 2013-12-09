@@ -150,10 +150,23 @@ int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode) {
     return (int) buf[1]; 
 }
 
+int iss_i2c_read(unsigned char rx_buf[], 
+                 unsigned int rx_bytes, 
+                 unsigned char i2c_addr, 
+                 unsigned char dev_reg) {
+    
+    iss_buf[0] = I2C_AD1; 
+    iss_buf[1] = i2c_addr;
+    iss_buf[2] = dev_reg;
+    iss_buf[3] = rx_bytes;
+
+    iss_transmission(iss_buf, 4u, rx_buf, rx_bytes); 
+}
+
 int iss_i2c_write(unsigned char tx_buf[], 
-                   unsigned int tx_bytes, 
-                   unsigned char i2c_addr,
-                   unsigned char dev_reg) {   
+                  unsigned int tx_bytes, 
+                  unsigned char i2c_addr,
+                  unsigned char dev_reg) {   
     
     iss_buf[0] = I2C_AD1; 
     iss_buf[1] = i2c_addr; 

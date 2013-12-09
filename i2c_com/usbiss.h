@@ -56,12 +56,15 @@ void iss_get_info(iss_info_t *info);
  */
 int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode);
 
-void iss_i2c_read(unsigned char rx_buf[], 
+int iss_i2c_read(unsigned char rx_buf[], 
                   unsigned int rx_bytes, 
                   unsigned char i2c_addr,
                   unsigned char dev_reg);
 
-int iss_i2c_write(unsigned char tx_buf[], unsigned int tx_bytes, unsigned char i2c_addr); 
+int iss_i2c_write(unsigned char tx_buf[], 
+                  unsigned int tx_bytes, 
+                  unsigned char i2c_addr, 
+                  unsigned char dev_reg); 
 
 /**
  * @brief Closes the communication with the USB-ISS device. 
