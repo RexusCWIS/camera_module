@@ -33,12 +33,38 @@ typedef struct {
     unsigned char serial[8]; 
 } iss_info_t; 
 
+/**
+ * @brief Initializes the library to interact with the given USB-ISS @p device.
+ * @details Opens the USB-ISS device and configures it to transmit raw binary data.  
+ * @param[in]   device  Name of the USB-ISS @p device in the device tree (i.e. /dev/). 
+ * @note @ref iss_close() should always be called when done working with the USB-ISS module.
+ * @see iss_close()
+ */
 int iss_init(const char *device); 
 
+/**
+ * @brief Fills the given @p info structure. 
+ * @param[out]  info    USB-ISS info structure. Contains the module ID, the current firmware
+ *                      version and the serial number of the device.
+ */
 void iss_get_info(iss_info_t *info);
 
+/**
+ * @brief Sets the USB-ISS device to operate in the given @p mode and @p io_mode. 
+ * @param[in]   mode    Configures the main operation of the device: IO, serial, SPI or I2C.
+ * @param[in]   io_mode Configures the IO operation of the device: analog or digital input, output. 
+ */
 int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode);
 
+void iss_i2c_read(unsigned char rx_buf[], unsigned int rx_bytes, unsigned char i2c_addr);
+
+void iss_i2c_write(unsigned char tx_buf[], unsigned int tx_bytes, unsigned char i2c_addr); 
+
+/**
+ * @brief Closes the communication with the USB-ISS device. 
+ * @details Restore the initial configuration of the USB-ISS device port and closes the file. 
+ * @see iss_init()
+ */
 void iss_close(void); 
 
 #endif	/* DEF_USBISS_H */
