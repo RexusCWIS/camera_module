@@ -6,15 +6,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include <termios.h>
 #include <unistd.h>
 
 #include "usbiss.h"
 
+/** @brief If this macro is defined, errors are printed on stderr. */
 #define ISS_VERBOSE
 
-#define USB_ISS 0x5Au
+/*
+ * USB-ISS COMMANDS
+ */
+
+#define I2C_SGL     0x53u
+#define I2C_AD0     0x54u
+#define I2C_AD1     0x55u
+#define I2C_AD2     0x56u
+#define I2C_DIRECT  0x57u
+#define I2C_TEST    0x58u
+
+#define USB_ISS     0x5Au
 #define ISS_VERSION 0x01u
 #define ISS_MODE    0x02u
 #define GET_SER_NUM 0x03u
@@ -24,10 +37,18 @@
 #define ISS_INTERNAL_ERROR1     0x06u
 #define ISS_INTERNAL_ERROR2     0x07u
 
+#define ISS_MAX_BUFFER_SIZE 60u
+
+/*
+ * STATIC DATA
+ */
+
 static struct termios iss_defaults; 
 static struct termios iss_config;
 
 static int dev_fd; 
+
+static unsigned char iss_buf[ISS_MAX_BUFFER_SIZE];
 
 /*
  * STATIC FUNCTIONS
@@ -129,6 +150,30 @@ int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode) {
     return (int) buf[1]; 
 }
 
+int iss_i2c_write(unsigned char tx_buf[], 
+                   unsigned int tx_bytes, 
+                   unsigned char i2c_addr,
+                   unsigned char dev_reg) {   
+    
+    iss_buf[0] = I2C_AD1; 
+    iss_buf[1] = i2c_addr; 
+    iss_buf[2] = dev_reg;
+    iss_buf[3] = tx_bytes;
+
+    memcpy(&(iss_buf[4]), tx_buf, tx_bytes);
+
+    iss_transmission(iss_buf, (tx_bytes + 4u), iss_buf, 1u);
+
+    if(iss_buf[0] == 0u) {
+        
+        #ifdef ISS_VERBOSE
+            fprintf(stderr, "iss_i2c_write: Could not perform write operation"); 
+        #endif  /* ISS_VERBOSE */
+    }
+
+    return (int) iss_buf[0]; 
+}
+
 void iss_close(void) {
    
     /* Restore port default */
@@ -138,4 +183,6 @@ void iss_close(void) {
 
     close(dev_fd); 
 }
+
+
 
