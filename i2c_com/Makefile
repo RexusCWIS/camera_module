@@ -9,7 +9,7 @@ INCDIR  = $(TOPDIR)
 
 CC  = g++
 CXX = g++
-#LIBS	 = -L../libs -lcwis-pipes -lpthread
+LIBS	 = -L../libs -lcwis-pipes -lpthread
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 APP = i2c-com.out
