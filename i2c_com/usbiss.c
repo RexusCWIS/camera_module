@@ -54,7 +54,7 @@ static unsigned char iss_buf[ISS_MAX_BUFFER_SIZE];
  * STATIC FUNCTIONS
  */
 
-static inline void iss_transmission(unsigned char tx_buf[], unsigned int tx_bytes, 
+static inline void iss_transmission(const unsigned char tx_buf[], unsigned int tx_bytes, 
                                     unsigned char rx_buf[], unsigned int rx_bytes) {
  
 	if(write(dev_fd, tx_buf, tx_bytes) < 0) {
@@ -64,6 +64,8 @@ static inline void iss_transmission(unsigned char tx_buf[], unsigned int tx_byte
 	if(tcdrain(dev_fd) < 0) {
 		perror("tcdrain"); 
 	}
+
+	usleep(500000);
  
 	if(read(dev_fd, rx_buf, rx_bytes) < 0) {
 		perror("read"); 
@@ -94,6 +96,9 @@ int iss_init(const char *device) {
 	if(tcsetattr(dev_fd, TCSANOW, &iss_config) < 0) {
 		perror("tcsetattr config"); 
 	}
+    	
+	/* Flush data waiting for transmission */
+    	tcflush(dev_fd, TCIOFLUSH); 
 
     return 0; 
 }
@@ -160,6 +165,13 @@ int iss_i2c_read(unsigned char rx_buf[],
     iss_buf[2] = dev_reg;
     iss_buf[3] = rx_bytes;
 
+    for(unsigned int index = 0; index < 4; index++) {
+
+	printf("%x ", iss_buf[index]); 
+    }
+
+    printf("\n"); 
+
     iss_transmission(iss_buf, 4u, rx_buf, rx_bytes); 
 }
 
@@ -175,12 +187,20 @@ int iss_i2c_write(unsigned char tx_buf[],
 
     memcpy(&(iss_buf[4]), tx_buf, tx_bytes);
 
+    iss_buf[tx_bytes + 4] = '\0';
+    for(unsigned int index = 0; index < (4); index++) {
+
+	printf("%x ", iss_buf[index]); 
+    }
+
+    printf("\n%s\n", &iss_buf[4]); 
+
     iss_transmission(iss_buf, (tx_bytes + 4u), iss_buf, 1u);
 
     if(iss_buf[0] == 0u) {
         
         #ifdef ISS_VERBOSE
-            fprintf(stderr, "iss_i2c_write: Could not perform write operation"); 
+            fprintf(stderr, "iss_i2c_write: Could not perform write operation\n"); 
         #endif  /* ISS_VERBOSE */
     }
 
@@ -188,7 +208,10 @@ int iss_i2c_write(unsigned char tx_buf[],
 }
 
 void iss_close(void) {
-   
+  
+    /* Flush data waiting for transmission */
+    tcflush(dev_fd, TCIOFLUSH); 
+ 
     /* Restore port default */
     if (tcsetattr(dev_fd, TCSANOW, &iss_defaults) < 0) { 
         perror("tcsetattr default");

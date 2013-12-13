@@ -15,7 +15,8 @@
 
 static void display_version(void); 
 
-static unsigned char buf[20];
+static unsigned char tx_buf[32] = "I love those incredible buffers";
+static unsigned char rx_buf[32]; 
 
 int main(int argc, char *argv[]) {
 
@@ -23,7 +24,15 @@ int main(int argc, char *argv[]) {
 
 	display_version(); 	
 
-	iss_set_mode(I2C_S_100KHZ, IO_MODE_DIGITAL_INPUT);
+	iss_set_mode(I2C_H_400KHZ, IO_MODE_DIGITAL_INPUT);
+	
+	iss_i2c_write(tx_buf, 32u, 0x22u, 0x0u);
+
+//	sleep(1); 
+
+	iss_i2c_read(rx_buf, 32u, 0x23u, 0x1u); 
+	
+	std::cout << "Received data: " << rx_buf << std::endl; 	 
 
     iss_close(); 
 
@@ -38,6 +47,6 @@ static void display_version(void) {
 
     std::cout << "USB-ISS Module ID: " << (unsigned int) info.id << std::endl;  
 	std::cout << "USB-ISS Firmware version: " << (unsigned int) info.firmware << std::endl; 
-    std::cout << "USB-ISS serial number: " << info.serial << std::endl;
+    std::cout << "USB-ISS serial number: " << info.serial << std::endl << std::endl;
 }
 
