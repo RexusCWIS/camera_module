@@ -26,13 +26,18 @@ int main(int argc, char *argv[]) {
 
 	iss_set_mode(I2C_H_400KHZ, IO_MODE_DIGITAL_INPUT);
 	
-	iss_i2c_write(tx_buf, 32u, 0x22u, 0x0u);
+//	iss_i2c_write(tx_buf, 32u, 0x22u, 0x0u);
 
 //	sleep(1); 
 
-	iss_i2c_read(rx_buf, 32u, 0x23u, 0x1u); 
+	iss_i2c_read(rx_buf, 0x1u, 0x23u, 0x0u); 
+
+	std::cout << "Camera order: " << rx_buf[0] << std::endl; 
+
+	iss_i2c_read(rx_buf, 0xCu, 0x23u, 0x1u); 
 	
-	std::cout << "Received data: " << rx_buf << std::endl; 	 
+	unsigned int time = (((unsigned int) rx_buf[1]) << 8) + rx_buf[0]; 
+	std::cout << "Current experiment time: " << time << std::endl; 
 
     iss_close(); 
 
