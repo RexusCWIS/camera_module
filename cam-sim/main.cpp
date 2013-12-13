@@ -4,6 +4,7 @@
  */
 
 #include <iostream>
+#include <cstdlib>
 
 #include "pipes/rx_pipe.hpp"
 
