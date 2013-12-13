@@ -12,7 +12,7 @@ static void order_processing(char orders[], int size);
 
 int main(int argc, char *argv[]) {
 
-    RXPipe camera_rx("/tmp/camera_pipe.p", &order_processing); 
+    RXPipe camera_rx("/tmp/camera_pipe.p", &order_processing, 1); 
     camera_rx.start(); 
 
     while(true) {
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
 static void order_processing(char orders[], int size) {
 
-    switch(orders[0]) {
+    switch(orders[size-1]) {
         
         case 'G': 
             std::cout << "The experiment has STARTED." << std::endl; 
