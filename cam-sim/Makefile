@@ -11,7 +11,7 @@ CXX = g++
 LIBS	 = -L../libs -lcwis-pipes -lpthread
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
-APP = i2c-com.out
+APP = cam-sim.out
 
 CPPSRC = $(SRCDIR)/main.cpp    
 

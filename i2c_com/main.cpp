@@ -35,7 +35,9 @@ int main(int argc, char *argv[]) {
         /* Read the camera order */
 	    iss_i2c_read(rx_buf, 0x1u, 0x23u, 0x0u); 
         if(rx_buf[0] != current_order) {
-            camera_tx.send((const char *) rx_buf, 1); 
+	    std::cout << "Wrote to buffer" << std::endl; 
+            camera_tx.send((const char *) rx_buf, 1);
+	    current_order = rx_buf[0];  
         }
 
 	    iss_i2c_read(rx_buf, 0xCu, 0x23u, 0x1u); 
