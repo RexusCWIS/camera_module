@@ -99,6 +99,12 @@ int main(int argc, char *argv[]) {
     if(!createDirectory(programOpts.outputDir)) {
         exit(EXIT_FAILURE); 
     }
+    
+    pthread_attr_t attr;
+    size_t stacksize; 
+    pthread_attr_init(&attr); 
+    pthread_attr_getstacksize(&attr, &stacksize); 
+    std::cout << "Default thread stack size: " << stacksize << std::endl; 
 
     prepareForAcquisition(); 
         
@@ -116,7 +122,7 @@ static void orderProcessing(char orders[], int size) {
     
     switch(orders[size-1]) {
         case 'G':
-            std::cout << "The experiment has STARTED." << std::endl;
+	    std::cout << "The experiment has STARTED." << std::endl;
             pthread_create(&storageThread, NULL, &storage, NULL); 
             
             try {    
@@ -190,13 +196,14 @@ static void *storage(void *arg) {
 static void prepareForAcquisition(void) {
 
     endOfAcquisition = false;
-
     
+
     cp.c  = new UEye_Camera(1);
     cp.c->setAreaOfInterest(AOI_H_OFFSET, AOI_V_OFFSET, AOI_WIDTH, AOI_HEIGHT);
     cp.c->setAutoExposure(); 
     cp.c->setAutoGain(); 
     double fr = cp.c->setFramerate(5.0);
+    std::cout << "I got here!" << std::endl; 
     
     std::cout << "Framerate: " << fr << " frames per second" << std::endl; 
 

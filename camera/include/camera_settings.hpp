@@ -8,8 +8,8 @@
 
 #define RING_BUFFER_SIZE 100u
 
-#define AOI_WIDTH   3400u
-#define AOI_HEIGHT  1300u
+#define AOI_WIDTH   800u
+#define AOI_HEIGHT  600u
 #define AOI_H_OFFSET    190u
 #define AOI_V_OFFSET    290u
 
