@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     sleep(5); 
     tx.send("G", 1);
 
-    sleep(5);
+    sleep(140);
 
     tx.send("S", 1);  
 }
