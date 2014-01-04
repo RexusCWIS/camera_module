@@ -4,6 +4,7 @@
  */
 
 #include <iostream>
+#include <sstream>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +33,7 @@ int main(int argc, char *argv[]) {
 	iss_set_mode(I2C_H_400KHZ, IO_MODE_DIGITAL_INPUT);
 
     /* Open the output file for writing */
-    FILE *of = fopen(output_file, "wb"); 
+    FILE *of = fopen(output_file.c_str(), "wb"); 
 
     /** @todo Check errno values */
     if(of == NULL) {
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]) {
         ss << rx_buf[12] << "\t" << rx_buf[13]; 
 
         /* Write data to the output file */
-        fwrite(ss.str().c_str(), sizeof(unsigned char), ss.str.size(), of); 
+        fwrite(ss.str().c_str(), sizeof(unsigned char), ss.str().size(), of); 
     }
 
     /* Close the output file */
