@@ -25,7 +25,20 @@ typedef enum {
     IO_MODE_OUTPUT_HIGH   = 0x1u,
     IO_MODE_DIGITAL_INPUT = 0x2u, 
     IO_MODE_ANALOG_INPUT  = 0x3u
-} iss_io_mode_t; 
+} iss_io_mode_t;
+
+typedef enum {
+    ISS_SERIAL_300,
+    ISS_SERIAL_1200,
+    ISS_SERIAL_2400,
+    ISS_SERIAL_9600, 
+    ISS_SERIAL_19_2K,
+    ISS_SERIAL_38_4K,
+    ISS_SERIAL_57_6K,
+    ISS_SERIAL_115_2K,
+    ISS_SERIAL_250K,
+    ISS_SERIAL_1M
+} iss_serial_baudrate_t; 
 
 typedef struct {
     unsigned char id; 
