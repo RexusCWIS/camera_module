@@ -56,11 +56,31 @@ void iss_get_info(iss_info_t *info);
  */
 int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode);
 
+/**
+ * @brief Reads data from an I2C device register. 
+ * @details Reads @p tx_bytes from the @p dev_reg device register of the I2C slave with the @p i2c_addr
+ *          address. The data is stored in the @p rx_buf array. 
+ * @param[in]   tx_buf      Array used to hold the read data.
+ * @param[in]   tx_bytes    Number of bytes to read (up to the size of @p rx_buf). 
+ * @param[in]   i2c_addr    Address of the slave I2C device. 
+ * @param[in]   dev_reg     Address of the device register to read.
+ * @see iss_i2c_write()
+ */
 int iss_i2c_read(unsigned char rx_buf[], 
                   unsigned int rx_bytes, 
                   unsigned char i2c_addr,
                   unsigned char dev_reg);
 
+/**
+ * @brief Writes to an I2C device register. 
+ * @details Writes @p tx_bytes from the @p tx_buf array to a device register (@p dev_reg) address
+ *          in the I2C slave with address @p i2c_addr. 
+ * @param[in]   tx_buf      Array holding the data to write.
+ * @param[in]   tx_bytes    Number of bytes to write (up to the size of @p tx_buf). 
+ * @param[in]   i2c_addr    Address of the slave I2C device. 
+ * @param[in]   dev_reg     Address of the device register requested for the write operation.
+ * @see iss_i2c_read()
+ */
 int iss_i2c_write(unsigned char tx_buf[], 
                   unsigned int tx_bytes, 
                   unsigned char i2c_addr, 
