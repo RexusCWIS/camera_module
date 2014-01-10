@@ -54,6 +54,10 @@ static unsigned char iss_buf[ISS_MAX_BUFFER_SIZE];
  * STATIC FUNCTIONS
  */
 
+static inline void iss_serial_baudrate_divisor(iss_serial_baudrate_t baudrate, 
+                                               unsigned char *high_byte, 
+                                               unsigned char *low_byte); 
+
 static inline void iss_transmission(const unsigned char tx_buf[], unsigned int tx_bytes, 
                                     unsigned char rx_buf[], unsigned int rx_bytes) {
  
@@ -120,14 +124,22 @@ void iss_get_info(iss_info_t *info) {
     iss_transmission(buf, 2u, info->serial, 8u); 
 }
 
-int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode) {
+int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode, iss_serial_baudrate_t baudrate) {
 
-    unsigned char buf[4] = {USB_ISS, ISS_MODE, 
-                            (unsigned char) mode, 
-                            (unsigned char) io_mode};
+    unsigned char buf[5] = {USB_ISS, ISS_MODE, mode};  
 
-    iss_transmission(buf, 4u, buf, 2u); 
+    /* I2C + serial */
+    if(mode & 0x1u) {
+         
+        iss_transmission(buf, 5u, buf, 2u); 
+    }
 
+    else {
+        buf[3] = io_mode; 
+        iss_transmission(buf, 4u, buf, 2u); 
+    }
+
+    /* Error handling */
     if(buf[0] != ISS_ACKNOWLEDGE) {
        
         #ifdef ISS_VERBOSE
@@ -221,4 +233,63 @@ void iss_close(void) {
 }
 
 
+static inline void iss_serial_baudrate_divisor(iss_serial_baudrate_t baudrate, 
+                                               unsigned char *high_byte, 
+                                               unsigned char *low_byte) {
+
+    switch(baudrate) {
+        
+        case ISS_SERIAL_300:
+            *high_byte = 0x27u;
+            *low_byte  = 0x0Fu; 
+            break;
+
+        case ISS_SERIAL_1200:
+            *high_byte = 0x09u;
+            *low_byte  = 0xC3u; 
+            break;
+
+        case ISS_SERIAL_2400:
+            *high_byte = 0x04u;
+            *low_byte  = 0xE1u; 
+            break;
+
+        case ISS_SERIAL_9600:
+            *high_byte = 0x01u;
+            *low_byte  = 0x37u; 
+            break; 
+
+        case ISS_SERIAL_19_2K:
+            *high_byte = 0x0u;
+            *low_byte  = 0x9Bu; 
+            break; 
+
+        case ISS_SERIAL_38_4K:
+            *high_byte = 0x0u;
+            *low_byte  = 0x4Du; 
+            break; 
+        case ISS_SERIAL_57_6K:
+            *high_byte = 0x0u;
+            *low_byte  = 0x33u; 
+            break; 
+
+        case ISS_SERIAL_115_2K:
+            *high_byte = 0x0u;
+            *low_byte  = 0x19u; 
+            break; 
+        case ISS_SERIAL_250K:
+            *high_byte = 0x0u;
+            *low_byte  = 0xBu; 
+            break; 
+        case ISS_SERIAL_1M:
+            *high_byte = 0x0u;
+            *low_byte  = 0x03u; 
+            break; 
+
+        default:
+            break; 
+    }
+
+    return;
+}
 

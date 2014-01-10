@@ -28,16 +28,17 @@ typedef enum {
 } iss_io_mode_t;
 
 typedef enum {
-    ISS_SERIAL_300,
-    ISS_SERIAL_1200,
-    ISS_SERIAL_2400,
-    ISS_SERIAL_9600, 
-    ISS_SERIAL_19_2K,
-    ISS_SERIAL_38_4K,
-    ISS_SERIAL_57_6K,
-    ISS_SERIAL_115_2K,
-    ISS_SERIAL_250K,
-    ISS_SERIAL_1M
+    ISS_SERIAL_300      = 0u,
+    ISS_SERIAL_1200     = 1u,
+    ISS_SERIAL_2400     = 2u,
+    ISS_SERIAL_9600     = 3u, 
+    ISS_SERIAL_19_2K    = 4u,
+    ISS_SERIAL_38_4K    = 5u,
+    ISS_SERIAL_57_6K    = 6u,
+    ISS_SERIAL_115_2K   = 7u,
+    ISS_SERIAL_250K     = 8u,
+    ISS_SERIAL_1M       = 9u,
+    ISS_SERIAL_UNUSED   = 0xFFu
 } iss_serial_baudrate_t; 
 
 typedef struct {
@@ -67,7 +68,7 @@ void iss_get_info(iss_info_t *info);
  * @param[in]   mode    Configures the main operation of the device: IO, serial, SPI or I2C.
  * @param[in]   io_mode Configures the IO operation of the device: analog or digital input, output. 
  */
-int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode);
+int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode, iss_serial_baudrate_t baudrate);
 
 /**
  * @brief Reads data from an I2C device register. 
