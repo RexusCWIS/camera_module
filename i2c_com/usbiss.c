@@ -54,7 +54,7 @@ static unsigned char iss_buf[ISS_MAX_BUFFER_SIZE];
  * STATIC FUNCTIONS
  */
 
-static inline void iss_serial_baudrate_divisor(iss_serial_baudrate_t baudrate, 
+static inline void iss_get_serial_baudrate_divisor(iss_serial_baudrate_t baudrate, 
                                                unsigned char *high_byte, 
                                                unsigned char *low_byte); 
 
@@ -124,16 +124,17 @@ void iss_get_info(iss_info_t *info) {
     iss_transmission(buf, 2u, info->serial, 8u); 
 }
 
-int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode, iss_serial_baudrate_t baudrate) {
+int iss_set_i2c_mode(iss_mode_t mode, iss_io_mode_t io_mode, iss_serial_baudrate_t baudrate) {
 
     unsigned char buf[5] = {USB_ISS, ISS_MODE, mode};  
 
     /* I2C + serial */
     if(mode & 0x1u) {
-         
+        iss_get_serial_baudrate_divisor(baudrate, &buf[3], &buf[4]); 
         iss_transmission(buf, 5u, buf, 2u); 
     }
 
+    /* I2C + IO */
     else {
         buf[3] = io_mode; 
         iss_transmission(buf, 4u, buf, 2u); 
@@ -233,9 +234,9 @@ void iss_close(void) {
 }
 
 
-static inline void iss_serial_baudrate_divisor(iss_serial_baudrate_t baudrate, 
-                                               unsigned char *high_byte, 
-                                               unsigned char *low_byte) {
+static inline void iss_get_serial_baudrate_divisor(iss_serial_baudrate_t baudrate, 
+                                                   unsigned char *high_byte, 
+                                                   unsigned char *low_byte) {
 
     switch(baudrate) {
         

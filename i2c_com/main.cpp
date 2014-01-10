@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
 	display_version(); 	
 
-	iss_set_mode(I2C_H_400KHZ, IO_MODE_DIGITAL_INPUT, ISS_SERIAL_UNUSED);
+	iss_set_i2c_mode(I2C_H_400KHZ, IO_MODE_DIGITAL_INPUT, ISS_SERIAL_UNUSED);
 
     /* Open the output file for writing */
     FILE *of = fopen(output_file.c_str(), "wb"); 

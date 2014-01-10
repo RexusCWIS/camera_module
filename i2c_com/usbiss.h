@@ -64,11 +64,16 @@ int iss_init(const char *device);
 void iss_get_info(iss_info_t *info);
 
 /**
- * @brief Sets the USB-ISS device to operate in the given @p mode and @p io_mode. 
+ * @brief Sets the USB-ISS device to operate in the given I2C @p mode.
+ * @details Configures the USB-ISS device to operate in I2C mode. The two free pins are configured 
+ *          either as IO (configured using the @p io_mode bitfield) or as a serial UART bus. 
+ *          In the latter case, the baudrate is configured by the @p baudrate parameter. 
  * @param[in]   mode    Configures the main operation of the device: IO, serial, SPI or I2C.
  * @param[in]   io_mode Configures the IO operation of the device: analog or digital input, output. 
+ * @note    When setting GPIO mode, set the @p baudrate parameter to @ref ISS_SERIAL_UNUSED. 
+ *          When setting serial moden set the @p io_mode parameter to 0. 
  */
-int iss_set_mode(iss_mode_t mode, iss_io_mode_t io_mode, iss_serial_baudrate_t baudrate);
+int iss_set_i2c_mode(iss_mode_t mode, iss_io_mode_t io_mode, iss_serial_baudrate_t baudrate);
 
 /**
  * @brief Reads data from an I2C device register. 
