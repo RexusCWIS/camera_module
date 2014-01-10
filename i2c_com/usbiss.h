@@ -71,7 +71,7 @@ void iss_get_info(iss_info_t *info);
  * @param[in]   mode    Configures the main operation of the device: IO, serial, SPI or I2C.
  * @param[in]   io_mode Configures the IO operation of the device: analog or digital input, output. 
  * @note    When setting GPIO mode, set the @p baudrate parameter to @ref ISS_SERIAL_UNUSED. 
- *          When setting serial moden set the @p io_mode parameter to 0. 
+ *          When setting serial mode set the @p io_mode parameter to 0. 
  */
 int iss_set_i2c_mode(iss_mode_t mode, iss_io_mode_t io_mode, iss_serial_baudrate_t baudrate);
 

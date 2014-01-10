@@ -59,22 +59,7 @@ static inline void iss_get_serial_baudrate_divisor(iss_serial_baudrate_t baudrat
                                                unsigned char *low_byte); 
 
 static inline void iss_transmission(const unsigned char tx_buf[], unsigned int tx_bytes, 
-                                    unsigned char rx_buf[], unsigned int rx_bytes) {
- 
-	if(write(dev_fd, tx_buf, tx_bytes) < 0) {
-		perror("write"); 
-	}
- 
-	if(tcdrain(dev_fd) < 0) {
-		perror("tcdrain"); 
-	}
-
-	usleep(500000);
- 
-	if(read(dev_fd, rx_buf, rx_bytes) < 0) {
-		perror("read"); 
-	}
-}
+                                    unsigned char rx_buf[], unsigned int rx_bytes); 
 
 /*
  * INTERFACE FUNCTIONS
@@ -292,5 +277,23 @@ static inline void iss_get_serial_baudrate_divisor(iss_serial_baudrate_t baudrat
     }
 
     return;
+}
+
+static inline void iss_transmission(const unsigned char tx_buf[], unsigned int tx_bytes, 
+                                    unsigned char rx_buf[], unsigned int rx_bytes) {
+ 
+	if(write(dev_fd, tx_buf, tx_bytes) < 0) {
+		perror("write"); 
+	}
+ 
+	if(tcdrain(dev_fd) < 0) {
+		perror("tcdrain"); 
+	}
+
+	usleep(500000);
+ 
+	if(read(dev_fd, rx_buf, rx_bytes) < 0) {
+		perror("read"); 
+	}
 }
 
