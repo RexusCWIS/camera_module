@@ -106,6 +106,59 @@ int iss_i2c_write(unsigned char tx_buf[],
                   unsigned char dev_reg); 
 
 /**
+ * @brief Sends the given data bytes for serial transmission. 
+ * @param[in]   tx_buf      Array holding the data to send. 
+ * @param[in]   tx_bytes    Number of bytes to send (up to the size of @p tx_buf). 
+ * @returns 1 if the data was successfully transmitted, 0 if the data could not be transmitted. 
+ * @note The size of the USB-ISS Tx buffer is 30 bytes, meaning that a maximum of 30 bytes can 
+ *       be sent at once if the buffer was empty. If the buffer is full, this function will return
+ *       0.
+ * @see iss_serial_receive(), iss_i2c_write(), iss_i2c_read()
+ */
+int iss_serial_send(const unsigned char tx_buf[], 
+                    unsigned int tx_bytes); 
+
+/**
+ * @brief Fills the given buffer with @p tx_bytes bytes from the internal library buffer.
+ * @details An internal 62-bytes wide buffer stores received data on the USB-ISS module. 
+ *          Due to the USB-ISS serial communication mechanism, this buffer must be emptied
+ *          each time data is sent for transmission using the @ref iss_serial_send() function. 
+ *          The library stores this data in an internal buffer to avoid loss of data while 
+ *          waiting for the user to read this buffer.
+ *
+ *          This function retrieves the first @p tx_bytes from the internal library buffer
+ *          and stores them in the @p rx_buf user buffer. Those bytes are removed from 
+ *          the internal library buffer. 
+ * @returns 1 if the data was successfully stored in @p rx_buf, 0 if it was not possible 
+ *          to write @p tx_bytes in @p rx_buf. This can happen if @p rx_buf is not large
+ *          enough or if the internal library buffer holds less than @p tx_bytes bytes. 
+ * @see iss_serial_send(), iss_i2c_write(), iss_i2c_read(), iss_serial_rx_buffer_size()
+ */
+int iss_serial_receive(unsigned char rx_buf[], 
+                       unsigned int tx_bytes);
+
+/**
+ * @brief Returns the number of bytes received and stored in the reception buffer. 
+ * @details When called, this function first empties the internal USB-ISS buffer 
+ *          and appends it to the host library buffer. 
+ * @returns Size of the internal library buffer, in bytes. 
+ * @note    To avoid data loss in the case of fast transfer speeds, the internal USB-ISS buffer
+ *          must be flushed in the internal library buffer. Call the @ref iss_serial_flush_buffer()
+ *          function manually to trigger this operation. 
+ * @see iss_serial_flush_buffer()
+ */
+int iss_serial_rx_buffer_size(void); 
+
+/**
+ * @brief Flushes the internal USB-ISS serial reception buffer to a buffer managed by the library on the host. 
+ * @returns Number of bytes transferred to the host buffer. 
+ * @note    To read the received data and transfer it to user-defined structures, use the 
+ *          @ref iss_serial_read() function.
+ * @see iss_serial_receive(), iss_serial_rx_buffer_size()
+ */
+int iss_serial_flush_buffer(void); 
+
+/**
  * @brief Closes the communication with the USB-ISS device. 
  * @details Restore the initial configuration of the USB-ISS device port and closes the file. 
  * @see iss_init()
