@@ -32,6 +32,8 @@
 #define ISS_MODE    0x02u
 #define GET_SER_NUM 0x03u
 
+#define SERIAL_IO   0x62u
+
 #define ISS_ACKNOWLEDGE 0xFFu
 #define ISS_UNKNOWN_COMMAND     0x05u
 #define ISS_INTERNAL_ERROR1     0x06u
@@ -49,6 +51,8 @@ static struct termios iss_config;
 static int dev_fd; 
 
 static unsigned char iss_buf[ISS_MAX_BUFFER_SIZE];
+static unsigned char *iss_serial_buf;
+static unsigned int iss_serial_buf_size; 
 
 /*
  * STATIC FUNCTIONS
@@ -203,6 +207,12 @@ int iss_i2c_write(unsigned char tx_buf[],
     }
 
     return (int) iss_buf[0]; 
+}
+
+int iss_serial_send(const unsigned char tx_buf[], 
+                    unsigned int tx_bytes) {
+
+    
 }
 
 void iss_close(void) {
