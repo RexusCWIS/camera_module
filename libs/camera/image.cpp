@@ -26,6 +26,17 @@ Image::Image(unsigned int width, unsigned int height) :
     this->i_pgmHeader = ss.str();
 }
 
+Image::Image(const char* pgmFile) {   
+
+    FILE *fp = fopen(filename, "r"); 
+    if (fp == NULL) {
+        /** @todo Throw file exception */
+    }
+
+
+    close(fp);
+}
+
 pixel_t * Image::getImageBuffer(void) const {
 
     return this->i_buffer; 

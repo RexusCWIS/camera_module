@@ -31,6 +31,12 @@ class Image {
         Image(unsigned int width, unsigned int height);
 
         /**
+         * @brief Reads a PGM file and extracts the data in the new Image instance.
+         * @param[in]   pgmFile Name of the PGM file. 
+         */
+        Image(const char* pgmFile);
+
+        /**
          * @brief Returns the image buffer. 
          * @details The image buffer is the memory array allocated by the constructor. 
          *          This function provides a direct R/W access to this array for efficient
