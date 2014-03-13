@@ -42,7 +42,10 @@ int main(int argc, char *argv[]) {
 
 	    iss_i2c_read(rx_buf, 0xCu, 0x23u, 0x1u); 
 	
-	    unsigned int time = (((unsigned int) rx_buf[1]) << 8) + rx_buf[0]; 
+	    unsigned int time = (((unsigned int) rx_buf[3]) << 24) + 
+				(((unsigned int) rx_buf[2]) << 16) + 
+				(((unsigned int) rx_buf[1]) << 8) + 
+				rx_buf[0]; 
 	    std::cout << "Current experiment time: " << time << std::endl; 
 
     }

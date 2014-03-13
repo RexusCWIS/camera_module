@@ -8,10 +8,10 @@
 
 #define RING_BUFFER_SIZE 100u
 
-#define AOI_WIDTH   800u
-#define AOI_HEIGHT  600u
-#define AOI_H_OFFSET    190u
-#define AOI_V_OFFSET    290u
+#define AOI_WIDTH   1000u
+#define AOI_HEIGHT  1000u
+#define AOI_H_OFFSET    1200u
+#define AOI_V_OFFSET    1400u
 
 #endif  /* DEF_CAMERA_SETTINGS_HPP */
 

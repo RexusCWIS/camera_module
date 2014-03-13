@@ -9,8 +9,8 @@
 #include <cstdlib>
 
 #define NB_OF_IMAGES    100
-#define IMAGE_WIDTH     3400
-#define IMAGE_HEIGHT    1300
+#define IMAGE_WIDTH     1600
+#define IMAGE_HEIGHT    1000
 
 int main(int argc, char **argv) {
 
