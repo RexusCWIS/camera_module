@@ -14,6 +14,7 @@
 #include "utils/utilities.hpp"
 
 #include "image_buffer.h"
+#include "camera_settings.h"
 
 using namespace std; 
 
@@ -76,7 +77,9 @@ int main(int argc, char *argv[]) {
     /* Acquisition */
 	images = new image_buffer(CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT, 
 	                          CONFIG_BUFFER_SIZE);
-	                          
+
+	sleep(300);
+		                          
 	delete images;
 
     exit(EXIT_SUCCESS); 

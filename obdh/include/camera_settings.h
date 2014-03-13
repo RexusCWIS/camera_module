@@ -8,7 +8,7 @@
 
 #define CONFIG_CAMERA_ID   1
 
-#define CONFIG_BUFFER_SIZE 100u
+#define CONFIG_BUFFER_SIZE 300u
 
 #define CONFIG_FRAMERATE   3.0
 #define CONFIG_AOI_WIDTH   2700u
