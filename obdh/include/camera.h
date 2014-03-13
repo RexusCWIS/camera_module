@@ -12,7 +12,7 @@
 
 class ueye_camera {
 public:
-	void init(HIDS cameraID);
+	ueye_camera(HIDS cameraID);
 
 	void set_aoi(int x, int y, int width, int height);
 
@@ -26,10 +26,12 @@ public:
 
 	void stop_acquisition(void);
 	
+	HIDS get_camera_id(void) const;
+	
 private:
 	HIDS m_camera_id;
 	int* m_memory_ids;
-	UEye_EventThread* m_acquisition_event_thread;
+	ueye_event_thread* m_acquisition_event_thread;
 	
 	bool m_running;
 }

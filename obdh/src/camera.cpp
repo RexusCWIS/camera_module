@@ -5,7 +5,7 @@
 
 #include "camera.h"
 
-void init(HIDS camera_id): m_camera_id(camera_id), m_running(false) {
+ueye_camera::ueye_camera(HIDS camera_id): m_camera_id(camera_id), m_running(false) {
     
     INT status = 0;
     
@@ -38,7 +38,7 @@ void init(HIDS camera_id): m_camera_id(camera_id), m_running(false) {
     ueye_set_pixel_clock(camera_id, 16u);
 }
 
-void set_aoi(int x, int y, int width, int height) {
+void ueye_camera::set_aoi(int x, int y, int width, int height) {
 
     IS_RECT aoi;
 
@@ -50,14 +50,14 @@ void set_aoi(int x, int y, int width, int height) {
     is_AOI(m_camera_id, IS_AOI_IMAGE_SET_AOI, (void*) &aoi, sizeof(aoi)); 
 }
 
-void set_pixel_clock(unsigned int pixel_clock) {
+void ueye_camera::set_pixel_clock(unsigned int pixel_clock) {
     
     INT status = is_PixelClock(m_camera_id, IS_PIXELCLOCK_CMD_SET, 
                                (void *) &pixel_clock, sizeof(pixel_clock));
     (void) status;
 }
 
-double set_framerate(double framerate) {
+double ueye_camera::set_framerate(double framerate) {
 
 	double new_framerate = 0.0;
 
@@ -70,7 +70,7 @@ double set_framerate(double framerate) {
     return new_framerate; 
 }
 
-void start_acquisition(unsigned char* ring_buffer[], 
+void ueye_camera::start_acquisition(unsigned char* ring_buffer[], 
 					   unsigned int ring_buffer_size, unsigned int width,
 					   unsigned int height) {
 					   
@@ -102,7 +102,7 @@ void start_acquisition(unsigned char* ring_buffer[],
     
     /* Install event handler threads */
     /** @todo Add status related event handlers */
-    m_acquisition_event_thread = new UEye_EventThread(this, IS_SET_EVENT_FRAME, &UEye_Camera::acquisitionCallback);
+    m_acquisition_event_thread = new ueye_event_thread(this, IS_SET_EVENT_FRAME, &ueye_camera::acquisition_callback);
     acquisition_event_thread->start();
 
     /* Start live capture */
@@ -116,4 +116,13 @@ void start_acquisition(unsigned char* ring_buffer[],
     m_running = true; 
     
     return; 
+}
+
+void ueye_camera::stop(void) {
+
+}
+
+HIDS ueye_camera::get_camera_id(void) const {
+
+	return m_camera_id;
 }

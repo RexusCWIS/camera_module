@@ -7,60 +7,60 @@
 
 #define EVENT_TIMEOUT 1
 
-UEye_EventThread::UEye_EventThread(const UEye_Camera *camera, int event, void (*callback)(const UEye_Camera *)) :
-	m_camera(camera), m_event(event), m_eventCallback(callback) {
+ueye_event_thread::ueye_event_thread(const ueye_camera* camera, int event, void (*callback)(const ueye_camera*)) :
+	m_camera(camera), m_event(event), m_event_callback(callback) {
 
     this->m_stop = false; 
     this->m_running = false; 
 }
 
 
-UEye_EventThread::~UEye_EventThread() {
+ueye_event_thread::~ueye_event_thread() {
    
     if(this->m_running) { 
         this->stop(); 
     }
 }
 
-bool UEye_EventThread::isRunning(void) const {
+bool ueye_event_thread::is_running(void) const {
     
     return this->m_running; 
 }
 
-void UEye_EventThread::start(void) {
+void ueye_event_thread::start(void) {
 
     if(!this->m_running) {
         
-        int status = is_EnableEvent(this->m_camera->getCameraID(), this->m_event);
+        int status = is_EnableEvent(this->m_camera->get_camera_id(), this->m_event);
         
         if(status == IS_SUCCESS) {
             this->m_stop = false;
-            pthread_create(&m_eventThread, NULL, handler, this); 
+            pthread_create(&m_event_thread, NULL, handler, this); 
         }
     }
 }
 
-void UEye_EventThread::stop(void) {
+void ueye_event_thread::stop(void) {
 
     this->m_stop = true;
-    this->waitForThreadEnd();
-    is_DisableEvent(this->m_camera->getCameraID(), this->m_event); 
+    this->wait_for_thread_end();
+    is_DisableEvent(this->m_camera->get_camera_id(), this->m_event); 
 
 }
 
-void UEye_EventThread::waitForThreadEnd(void) {
+void ueye_event_thread::wait_for_thread_end(void) {
 
-    pthread_join(m_eventThread, NULL); 
+    pthread_join(m_event_thread, NULL); 
 }
 
-void * UEye_EventThread::handler(void * arg) {
+void* ueye_event_thread::handler(void* arg) {
 
-    UEye_EventThread * thread = reinterpret_cast<UEye_EventThread *>(arg);
+    ueye_event_thread* thread = reinterpret_cast<ueye_event_thread *>(arg);
 
     while(!thread->m_stop) {
         
-        if(is_WaitEvent(thread->m_camera->getCameraID(), thread->m_event, EVENT_TIMEOUT) == IS_SUCCESS) {
-            thread->m_eventCallback(thread->m_camera);  
+        if(is_WaitEvent(thread->m_camera->get_camera_id(), thread->m_event, EVENT_TIMEOUT) == IS_SUCCESS) {
+            thread->m_event_callback(thread->m_camera);  
         }
     }
 

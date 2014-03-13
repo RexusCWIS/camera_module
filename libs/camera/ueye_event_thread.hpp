@@ -10,7 +10,7 @@
 #include <uEye.h>
 #include <pthread.h>
 
-class UEye_Camera; 
+class ueye_camera;
 
 /**
  * @brief uEye camera event management thread class.
@@ -18,24 +18,24 @@ class UEye_Camera;
  *          (acquisition, status, hardware failure...). It spawns a thread that handles the event
  *          and calls a callback function for that specific event. 
  */
-class UEye_EventThread {
+class ueye_event_thread {
 
     public:
         /**
          * @brief Constructor. Sets the camera ID, the event type and the callback function. 
          */
-        UEye_EventThread(const UEye_Camera *camera, int event, void (*callback)(const UEye_Camera *)); 
+        ueye_event_thread(const ueye_camera *camera, int event, void (*callback)(const ueye_camera*)); 
 
         /**
          * @brief Detructor. Stops the event handling and disables the event. 
          */
-        ~UEye_EventThread(); 
+        ~ueye_event_thread(); 
  
         /**
          * @brief Returns the status of the event thread. 
          * @returns True if the event thread is running. 
          */
-        bool isRunning(void) const; 
+        bool is_running(void) const; 
 
         /**
          * @brief Starts the event listening.
@@ -48,17 +48,17 @@ class UEye_EventThread {
         void stop(void);
 
     private:
-        const UEye_Camera* m_camera;                    /**< Pointer to the camera object whose event is managed by this instance. */ 
+        const ueye_camera* m_camera;                    /**< Pointer to the camera object whose event is managed by this instance. */ 
         int  m_event;                                   /**< ID of the event handled by this instance. */
-        void (*m_eventCallback)(const UEye_Camera *);   /**< Callback function to handle the event. */
-        pthread_t m_eventThread;                        /**< Thread structure. */
+        void (*m_event_callback)(const ueye_camera*);   /**< Callback function to handle the event. */
+        pthread_t m_event_thread;                       /**< Thread structure. */
         bool m_stop;                                    /**< Order to stop the event listening. */
         bool m_running;                                 /**< Event listening status. */
 
         /**
          * @brief Waits for the handler thread to end.
          */
-        void waitForThreadEnd(void); 
+        void wait_for_thread_end(void); 
 
         /**
          * @brief Event handler thread. 
