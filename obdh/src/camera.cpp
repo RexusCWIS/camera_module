@@ -5,7 +5,9 @@
 
 #include "camera.h"
 
-ueye_camera::ueye_camera(HIDS camera_id): m_camera_id(camera_id), m_running(false) {
+ueye_camera::ueye_camera(HIDS camera_id): m_camera_id(camera_id), 
+										  m_running(false),
+										  m_nb_of_images_acquired(0) {
     
     INT status = 0;
     
@@ -50,6 +52,25 @@ void ueye_camera::set_aoi(int x, int y, int width, int height) {
     is_AOI(m_camera_id, IS_AOI_IMAGE_SET_AOI, (void*) &aoi, sizeof(aoi)); 
 }
 
+void UEye_Camera::set_auto_exposure(void) {
+    
+    double auto_exposure = 1.0; 
+    if(is_SetAutoParameter(m_camera_id, IS_SET_ENABLE_AUTO_SHUTTER, 
+       					   &auto_exposure, NULL) != IS_SUCCESS) {
+        std::cerr << "Could not set auto exposure time" << std::endl; 
+    }
+}
+
+void ueye_camera::set_auto_gain(void) {
+
+    double auto_gain = 1.0; 
+    if(is_SetAutoParameter(m_camera_id, IS_SET_ENABLE_AUTO_GAIN, 
+                           &auto_gain, NULL) != IS_SUCCESS) {
+        std::cerr << "Could not set auto gain" << std::endl; 
+    }
+    
+}
+
 void ueye_camera::set_pixel_clock(unsigned int pixel_clock) {
     
     INT status = is_PixelClock(m_camera_id, IS_PIXELCLOCK_CMD_SET, 
@@ -71,13 +92,15 @@ double ueye_camera::set_framerate(double framerate) {
 }
 
 void ueye_camera::start_acquisition(unsigned char* ring_buffer[], 
-					   unsigned int ring_buffer_size, unsigned int width,
-					   unsigned int height) {
+					   				unsigned int ring_buffer_size, unsigned int width,
+					   				unsigned int height) {
 					   
     /* If the camera was already running, stop it */
     if(m_running) {
         this->stop(); 
     }
+
+	m_nb_of_images_acquired = 0;
 
     /* Set the camera in live acquisition mode */
     INT status  = IS_SUCCESS;
@@ -102,24 +125,56 @@ void ueye_camera::start_acquisition(unsigned char* ring_buffer[],
     
     /* Install event handler threads */
     /** @todo Add status related event handlers */
-    m_acquisition_event_thread = new ueye_event_thread(this, IS_SET_EVENT_FRAME, &ueye_camera::acquisition_callback);
+    m_acquisition_event_thread = new ueye_event_thread(this, IS_SET_EVENT_FRAME, 
+    												   &ueye_camera::acquisition_handler);
     acquisition_event_thread->start();
 
     /* Start live capture */
-    status = is_CaptureVideo(m_camera_id, IS_DONT_WAIT); 
+    status = is_CaptureVideo(m_camera_id, IS_DONT_WAIT);
 
     if(status != IS_SUCCESS) {
-        string msg = "Could not start live camera acquisition."; 
-        throw UEye_Exception(m_camera_id, status, msg); 
+        string msg = "Could not start live camera acquisition.";
+        throw UEye_Exception(m_camera_id, status, msg);
     }
 
-    m_running = true; 
+    m_running = true;
     
-    return; 
+    return;
 }
 
+void* ueye_camera::acquisition_handler(ueye_camera* camera) {
+	
+	camera->m_nb_of_images_acquired++;
+	
+	/** @todo Handle buffer overflow */
+	if(camera->m_nb_of_images_acquired > m_buffer_size) {
+		
+	}
+}
+ 
 void ueye_camera::stop(void) {
 
+    /* Stop live acquisition */
+    INT status = IS_NO_SUCCESS;
+    while(status != IS_SUCCESS) {
+        status = is_StopLiveVideo(m_camera_id, IS_WAIT); 
+    }
+
+    this->m_running = false; 
+   
+    /* Clear image sequence from the camera memory */
+    is_ClearSequence(m_camera_id);
+
+    for(unsigned int incr = 0; incr < m_buffer_size; incr++) {
+        is_FreeImageMem(m_camera_id, m_buffer[incr], m_memory_ids[incr]); 
+    }
+    
+    /* Stop the event handler threads */
+    m_acquisition_event_thread->stop(); 
+   
+    /* Free allocated memory */
+    delete m_acquisition_event_thread; 
+    delete [] m_memory_ids; 
 }
 
 HIDS ueye_camera::get_camera_id(void) const {
