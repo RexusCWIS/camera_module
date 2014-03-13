@@ -36,6 +36,8 @@ public:
 	
 	HIDS get_camera_id(void) const;
 	
+	bool is_over(void) const;
+	
 private:
 	HIDS m_camera_id;
 	int* m_memory_ids;
@@ -47,6 +49,7 @@ private:
 	ueye_event_thread* m_acquisition_event_thread;
 	
 	bool m_running;
+	bool m_finished;
 };
 
 #endif  /* DEF_CAMERA_H */

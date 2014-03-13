@@ -78,8 +78,23 @@ int main(int argc, char *argv[]) {
 	images = new image_buffer(CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT, 
 	                          CONFIG_BUFFER_SIZE);
 
-	sleep(300);
-		                          
+	ueye_camera *camera = new ueye_camera(CONFIG_CAMERA_ID);
+	
+	camera->set_aoi(CONFIG_AOI_H_OFFSET, CONFIG_AOI_V_OFFSET,
+					CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT);	
+	camera->set_auto_exposure();
+	camera->set_auto_gain();
+	camera->set_framerate(CONFIG_FRAMERATE);
+	
+	camera->start_acquisition();
+	
+	while(!camera->is_finished()) {
+		usleep(1500);
+	}
+	
+	camera->stop_acquisition();
+	
+	delete camera;             
 	delete images;
 
     exit(EXIT_SUCCESS); 

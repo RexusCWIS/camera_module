@@ -14,6 +14,7 @@ ueye_camera::ueye_camera(HIDS camera_id) {
 
     m_camera_id = camera_id;
     m_running   = false;
+    m_finished  = false;
     m_nb_of_images_acquired = 0;
     
     INT status = 0;
@@ -103,9 +104,11 @@ void ueye_camera::start_acquisition(char* ring_buffer[],
 					   				unsigned int height) {
 					   
     /* If the camera was already running, top it */
-    if(m_running) {
+    if(m_running || m_finished) {
         this->stop_acquisition(); 
     }
+    
+    m_finished = false;
 
 	m_nb_of_images_acquired = 0;
 
@@ -155,7 +158,8 @@ void ueye_camera::acquisition_handler(ueye_camera* const camera) {
 	
 	/** @todo Handle buffer overflow */
 	if(camera->m_nb_of_images_acquired > camera->m_buffer_size) {
-		
+		is_StopLiveVideo(m_camera_id, IS_WAIT);
+		camera->m_finished = true;
 	}
 }
  
@@ -187,4 +191,8 @@ void ueye_camera::stop_acquisition(void) {
 HIDS ueye_camera::get_camera_id(void) const {
 
 	return m_camera_id;
+}
+
+bool ueye_camera::is_over(void) const {
+	return m_finished;
 }
