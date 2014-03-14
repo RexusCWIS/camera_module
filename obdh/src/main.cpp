@@ -20,18 +20,25 @@
 
 using namespace std; 
 
+static void order_processing(char order);
 static inline void set_defaults(void); 
+static void set_camera_parameters(void);
 
 typedef struct {
     std::string output_dir; 
 } program_options;
 
-static void order_processing(char order);
+typedef struct {
+	char nb_of_images[2];
+	char framerate;
+	char status;
+} module_status;
 
 static image_buffer* images;
 static ueye_camera*  camera;
 static i2c_manager*  i2c;
 static program_options program_opts;
+static module_status status = {{0, 0}, 0, 0};
 
 /* Long options definition */
 static const struct option long_opts[] = {
@@ -81,36 +88,34 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    /* Acquisition */
+    /* Create output directory */
     if(!createDirectory(program_opts.output_dir)) {
-        exit(EXIT_FAILURE); 
+        exit(EXIT_FAILURE);
     }
     
 	images = new image_buffer(CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT, 
 	                          CONFIG_BUFFER_SIZE);
 
-	camera = new ueye_camera(CONFIG_CAMERA_ID);
-
-	camera->set_aoi(CONFIG_AOI_H_OFFSET, CONFIG_AOI_V_OFFSET,
-					CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT);	
-	camera->set_auto_exposure();
-	camera->set_auto_gain();
-	std::cout << "Framerate: " << camera->set_framerate(CONFIG_FRAMERATE) << std::endl;
 
     i2c = new i2c_manager("/dev/ttyACM0", "i2c.log", &order_processing);
-	
-	camera->start_acquisition(images->buffer, images->size, 
-                                  images->width, images->height);
-
-	std::cout << "Started acquisition" << std::endl;	
 
 	while(!camera->is_over()) {
-		usleep(50000);
+		usleep(300000);
+		unsigned int nb_of_images = camera->get_nb_of_images();
+		status.nb_of_images[0] = (char) ((nb_of_images & 0xFF00u) >> 8u);
+		status.nb_of_images[1] = (char) (nb_of_images & 0xFFu);
+		
+		std::cout << "[" << i2c_manager->get_time() << "] " << nb_of_images << 
+		          << " images" << std::endl;
+		
+		//i2c_manager->write((char *) &status, 4u, 0u);
 	}
 
 	std::cout << "Stopped the camera." << std::endl;
 
 	images->save_to_pgm(program_opts.output_dir.c_str());
+	
+	set_camera_parameters();
 
 	std::cout << "Wrote images to " << program_opts.output_dir << std::endl;
 	
@@ -154,5 +159,20 @@ static void order_processing(char order) {
 
 static inline void set_defaults(void) {
     program_opts.output_dir = "images";
+}
+
+static void set_camera_parameters(void) {
+	
+	camera = new ueye_camera(CONFIG_CAMERA_ID);
+	
+	camera->set_aoi(CONFIG_AOI_H_OFFSET, CONFIG_AOI_V_OFFSET,
+					CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT);	
+	camera->set_auto_exposure();
+	camera->set_auto_gain();
+	
+	double framerate = camera_set_framerate(CONFIG_FRAMERATE);
+	std::cout << "Framerate: " << framerate << " fps" << std::endl;
+	
+	status.framerate = (char) framerate;
 }
 

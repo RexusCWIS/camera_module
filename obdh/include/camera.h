@@ -44,6 +44,7 @@ public:
 	
 private:
 	HIDS m_camera_id;
+	char m_camera_status;
 	int* m_memory_ids;
 	unsigned int m_nb_of_images_acquired;
 	
