@@ -16,6 +16,7 @@
 #include "camera.h"
 #include "image_buffer.h"
 #include "camera_settings.h"
+#include "i2c_manager.h"
 
 using namespace std; 
 
@@ -25,8 +26,11 @@ typedef struct {
     std::string output_dir; 
 } program_options;
 
+static void order_processing(char order);
+
 static image_buffer* images;
 static ueye_camera*  camera;
+static i2c_manager*  i2c;
 static program_options program_opts;
 
 /* Long options definition */
@@ -92,6 +96,8 @@ int main(int argc, char *argv[]) {
 	camera->set_auto_exposure();
 	camera->set_auto_gain();
 	std::cout << "Framerate: " << camera->set_framerate(CONFIG_FRAMERATE) << std::endl;
+
+    i2c = new i2c_manager("/dev/ttyACM0", "i2c.log", &order_processing);
 	
 	camera->start_acquisition(images->buffer, images->size, 
                                   images->width, images->height);
@@ -99,25 +105,51 @@ int main(int argc, char *argv[]) {
 	std::cout << "Started acquisition" << std::endl;	
 
 	while(!camera->is_over()) {
-		usleep(1500);
+		usleep(50000);
 	}
-	
-	std::cout << "Acquired images" << std::endl;
-
-	camera->stop_acquisition();
 
 	std::cout << "Stopped the camera." << std::endl;
 
 	images->save_to_pgm(program_opts.output_dir.c_str());
 
 	std::cout << "Wrote images to " << program_opts.output_dir << std::endl;
-		
+	
+	delete i2c;	
 	delete images;
-	delete camera;             
+	delete camera;          
 
 	std::cout << "Ready to exit..." << std::endl;
 
     exit(EXIT_SUCCESS); 
+}
+
+static void order_processing(char order) {
+
+	switch(order) {
+        case 'G':
+	    std::cout << "The experiment has STARTED." << std::endl;
+            
+            try {    
+                camera->start_acquisition(images->buffer, images->size, 
+                                  		  images->width, images->height);
+            }
+
+            catch(UEye_Exception const &e) {
+        
+                cerr << "Camera " << e.camera() << ": " << e.what() <<
+                    "\nException ID: " << e.id() << endl;
+            }
+            break; 
+        case 'S':
+            camera->stop_acquisition();
+            std::cout << "The experiment is OVER." << std::endl;
+            std::cout << "Acquired " << camera->get_nb_of_images_acquired() << 
+                         "images" << std::endl;
+            break;
+        
+        default:
+            break; 
+    }
 }
 
 static inline void set_defaults(void) {

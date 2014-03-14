@@ -38,6 +38,8 @@ public:
 	
 	HIDS get_camera_id(void) const;
 	
+	unsigned int get_nb_of_images_acquired(void) const;
+	
 	bool is_over(void) const;
 	
 private:

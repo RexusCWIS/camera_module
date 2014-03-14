@@ -201,6 +201,11 @@ HIDS ueye_camera::get_camera_id(void) const {
 	return m_camera_id;
 }
 
+unsigned int ueye_camera::get_nb_of_images_acquired(void) const {
+    
+    return nb_of_images_acquired;
+}
+
 bool ueye_camera::is_over(void) const {
-	return m_finished;
+	return !m_running;
 }
