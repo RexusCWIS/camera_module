@@ -15,8 +15,9 @@ WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declarat
 
 APP = cwis_camera_test.out
 
-SRC = $(SRCDIR)/camera.cpp		\
+SRC = $(SRCDIR)/camera.cpp				\
       $(SRCDIR)/ueye_event_thread.cpp	\
+      $(SRCDIR)/image_buffer.cpp		\
       $(SRCDIR)/main.cpp
 OBJ = $(SRC:.cpp=.o)
 
