@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 	iss_set_i2c_mode(I2C_H_400KHZ, IO_MODE_DIGITAL_INPUT, ISS_SERIAL_UNUSED);
 
     /* Open the output file for writing */
-    FILE *of = fopen(output_file.c_str(), "wb"); 
+    FILE *of = fopen(output_file.c_str(), "wb");
 
     /** @todo Check errno values */
     if(of == NULL) {
