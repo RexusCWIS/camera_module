@@ -24,6 +24,8 @@ i2c_manager::i2c_manager(const char* device, const char* log_file,
 	iss_init(device);
 	iss_set_i2c_mode(I2C_H_400KHZ, IO_MODE_DIGITAL_INPUT, ISS_SERIAL_UNUSED);
 	
+	pthread_mutex_init(&m_i2c_mutex, NULL);
+	
 	pthread_create(&m_listener_thread, NULL, listener, this);
 }
 
@@ -33,6 +35,8 @@ i2c_manager::~i2c_manager() {
     wait_for_thread_end();
     /* Close the I2C communication channel */
     iss_close(); 
+    
+    pthread_mutex_destroy(&m_i2c_mutex);
 }
 
 void* i2c_manager::listener(void* arg) {
@@ -50,7 +54,9 @@ void* i2c_manager::listener(void* arg) {
     while(!manager->m_stop) {
         
         /* Read the camera order */
+        pthread_mutex_lock(&m_i2c_mutex);
 	    iss_i2c_read((unsigned char*) rx_buf, 0x1u, 0x23u, 0x0u);
+	    pthread_mutex_unlock(&m_i2c_mutex);
 
 		/* If a new order has been given, transmit it to the callback function */
         if(rx_buf[0] != current_order) {
@@ -58,7 +64,9 @@ void* i2c_manager::listener(void* arg) {
         }
 
         /* Read the sensor data */
+        pthread_mutex_lock(&m_i2c_mutex);
 	    iss_i2c_read((unsigned char*) rx_buf, 0xCu, 0x23u, 0x1u); 
+	    pthread_mutex_unlock(&m_i2c_mutex);
 	
 	    unsigned int time = (((unsigned int) rx_buf[3]) << 24) + 
 				(((unsigned int) rx_buf[2]) << 16) + 
@@ -92,7 +100,9 @@ void* i2c_manager::listener(void* arg) {
 
 void i2c_manager::write(char* data, unsigned int size, unsigned char device_register) {
 
+	pthread_mutex_lock(&m_i2c_mutex);
 	iss_i2c_write((unsigned char*) data, size, 0x23u, device_register);
+	pthread_mutex_unlock(&m_i2c_mutex);
 
 }
 

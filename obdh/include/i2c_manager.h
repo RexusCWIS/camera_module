@@ -31,6 +31,7 @@ private:
 	unsigned int m_time;
 	
 	pthread_t m_listener_thread;
+	pthread_mutex_t m_i2c_mutex;
 	
 	bool m_stop;
 	bool m_running;
