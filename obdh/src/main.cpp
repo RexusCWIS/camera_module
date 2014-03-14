@@ -78,11 +78,15 @@ int main(int argc, char *argv[]) {
     }
 
     /* Acquisition */
+    if(!createDirectory(program_opts.output_dir)) {
+        exit(EXIT_FAILURE); 
+    }
+    
 	images = new image_buffer(CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT, 
 	                          CONFIG_BUFFER_SIZE);
 
 	camera = new ueye_camera(CONFIG_CAMERA_ID);
-	
+
 	camera->set_aoi(CONFIG_AOI_H_OFFSET, CONFIG_AOI_V_OFFSET,
 					CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT);	
 	camera->set_auto_exposure();
@@ -103,7 +107,11 @@ int main(int argc, char *argv[]) {
 	camera->stop_acquisition();
 
 	std::cout << "Stopped the camera." << std::endl;
-	
+
+	images->save_to_pgm(program_opts.output_dir.c_str());
+
+	std::cout << "Wrote images to " << program_opts.output_dir << std::endl;
+		
 	delete images;
 	delete camera;             
 
