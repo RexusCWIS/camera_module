@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
 	std::cout << "[" << system_time << "] " << nb_of_images 
 		  << " images" << std::endl;
 		
-	i2c->write((char *) &status, 4u, 0u);
+	//i2c->write((char *) &status, 4u, 0u);
     }
 
     end_time = system_time;

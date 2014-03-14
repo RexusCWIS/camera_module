@@ -77,7 +77,7 @@ void* i2c_manager::listener(void* arg) {
 			    ((unsigned int) ((unsigned char) rx_buf[1]) << 8) + 
 			    (unsigned int) rx_buf[0];
 
-	system_time = time;
+	system_time = time - 100;
 		
         ss << time << "\t"; 
         

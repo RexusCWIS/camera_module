@@ -46,25 +46,24 @@ image_buffer::~image_buffer() {
 
 void image_buffer::save_to_pgm(const char* directory) {
 	
-	/* Prepare the PGM header */
-    std::stringstream header_stream;
-    header_stream << "P5\n# COMMENT\n" << width << " " << height  << "\n255\n";
-    
-    const std::string header = header_stream.str();
 
-	for(unsigned int index = 0; index < size; index++) {
+    for(unsigned int index = 0; index < size; index++) {
+
+        /* Prepare the PGM header */
+        std::stringstream header_stream;
+        header_stream << "P5\n# " << images[index].time << "\n" << width << " " << height  << "\n255\n";
+
+        std::stringstream filename_stream;
+        filename_stream << directory << "/image" << index << ".pgm";
 		
-		std::stringstream filename_stream;
-		filename_stream << directory << "/image" << index << ".pgm";
-		
-		const char* filename = filename_stream.str().c_str();
-    	FILE *fp = fopen(filename, "wb"); 
-    	if (fp == NULL) {
-        	/** @todo Throw file exception */
+        const char* filename = filename_stream.str().c_str();
+        FILE *fp = fopen(filename, "wb"); 
+        if (fp == NULL) {
+            /** @todo Throw file exception */
     	}
-    
+
     	/* PGM file header */
-    	fwrite(header.c_str(), sizeof(char), header.size(), fp); 
+    	fwrite(header_stream.str().c_str(), sizeof(char), header_stream.str().size(), fp); 
 
     	/* Write the actual image data */
     	fwrite(images[index].buffer, sizeof(char), width * height, fp); 

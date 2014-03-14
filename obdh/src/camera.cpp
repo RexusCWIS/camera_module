@@ -157,6 +157,8 @@ void ueye_camera::start_acquisition(image_buffer* ring_buffer) {
 }
 
 void ueye_camera::acquisition_handler(ueye_camera* const camera) {
+
+    camera->m_buffer->images[camera->m_nb_of_images_acquired].time = system_time;
     	
     camera->m_nb_of_images_acquired++;
 
