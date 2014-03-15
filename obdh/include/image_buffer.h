@@ -12,6 +12,8 @@
 struct image_buffer_item {
     char *buffer;
     unsigned int time;
+    
+    void save_to_png(const char* filename);
 };
 
 struct image_buffer {
@@ -21,12 +23,17 @@ struct image_buffer {
 	
 	~image_buffer();
 	
-	void save_to_pgm(const char *directory);
+	void save_to_pgm(const char* directory);
+	
+	void save_to_png(const char* directory);
 	
 	image_buffer_item* images;
 	unsigned int width;
 	unsigned int height;
 	unsigned int size;
+
+private:
+	const char* get_image_filename(const char* directory, const char* format, unsigned int index) const;
 };
 
 #endif  /* DEF_IMAGE_BUFFER_H */
