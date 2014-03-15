@@ -133,6 +133,9 @@ int main(int argc, char *argv[]) {
     std::cout << "[" << system_time << "] " << "Writing images to " << program_opts.output_dir << std::endl;
     images->save_to_png(program_opts.output_dir.c_str());
 
+	std::cout << "[" << system_time << "]" << "Saved images in " 
+	          << (system_time - end_time) / 1000.0 << " seconds" << std::endl;
+
     std::cout << "Stopping I2C communication..." << std::endl;	
     delete i2c;	
     
