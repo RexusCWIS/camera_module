@@ -135,9 +135,6 @@ int main(int argc, char *argv[]) {
 	status.nb_of_images[0] = (char) ((nb_of_images & 0xFF00u) >> 8u);
 	status.nb_of_images[1] = (char) (nb_of_images & 0xFFu);
 	
-	std::cout << "[" << system_time << "] " << nb_of_images 
-		  << " images" << std::endl;
-	
 	update_status();
     }
 
