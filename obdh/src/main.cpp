@@ -28,7 +28,8 @@ static inline void update_status(void);
 static void set_camera_parameters(void);
 
 typedef struct {
-    std::string output_dir; 
+    std::string output_dir;
+    std::string image_log;
 } program_options;
 
 #define STATUS_ON	    (1 << 0)
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]) {
     set_defaults();
     
     /* Command-line arguments parsing */
-    while( (opt = getopt_long(argc, argv, "d:il", long_opts, &long_index)) != -1) {
+    while( (opt = getopt_long(argc, argv, "d:il:", long_opts, &long_index)) != -1) {
 
         switch (opt) {
             case 'd':
@@ -77,7 +78,7 @@ int main(int argc, char *argv[]) {
 
             /* List all connected cameras and exit */
             case 'l':
-                //exit(listConnectedCameras());
+		program_opts.image_log = optarg;
                 break;
            
             /* Displays informations about the cameras */
@@ -150,6 +151,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "[" << system_time << "] " << "Writing images to " << program_opts.output_dir << std::endl;
     images->save_to_png(program_opts.output_dir.c_str());
+    images->save_log(program_opts.image_log.c_str());
 
 	std::cout << "[" << system_time << "]" << "Saved images in " 
 	          << (system_time - end_time) / 1000.0 << " seconds" << std::endl;
@@ -199,6 +201,7 @@ static void order_processing(char order) {
 
 static inline void set_defaults(void) {
     program_opts.output_dir = "images";
+    program_opts.image_log  = "images.log";
 }
 
 static inline void update_status(void) {

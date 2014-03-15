@@ -13,6 +13,8 @@
 
 #include <uEye.h>
 
+#include <map>
+
 class ueye_event_thread;
 
 class ueye_camera {
@@ -46,9 +48,10 @@ public:
 private:
 	HIDS m_camera_id;
 	char m_camera_status;
-	int* m_memory_ids;
 	unsigned int m_nb_of_images_acquired;
 	
+	int* m_memory_ids;
+	std::map<int, int> m_id_to_index_map;
 	image_buffer* m_buffer;
 	
 	ueye_event_thread* m_acquisition_event_thread;

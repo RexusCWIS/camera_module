@@ -12,6 +12,7 @@
 struct image_buffer_item {
     char *buffer;
     unsigned int time;
+    bool written;
     
     void save_to_png(const char* filename, int height, int width);
 };
@@ -26,6 +27,8 @@ struct image_buffer {
 	void save_to_pgm(const char* directory);
 	
 	void save_to_png(const char* directory);
+
+	void save_log(const char* log_file) const;
 	
 	image_buffer_item* images;
 	unsigned int width;

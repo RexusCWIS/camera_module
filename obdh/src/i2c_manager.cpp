@@ -46,8 +46,6 @@ void* i2c_manager::listener(void* arg) {
     char rx_buf[32];
     char current_order = 'S';
 
-    std::stringstream ss;
-    	
     /* Open the output file for writing */
     FILE *of = fopen(manager->m_log_file, "wb");
     if(of == NULL) {
@@ -56,7 +54,9 @@ void* i2c_manager::listener(void* arg) {
 
     while(!manager->m_stop) {
         
-        /* Read the camera order */
+    	std::stringstream ss;
+        
+	/* Read the camera order */
         pthread_mutex_lock(&(manager->m_i2c_mutex));
 	    iss_i2c_read((unsigned char*) rx_buf, 0x1u, 0x23u, 0x0u);
 	    pthread_mutex_unlock(&(manager->m_i2c_mutex));

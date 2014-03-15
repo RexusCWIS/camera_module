@@ -91,6 +91,7 @@ image_buffer::image_buffer(unsigned int image_width, unsigned int image_height,
 		mlock(images[index].buffer, image_size);
 		
 		images[index].time = 0;
+		images[index].written = false;
 	}
 }
 
@@ -136,14 +137,33 @@ void image_buffer::save_to_pgm(const char* directory) {
 
 void image_buffer::save_to_png(const char* directory) {
 	
-	for(unsigned int index = 0; index < size; index++) {
-	
-		std::stringstream filename_stream;
-    	filename_stream << directory << "/image" << index << ".png";
-        const char* filename = filename_stream.str().c_str();
+	/* Write remaining images */
+	for(unsigned int index = 0; index < size && images[index].written; index++) {
+		
+		if(images[index].written) {
+			std::stringstream filename_stream;
+    			
+			filename_stream << directory << "/image" << index << ".png";
+       			const char* filename = filename_stream.str().c_str();
         
-        images[index].save_to_png(filename, width, height);
+        		images[index].save_to_png(filename, width, height);
+		}
 	}
+}
+
+void image_buffer::save_log(const char* log_file) const {
+        
+	FILE *fp = fopen(log_file, "wb");
+
+	for(unsigned int index = 0; index < size; index++) {
+		
+		std::stringstream data_stream;
+
+		data_stream << index << "\t" << images[index].time << "\t" << images[index].written << "\n";
+    		fwrite(data_stream.str().c_str(), sizeof(char), data_stream.str().size(), fp);
+	}
+	
+	fclose(fp);
 }
 
 const char* image_buffer::get_image_filename(const char* directory, const char* format, unsigned int index) const {

@@ -127,7 +127,7 @@ void ueye_camera::start_acquisition(image_buffer* ring_buffer) {
                                             ring_buffer->images[incr].buffer, &m_memory_ids[incr]);
         
         if(status == IS_SUCCESS) {
-            
+	    m_id_to_index_map[m_memory_ids[incr]] = incr;          
             status = is_AddToSequence(m_camera_id, ring_buffer->images[incr].buffer, m_memory_ids[incr]);
         }
 
@@ -158,7 +158,17 @@ void ueye_camera::start_acquisition(image_buffer* ring_buffer) {
 
 void ueye_camera::acquisition_handler(ueye_camera* const camera) {
 
-    camera->m_buffer->images[camera->m_nb_of_images_acquired].time = system_time;
+    int mem_id = 0;
+    int index  = 0;
+
+    char* dummy = NULL;
+
+    is_GetActiveImageMem(camera->m_camera_id, &dummy, &mem_id);
+
+    index = camera->m_id_to_index_map[mem_id] - 1;
+
+    camera->m_buffer->images[index].time = system_time;
+    camera->m_buffer->images[index].written = true;
     	
     camera->m_nb_of_images_acquired++;
 
