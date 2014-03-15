@@ -11,7 +11,7 @@ TESTDIR = $(TOPDIR)/tests/unit
 
 CC  = g++
 CXX = g++
-LIBS	 = -L../libs -lcwis-utils -lueye_api -lpthread
+LIBS	 = -L../libs -lcwis-utils -lueye_api -lpng -lpthread
 WARNINGS = -g -pedantic -Wextra -Wall -Wundef -Werror=implicit-function-declaration -Wmissing-include-dirs -Wshadow
 
 APP = cwis_camera_test.out

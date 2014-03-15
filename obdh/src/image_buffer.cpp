@@ -19,8 +19,6 @@ void image_buffer_item::save_to_png(const char* filename, int width, int height)
     png_infop info_ptr; 
     png_bytep row;
 
-    this->i_isBeingWritten = true;
-    
     /* Open the file */
     fp = fopen(filename, "wb");
     if (fp == NULL) {
@@ -44,22 +42,22 @@ void image_buffer_item::save_to_png(const char* filename, int width, int height)
     png_init_io(png_ptr, fp);
 
     /* Write PNG header: 8-bit colour depth, black and white */
-    png_set_IHDR(png_ptr, info_ptr, this->i_width, this->i_height, 
+    png_set_IHDR(png_ptr, info_ptr, width, height, 
                  8, PNG_COLOR_TYPE_GRAY, PNG_INTERLACE_NONE, 
                  PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
                  
-    png_set_compression_level(png_ptr, Z_BEST_COMPRESSION);
+    png_set_compression_level(png_ptr, 6);
     
     png_write_info(png_ptr, info_ptr); 
     
     /* Allocate memory for one row */
-    row = new png_byte[this->i_width];
+    row = new png_byte[width];
 
     /* Write data one row at a time */
-    for(unsigned int y = 0; y < this->i_height; y++) {
+    for(int y = 0; y < height; y++) {
 
-        for(unsigned int x = 0; x < this->i_width; x++) {
-            row[x] = (png_byte) this->i_buffer[y * this->i_width + x]; 
+        for(int x = 0; x < width; x++) {
+            row[x] = (png_byte) buffer[y * width + x]; 
         }
         png_write_row(png_ptr, row); 
     }
@@ -70,8 +68,6 @@ void image_buffer_item::save_to_png(const char* filename, int width, int height)
     png_free_data(png_ptr, info_ptr, PNG_FREE_ALL, -1); 
     png_destroy_write_struct(&png_ptr, (png_infopp) NULL); 
     delete [] row; 
-    
-    this->i_isBeingWritten = false;
 }
 
 image_buffer::image_buffer(unsigned int image_width, unsigned int image_height, 

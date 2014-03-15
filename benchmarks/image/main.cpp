@@ -8,9 +8,9 @@
 #include <iostream>
 #include <cstdlib>
 
-#define NB_OF_IMAGES    100
-#define IMAGE_WIDTH     1600
-#define IMAGE_HEIGHT    1000
+#define NB_OF_IMAGES    30
+#define IMAGE_WIDTH     2700
+#define IMAGE_HEIGHT    900
 
 int main(int argc, char **argv) {
 
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     #endif
 
     for(unsigned int incr = 0; incr < NB_OF_IMAGES; incr++) {
-        i[incr]->writeToPGM("image.pgm"); 
+        i[incr]->writeToPNG("image.png"); 
     }
 
     #ifndef PROFILING

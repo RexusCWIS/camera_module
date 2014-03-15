@@ -28,13 +28,6 @@ Image::Image(unsigned int width, unsigned int height) :
 
 Image::Image(const char* pgmFile) {   
 
-    FILE *fp = fopen(filename, "r"); 
-    if (fp == NULL) {
-        /** @todo Throw file exception */
-    }
-
-
-    close(fp);
 }
 
 pixel_t * Image::getImageBuffer(void) const {
@@ -89,6 +82,8 @@ void Image::writeToPNG(const char *filename, char *title) {
     png_set_IHDR(png_ptr, info_ptr, this->i_width, this->i_height, 
                  8, PNG_COLOR_TYPE_GRAY, PNG_INTERLACE_NONE, 
                  PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT); 
+
+    png_set_compression_level(png_ptr, Z_BEST_COMPRESSION);
 
     if(title != NULL) {
         png_text title_text; 

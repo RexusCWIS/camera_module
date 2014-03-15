@@ -13,7 +13,7 @@ struct image_buffer_item {
     char *buffer;
     unsigned int time;
     
-    void save_to_png(const char* filename);
+    void save_to_png(const char* filename, int height, int width);
 };
 
 struct image_buffer {
