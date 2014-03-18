@@ -66,6 +66,15 @@ void ueye_camera::set_aoi(int x, int y, int width, int height) {
     is_AOI(m_camera_id, IS_AOI_IMAGE_SET_AOI, (void*) &aoi, sizeof(aoi)); 
 }
 
+void ueye_camera::set_exposure(double exposure) {
+    
+    is_Exposure(m_camera_id, IS_EXPOSURE_CMD_SET_EXPOSURE, &exposure, 8);
+}
+
+void ueye_camera::set_max_exposure(void) {
+    set_exposure(0.0); 
+}
+
 void ueye_camera::set_auto_exposure(void) {
     
     double auto_exposure = 1.0; 

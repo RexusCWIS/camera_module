@@ -25,6 +25,10 @@ public:
 
 	void set_aoi(int x, int y, int width, int height);
 
+	void set_exposure(double exposure);
+
+	void set_max_exposure(void);
+
 	void set_auto_exposure(void);
 
 	void set_auto_gain(void);

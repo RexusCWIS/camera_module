@@ -211,11 +211,12 @@ static void set_camera_parameters(void) {
 	
 	camera->set_aoi(CONFIG_AOI_H_OFFSET, CONFIG_AOI_V_OFFSET,
 					CONFIG_AOI_WIDTH, CONFIG_AOI_HEIGHT);	
-	camera->set_auto_exposure();
-	camera->set_auto_gain();
 	
 	double framerate = camera->set_framerate(CONFIG_FRAMERATE);
 	std::cout << "Framerate: " << framerate << " fps" << std::endl;
+	
+	camera->set_max_exposure();
+	camera->set_auto_gain();
 	
 	status.framerate = (char) framerate;
 }
