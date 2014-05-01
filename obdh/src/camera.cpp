@@ -66,6 +66,11 @@ void ueye_camera::set_aoi(int x, int y, int width, int height) {
     is_AOI(m_camera_id, IS_AOI_IMAGE_SET_AOI, (void*) &aoi, sizeof(aoi)); 
 }
 
+void ueye_camera::set_saturation(int u, int v) {
+    
+    is_SetSaturation(m_camera_id, u, v);
+}
+
 void ueye_camera::set_exposure(double exposure) {
     
     is_Exposure(m_camera_id, IS_EXPOSURE_CMD_SET_EXPOSURE, &exposure, 8);
@@ -82,6 +87,15 @@ void ueye_camera::set_auto_exposure(void) {
        					   &auto_exposure, NULL) != IS_SUCCESS) {
         std::cerr << "Could not set auto exposure time" << std::endl; 
     }
+}
+
+void ueye_camera::set_gain(int gain) {
+
+    (gain < IS_MIN_GAIN) ? IS_MIN_GAIN : gain;
+    (gain > IS_MAX_GAIN) ? IS_MAX_GAIN : gain;
+
+    is_SetHardwareGain(m_camera_id, gain, IS_IGNORE_PARAMETER,
+                       IS_IGNORE_PARAMETER, IS_IGNORE_PARAMETER);
 }
 
 void ueye_camera::set_auto_gain(void) {
