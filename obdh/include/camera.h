@@ -35,7 +35,7 @@ public:
 
 	void set_auto_exposure(void);
 
-    void set_gain(void);
+    void set_gain(int gain);
 
     int get_gain(void) const;
 
