@@ -29,15 +29,21 @@ public:
 
 	void set_exposure(double exposure);
 
+    double get_exposure(void) const;
+
 	void set_max_exposure(void);
 
 	void set_auto_exposure(void);
 
     void set_gain(void);
 
+    int get_gain(void) const;
+
 	void set_auto_gain(void);
 
 	void set_pixel_clock(unsigned int pixel_clock);
+
+    unsigned int get_pixel_clock(void) const;
 
 	double set_framerate(double framerate);
 
