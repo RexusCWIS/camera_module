@@ -26,6 +26,7 @@ static void order_processing(char order);
 static inline void set_defaults(void);
 static inline void update_status(void); 
 static void set_camera_parameters(void);
+static void print_camera_parameters(void);
 
 typedef struct {
     std::string output_dir;
@@ -219,5 +220,16 @@ static void set_camera_parameters(void) {
 	camera->set_auto_gain();
 	
 	status.framerate = (char) framerate;
+}
+
+static void print_camera_parameters(void) {
+
+    std::cout << "Camera parameters" << std::endl << "======================" << std::endl;
+    std::cout << "Pixel clock: " << camera->get_pixel_clock() << " MHz" << std::endl;
+    std::cout << "Exposure: " << camera->get_exposure() << std::endl;
+    std::cout << "Gain: " << camera->get_gain() << " (min: " << IS_MIN_GAIN <<
+              ", max: " << IS_MAX_GAIN << ")" << std::endl;
+    
+    std::cout << std::endl;
 }
 
