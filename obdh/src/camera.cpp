@@ -100,8 +100,8 @@ void ueye_camera::set_auto_exposure(void) {
 
 void ueye_camera::set_gain(int gain) {
 
-    (gain < IS_MIN_GAIN) ? IS_MIN_GAIN : gain;
-    (gain > IS_MAX_GAIN) ? IS_MAX_GAIN : gain;
+    gain = (gain < IS_MIN_GAIN) ? IS_MIN_GAIN : gain;
+    gain = (gain > IS_MAX_GAIN) ? IS_MAX_GAIN : gain;
 
     is_SetHardwareGain(m_camera_id, gain, IS_IGNORE_PARAMETER,
                        IS_IGNORE_PARAMETER, IS_IGNORE_PARAMETER);
@@ -109,7 +109,9 @@ void ueye_camera::set_gain(int gain) {
 
 int ueye_camera::get_gain(void) const {
 
-    return is_SetHardwareGain(m_camera_id, IS_GET_MASTER_GAIN);
+    return is_SetHardwareGain(m_camera_id, IS_GET_MASTER_GAIN,
+                              IS_IGNORE_PARAMETER, IS_IGNORE_PARAMETER,
+                              IS_IGNORE_PARAMETER);
 }
 
 void ueye_camera::set_auto_gain(void) {
