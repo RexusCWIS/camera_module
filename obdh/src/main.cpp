@@ -216,8 +216,8 @@ static void set_camera_parameters(void) {
 	double framerate = camera->set_framerate(CONFIG_FRAMERATE);
 	std::cout << "Framerate: " << framerate << " fps" << std::endl;
 	
-	camera->set_max_exposure();
-	camera->set_auto_gain();
+	camera->set_exposure(CONFIG_EXPOSURE);
+	camera->set_gain(CONFIG_GAIN);
 	
 	status.framerate = (char) framerate;
 }
