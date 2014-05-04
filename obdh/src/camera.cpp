@@ -76,6 +76,15 @@ void ueye_camera::set_exposure(double exposure) {
     is_Exposure(m_camera_id, IS_EXPOSURE_CMD_SET_EXPOSURE, &exposure, 8);
 }
 
+double ueye_camera::get_exposure(void) const {
+
+    double exposure = 0.0;
+
+    is_Exposure(m_camera_id, IS_EXPOSURE_CMD_GET_EXPOSURE, &exposure, 8);
+
+    return exposure;
+}
+
 void ueye_camera::set_max_exposure(void) {
     set_exposure(0.0); 
 }
@@ -91,11 +100,18 @@ void ueye_camera::set_auto_exposure(void) {
 
 void ueye_camera::set_gain(int gain) {
 
-    (gain < IS_MIN_GAIN) ? IS_MIN_GAIN : gain;
-    (gain > IS_MAX_GAIN) ? IS_MAX_GAIN : gain;
+    gain = (gain < IS_MIN_GAIN) ? IS_MIN_GAIN : gain;
+    gain = (gain > IS_MAX_GAIN) ? IS_MAX_GAIN : gain;
 
     is_SetHardwareGain(m_camera_id, gain, IS_IGNORE_PARAMETER,
                        IS_IGNORE_PARAMETER, IS_IGNORE_PARAMETER);
+}
+
+int ueye_camera::get_gain(void) const {
+
+    return is_SetHardwareGain(m_camera_id, IS_GET_MASTER_GAIN,
+                              IS_IGNORE_PARAMETER, IS_IGNORE_PARAMETER,
+                              IS_IGNORE_PARAMETER);
 }
 
 void ueye_camera::set_auto_gain(void) {
@@ -113,6 +129,16 @@ void ueye_camera::set_pixel_clock(unsigned int pixel_clock) {
     INT status = is_PixelClock(m_camera_id, IS_PIXELCLOCK_CMD_SET, 
                                (void *) &pixel_clock, sizeof(pixel_clock));
     (void) status;
+}
+
+unsigned int ueye_camera::get_pixel_clock(void) const {
+    
+    unsigned int pixel_clock;
+
+    is_PixelClock(m_camera_id, IS_PIXELCLOCK_CMD_GET,
+                  (void *) &pixel_clock, sizeof(pixel_clock));
+
+    return pixel_clock;
 }
 
 double ueye_camera::set_framerate(double framerate) {
